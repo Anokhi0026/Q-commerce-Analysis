@@ -5,10 +5,9 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from scipy.stats import chi2_contingency, kruskal, spearmanr
-import os
 
 # ── Colour palette (consistent across all pages) ───────────────────────────────
-INDIGO   = "rgba(79, 70, 229, 1)"
+INDIGO   = "#4F46E5"
 VIOLET   = "#7C3AED"
 ROSE     = "#E11D48"
 AMBER    = "#D97706"
@@ -61,34 +60,12 @@ OCC_ORDER    = ["Student","Working professional","Self-employed","Homemaker","Re
 # ── Data loaders ───────────────────────────────────────────────────────────────
 @st.cache_data
 def load_raw():
-    import os
-    import pandas as pd
-
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(BASE_DIR, "data", "me.xlsx")
-
-    df = pd.read_excel(file_path,skiprows=1,sheet_name="raw")
-
-    df.columns = (
-        df.columns
-        .astype(str)
-        .str.strip()
-        .str.replace(" ", "_")
-        .str.replace(r"[^\w]", "", regex=True)
-    )
-
-    # 🔥 FORCE FIX
-    for col in df.columns:
-        if "adoption" in col.lower():
-            df.rename(columns={col: "Adoption_Status"}, inplace=True)
-
+    df = pd.read_excel("data/me.xlsx", sheet_name="raw", header=1)
     return df
 
 @st.cache_data
 def load_analysis():
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(BASE_DIR, "data", "analysis_ready.xlsx")
-    df = pd.read_excel(file_path)
+    df = pd.read_excel("data/analysis_ready.xlsx")
     return df
 
 @st.cache_data
@@ -156,8 +133,10 @@ def sidebar():
         st.page_link("pages/6_Obj2_Adoption.py",       label="🔗  Obj 2 — Adoption")
         st.page_link("pages/7_Obj3_Behavior.py",       label="📊  Obj 3 — Behavior")
         st.page_link("pages/8_Obj4_Drivers.py",        label="🔍  Obj 4 — Drivers")
-        st.page_link("pages/9_Obj5_Predictive.py",     label="🤖  Obj 5 — Predictive")
-        st.page_link("pages/10_Summary.py",            label="✨  Summary")
+        st.page_link("pages/9_Obj5_Predictive.py",        label="🤖  Obj 5 — Predictive")
+        st.page_link("pages/11_Cluster_Analysis.py",    label="🧩  Cluster Analysis")
+        st.page_link("pages/12_Correspondence_Analysis.py", label="📍  Correspondence Analysis")
+        st.page_link("pages/10_Summary.py",             label="✨  Summary")
         st.markdown("---")
         st.markdown("""<div style='font-size:0.7rem;color:#94A3B8;line-height:1.7;'>
         🎓 MSc Statistics<br>MS University of Baroda<br>📍 Vadodara, Gujarat<br>n = 341
