@@ -61,11 +61,27 @@ OCC_ORDER    = ["Student","Working professional","Self-employed","Homemaker","Re
 # ── Data loaders ───────────────────────────────────────────────────────────────
 @st.cache_data
 def load_raw():
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # ✅ DEFINE IT HERE
+    import os
+    import pandas as pd
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(BASE_DIR, "data", "me.xlsx")
 
     df = pd.read_excel(file_path)
-    df.columns = df.columns.str.strip()
+
+    df.columns = (
+        df.columns
+        .astype(str)
+        .str.strip()
+        .str.replace(" ", "_")
+        .str.replace(r"[^\w]", "", regex=True)
+    )
+
+    # 🔥 FORCE FIX
+    for col in df.columns:
+        if "adoption" in col.lower():
+            df.rename(columns={col: "Adoption_Status"}, inplace=True)
+
     return df
 
 @st.cache_data
