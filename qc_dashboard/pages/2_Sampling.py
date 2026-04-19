@@ -76,6 +76,7 @@ with right:
 
     fig_bar.update_xaxes(title="Selected Ward")
     fig_bar.update_yaxes(title="Sample Size", range=[0,110])
+    st.plotly_chart(fig_bar, use_container_width=True)
 
     section("Sample Size Formula — Cochran's Method")
     st.markdown("""
