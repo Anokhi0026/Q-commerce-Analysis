@@ -52,13 +52,13 @@ kpi(k5, "5",    "Objectives",        "Primary + Secondary", VIOLET)
 kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
 
 st.markdown("<br>", unsafe_allow_html=True)
-st.write("NEW VERSION RUNNING")
+
 # ── What is Q-Commerce ─────────────────────────────────────────
 left, right = st.columns([1.2, 1], gap="large")
 
 with left:
   section("Introduction", "What is Q-Commerce and why does it matter?")
-  st.write("NEW VERSION RUNNING")
+  
   st.markdown("""
   <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
 
