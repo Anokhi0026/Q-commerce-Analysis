@@ -8,7 +8,7 @@ from scipy.stats import chi2_contingency, kruskal, spearmanr
 import os
 
 # ── Colour palette (consistent across all pages) ───────────────────────────────
-INDIGO   = "#4F46E5"
+INDIGO   = "rgba(79, 70, 229, 1)"
 VIOLET   = "#7C3AED"
 ROSE     = "#E11D48"
 AMBER    = "#D97706"
