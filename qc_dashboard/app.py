@@ -151,7 +151,7 @@ with right:
     ]
     fig_app = go.Figure()
     fig_app.add_trace(go.Bar(name="Aware", x=apps, y=aware,
-                              marker_color='rgba(79, 70, 229, 0.6)', text=aware, textposition="outside"))
+                              marker_color=AMBER, text=aware, textposition="outside"))
     fig_app.add_trace(go.Bar(name="Primary Users", x=apps, y=usage,
                               marker_color=INDIGO, text=usage, textposition="outside"))
     fig_app.update_layout(**PLOTLY_LAYOUT, height=240, barmode="group",
