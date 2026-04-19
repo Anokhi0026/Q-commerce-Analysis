@@ -89,7 +89,7 @@ with right:
       <b>Cramér's V guide:</b><br>
       V < 0.10 → Negligible<br>V 0.10–0.29 → Weak<br>
       V 0.30–0.49 → Moderate<br>V ≥ 0.50 → Strong
-    </div>""", width="stretch")
+    </div>""", unsafe_allow_html=True)
 
 # ── Stacked bar charts ─────────────────────────────────────────────────────────
 section("Adoption Rate by Demographic Group",
