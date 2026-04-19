@@ -52,7 +52,7 @@ kpi(k5, "5",    "Objectives",        "Primary + Secondary", VIOLET)
 kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
 
 st.markdown("<br>", unsafe_allow_html=True)
-
+st.write("NEW VERSION RUNNING")
 # ── What is Q-Commerce ─────────────────────────────────────────
 left, right = st.columns([1.2, 1], gap="large")
 
