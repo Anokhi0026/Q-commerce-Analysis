@@ -140,9 +140,9 @@ with right:
     section("Apps Awareness vs Usage")
     apps    = ["Blinkit", "Zepto", "Swiggy Instamart"]
     aware   = [
-        (df["App_usex1"] == "Blinkit").sum() + (df["App_usex2"] == " Blinkit").sum(),
-        (df["App_usex2"] == " Zepto").sum() + (df["App_usex1"] == "Zepto").sum(),
-        (df["App_usex3"] == " Swiggy Instamart").sum(),
+        (df["App_usex1"].str.strip() == "Blinkit").sum() + (df["App_usex2"].str.strip() == " Blinkit").sum(),
+        (df["App_usex2"].str.strip() == " Zepto").sum() + (df["App_usex1"].str.strip() == "Zepto").sum(),
+        (df["App_usex3"].str.strip() == " Swiggy Instamart").sum(),
     ]
     usage   = [
         (users["App_Used"] == "Blinkit").sum(),
