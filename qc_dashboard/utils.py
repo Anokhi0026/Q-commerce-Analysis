@@ -61,12 +61,15 @@ OCC_ORDER    = ["Student","Working professional","Self-employed","Homemaker","Re
 # ── Data loaders ───────────────────────────────────────────────────────────────
 @st.cache_data
 def load_raw():
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # ✅ DEFINE IT HERE
     file_path = os.path.join(BASE_DIR, "data", "me.xlsx")
+
     df = pd.read_excel(file_path)
     return df
 
 @st.cache_data
 def load_analysis():
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(BASE_DIR, "data", "analysis_ready.xlsx")
     df = pd.read_excel(file_path)
     return df
