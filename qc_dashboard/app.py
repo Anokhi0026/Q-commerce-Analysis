@@ -74,14 +74,13 @@ with left:
         </div>
         """
 
-    st.markdown(f"""
+    html = f"""
     <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
 
       <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
         <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
         groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
-        <i>dark stores</i> and AI-driven logistics. Unlike traditional e-commerce, Q-Commerce
-        prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
+        <i>dark stores</i> and AI-driven logistics.
       </p>
 
       <div style='margin-top:18px; display:flex; flex-wrap:wrap; gap:12px;'>
@@ -89,7 +88,9 @@ with left:
       </div>
 
     </div>
-    """, unsafe_allow_html=True)
+    """
+
+    st.markdown(html, unsafe_allow_html=True)
 
     section("Why We Chose This Topic")
     st.markdown("""
