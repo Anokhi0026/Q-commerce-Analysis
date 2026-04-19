@@ -69,7 +69,7 @@ with left:
       prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
     </p>
 
-    <div style='margin-top:18px; display:flex; flex-wrap:wrap; gap:12px;'>
+    <div style='margin-top:18px;display:flex;flex-wrap:wrap;gap:12px;'>
   """ + "".join([f"""
       <div style='flex: 1 1 45%; background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
         <div style='font-size:1.2rem;'>{icon}</div>
@@ -91,7 +91,7 @@ with left:
 
   section("Why We Chose This Topic")
   st.markdown("""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;'>
+    <div style='flex:1 1 45%;background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
     """ + "".join([f"""
     <div style='display:flex;align-items:flex-start;gap:12px;padding:8px 0;
                 border-bottom:1px solid #F1F5F9;'>
