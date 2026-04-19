@@ -74,7 +74,8 @@ with left:
         </div>
         """
 
-    html = f"""
+    
+    st.markdown("""
     <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
       <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
         <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
@@ -87,9 +88,7 @@ with left:
         {cards}
       </div>
     </div>
-    """
-
-    st.markdown(html, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     section("Why We Chose This Topic")
     st.markdown("""
