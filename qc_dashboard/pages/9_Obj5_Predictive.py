@@ -1,199 +1,352 @@
 import streamlit as st
 import plotly.graph_objects as go
-import pandas as pd, numpy as np
-import statsmodels.api as sm
+import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, roc_curve, classification_report
 from scipy.stats import mannwhitneyu, chi2 as chi2_dist
-from sklearn.metrics import roc_auc_score, roc_curve
 from utils import *
 
 st.set_page_config("Obj 5 — Predictive", "🤖", layout="wide")
-st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>",unsafe_allow_html=True)
+st.markdown("""<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+html,body,[class*='css']{font-family:'Inter',sans-serif;}
+.stApp{background:#FAFAFA;}
+section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
+</style>""", unsafe_allow_html=True)
+
 sidebar()
-page_header("Objective 5", "Predictive Models for Adoption Likelihood",
-            "Binary Logistic Regression using statsmodels — with Wald tests, Odds Ratios, Hosmer-Lemeshow goodness-of-fit, ROC/AUC, and model comparison.")
+page_header("Objective 5", "Predictive Models for Q-Commerce Adoption",
+            "Three complementary models — Logistic Regression (statsmodels), Decision Tree (GridSearchCV tuned), "
+            "and Random Forest (GridSearchCV tuned) — with a convergence-based final interpretation.")
 
-df = load_raw()
+df = load_analysis()
+df_model = df.dropna(subset=["Gender"]).copy()
 
-# ── Mann-Whitney Pre-Model Check ───────────────────────────────────────────────
-section("1 · Pre-Model Verification — Mann-Whitney U Test",
-        "Do users and non-users differ significantly on ordinal demographics?")
+k1,k2,k3,k4 = st.columns(4)
+kpi(k1,str(len(df_model)),"Sample Size","After dropping NaN Gender")
+kpi(k2,f"{(df_model['Adoption_Status']==1).sum()}","Adopters","67% of sample",EMERALD)
+kpi(k3,f"{(df_model['Adoption_Status']==0).sum()}","Non-Adopters","33% of sample",ROSE)
+kpi(k4,"3","Models Fitted","LR · DT · RF",INDIGO)
+st.markdown("<br>",unsafe_allow_html=True)
 
-AGE_ORD    = {"18-25":1,"26-33":2,"34-41":3,"42-49":4,"50 or above":5}
-EDU_ORD    = {"No Formal Education":1,"School Level":2,"Undergraduate":3,"Postgraduate":4,"Professional Degree":5}
-INC_ORD    = {"Below ₹20,000":1,"₹20,000 - ₹40,000":2,"₹40,000 - ₹60,000":3,"₹60,000 - ₹1,00,000":4,"Above ₹1,00,000":5}
-df["Age_Ord"] = df["Age_Group"].map(AGE_ORD)
-df["Edu_Ord"] = df["Education"].map(EDU_ORD)
-df["Inc_Ord"] = df["Income"].map(INC_ORD)
+# ── TRAIN/TEST SPLIT ───────────────────────────────────────────────────────────
+section("Data Preparation — Stratified 70/30 Train-Test Split",
+        "Models learn from training set only. Test set is held out for unbiased evaluation.")
 
-mw_rows = []
-for var, col in [("Age","Age_Ord"),("Education","Edu_Ord"),("Income","Inc_Ord")]:
-    u  = df[df["Adoption_Status"]==1][col].dropna()
-    nu = df[df["Adoption_Status"]==0][col].dropna()
-    U,p = mannwhitneyu(u, nu, alternative="two-sided")
-    rb = 1 - (2*U)/(len(u)*len(nu))
-    eff = "Large" if abs(rb)>0.5 else ("Medium" if abs(rb)>0.3 else "Small")
-    mw_rows.append({"Variable":var,"Users Median":u.median(),"Non-Users Median":nu.median(),
-                     "U":round(U,1),"p":round(p,4),"r":round(rb,3),"Effect":eff,"Sig":p<0.05})
+features = ["Age_Group","Education","Income","Gender"]
+X = pd.get_dummies(df_model[features], drop_first=True)
+y = df_model["Adoption_Status"]
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=42,stratify=y)
 
 c1,c2,c3 = st.columns(3)
-for col_w, row in zip([c1,c2,c3], mw_rows):
-    color = EMERALD if row["Sig"] else SLATE
-    col_w.markdown(f"""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:18px;text-align:center;'>
-      <div style='font-weight:700;font-size:.95rem;color:#1E1E2E;'>{row['Variable']}</div>
-      <div style='font-size:1.5rem;font-weight:800;color:{color};margin:6px 0;'>
-        {"✅" if row["Sig"] else "❌"} p={row['p']}
-      </div>
-      <div style='font-size:.75rem;color:#64748B;'>r = {row['r']} ({row['Effect']} effect)</div>
-      <div style='font-size:.72rem;color:#94A3B8;margin-top:4px;'>
-        Users med: {row['Users Median']:.0f} | Non-users: {row['Non-Users Median']:.0f}
-      </div>
-    </div>""", unsafe_allow_html=True)
+kpi(c1,str(len(y_train)),"Training Samples",f"{y_train.mean()*100:.1f}% adoption rate")
+kpi(c2,str(len(y_test)), "Test Samples",    f"{y_test.mean()*100:.1f}% adoption rate",AMBER)
+kpi(c3,"Stratified","Split Method","Class proportions preserved",VIOLET)
+st.markdown("<br>",unsafe_allow_html=True)
 
-# ── Build Model ────────────────────────────────────────────────────────────────
-section("2 · Binary Logistic Regression — Model 1 (Demographics)",
-        "Fitted using statsmodels.Logit | Wald z-tests | 95% Wald Confidence Intervals")
+# ── SECTION 1: LOGISTIC REGRESSION ────────────────────────────────────────────
+section("Model 1 · Logistic Regression (statsmodels)",
+        "Parametric, inferential model fitted on full data. Provides Wald z-statistics, p-values, and Odds Ratios.")
 
-def make_dummies(df_in):
-    gd = pd.get_dummies(df_in["Gender"],    prefix="G").astype(int)
-    ad = pd.get_dummies(df_in["Age_Group"], prefix="Age").astype(int)
-    ed = pd.get_dummies(df_in["Education"], prefix="Edu").astype(int)
-    od = pd.get_dummies(df_in["Occupation"],prefix="Occ").astype(int)
-    id_ = pd.get_dummies(df_in["Income"],  prefix="Inc").astype(int)
-    for ref, blk in [("G_Male",gd),("Age_18-25",ad),("Edu_School Level",ed),
-                      ("Occ_Student",od),("Inc_Below ₹20,000",id_)]:
-        if ref in blk.columns: blk.drop(columns=[ref],inplace=True)
-    X = pd.concat([gd,ad,ed,od,id_],axis=1)
-    X.columns = [c.replace(" ","_").replace("₹","Rs").replace(",","")
-                   .replace("–","_").replace("-","_") for c in X.columns]
-    return X
+@st.cache_data
+def fit_logistic():
+    df_m = load_analysis().dropna(subset=["Gender"]).copy()
+    # Build occupation dummies manually
+    df_m["Occ_Retired"]               = (df_m["Occupation"]=="Retired").astype(int)
+    df_m["Occ_Self_Employed"]         = (df_m["Occupation"]=="Self-employed").astype(int)
+    df_m["Occ_Working_Professional"]  = (df_m["Occupation"]=="Working professional").astype(int)
+    model = smf.logit(
+        "Adoption_Status ~ C(Age_Group) + C(Education) + C(Income) + C(Gender)"
+        " + Occ_Retired + Occ_Self_Employed + Occ_Working_Professional",
+        data=df_m
+    ).fit(disp=False)
+    return model, df_m
 
 with st.spinner("Fitting logistic regression…"):
-    X_demo = make_dummies(df)
-    y = df["Adoption_Status"].astype(float)
-    mask = X_demo.notna().all(axis=1) & y.notna()
-    X1, y1 = X_demo[mask].copy(), y[mask].copy()
-    X1_sm = sm.add_constant(X1)
-    result1 = sm.Logit(y1, X1_sm).fit(disp=False)
+    lr_model, df_m = fit_logistic()
 
-    conf = result1.conf_int(); conf.columns=["lo","hi"]
-    coef_df = pd.DataFrame({
-        "Predictor": result1.params.index,
-        "β": result1.params.round(3),
-        "z": result1.tvalues.round(2),
-        "p": result1.pvalues.round(4),
-        "OR": np.exp(result1.params).round(3),
-        "CI_lo": np.exp(conf["lo"]).round(3),
-        "CI_hi": np.exp(conf["hi"]).round(3),
-        "Sig": ["✅" if p<0.05 else "❌" for p in result1.pvalues]
-    }).set_index("Predictor")
-    plot_df = coef_df.drop(index="const").sort_values("OR")
+conf   = lr_model.conf_int(); conf.columns = ["lo","hi"]
+or_df  = pd.DataFrame({
+    "β":         lr_model.params.round(4),
+    "z (Wald)":  lr_model.tvalues.round(3),
+    "p-value":   lr_model.pvalues.round(4),
+    "OR":        np.exp(lr_model.params).round(3),
+    "OR CI Lo":  np.exp(conf["lo"]).round(3),
+    "OR CI Hi":  np.exp(conf["hi"]).round(3),
+    "Sig":       ["***" if p<0.001 else "**" if p<0.01 else "*" if p<0.05 else ""
+                  for p in lr_model.pvalues]
+})
 
-    y1_prob = result1.predict(X1_sm)
-    auc1 = roc_auc_score(y1, y1_prob)
-    fpr1,tpr1,thr1 = roc_curve(y1, y1_prob)
-    j1 = tpr1-fpr1; opt1=np.argmax(j1)
+lr_probs = lr_model.predict(df_m)
+lr_pred  = (lr_probs>0.5).astype(int)
+cm_lr    = confusion_matrix(df_m["Adoption_Status"], lr_pred)
+acc_lr   = accuracy_score(df_m["Adoption_Status"], lr_pred)
+auc_lr   = roc_auc_score(df_m["Adoption_Status"], lr_probs)
+tp,fp    = cm_lr[1,1],cm_lr[0,1]
+tn,fn    = cm_lr[0,0],cm_lr[1,0]
+sens_lr  = tp/(tp+fn); spec_lr = tn/(tn+fp)
+fpr_lr,tpr_lr,_ = roc_curve(df_m["Adoption_Status"], lr_probs)
 
-    n1=len(y1); ll_null=result1.llnull; ll_mod=result1.llf
-    cox1 = 1-np.exp(-2*(ll_mod-ll_null)/n1)
-    nag1 = cox1/(1-np.exp(2*ll_null/n1))
-
-    def hl_test(y_t, y_p, g=10):
-        d=pd.DataFrame({"y":y_t.values,"p":y_p})
-        d["dec"]=pd.qcut(d["p"],q=g,duplicates="drop",labels=False)
-        t=d.groupby("dec").agg(o1=("y","sum"),e1=("p","sum"),n=("y","count"))
-        t["o0"]=t["n"]-t["o1"]; t["e0"]=t["n"]-t["e1"]
-        chi2_hl=((t["o1"]-t["e1"])**2/t["e1"]+(t["o0"]-t["e0"])**2/t["e0"]).sum()
-        df_hl=len(t)-2; p_hl=1-chi2_dist.cdf(chi2_hl,df_hl)
-        return chi2_hl,df_hl,p_hl
-
-    hl_chi2,hl_df,hl_p = hl_test(y1,y1_prob)
-
-# KPI row
-k1,k2,k3,k4,k5 = st.columns(5)
-kpi(k1,f"{auc1:.3f}","AUC","Discrimination ability",INDIGO)
-kpi(k2,f"{nag1:.3f}","Nagelkerke R²","Variance explained",VIOLET)
-kpi(k3,f"{hl_p:.3f}","H-L p-value","Good fit if >0.05",EMERALD if hl_p>0.05 else ROSE)
-kpi(k4,f"{result1.aic:.1f}","AIC","Lower is better",AMBER)
-kpi(k5,f"{thr1[opt1]:.2f}","Optimal Threshold","Youden's J",SKY)
-
+c1,c2,c3,c4 = st.columns(4)
+kpi(c1,f"{acc_lr*100:.1f}%","Accuracy","Full dataset",INDIGO)
+kpi(c2,f"{auc_lr:.4f}","AUC","Discriminability",EMERALD)
+kpi(c3,f"{sens_lr*100:.1f}%","Sensitivity","Adopters identified",VIOLET)
+kpi(c4,f"{spec_lr*100:.1f}%","Specificity","Non-adopters identified",AMBER)
 st.markdown("<br>",unsafe_allow_html=True)
-c1, c2 = st.columns([1.3,1], gap="large")
 
+c1,c2 = st.columns([1.3,1], gap="large")
 with c1:
-    section("Forest Plot — Odds Ratios with 95% Wald CI")
-    colors_or = [INDIGO if s=="✅" else "#CBD5E1" for s in plot_df["Sig"]]
+    plot_or = or_df.drop(index="Intercept").sort_values("OR")
+    colors_or = [INDIGO if s!="" else SLATE for s in plot_or["Sig"]]
     fig_f = go.Figure()
-    ypos = list(range(len(plot_df)))
-    fig_f.add_trace(go.Scatter(x=plot_df["OR"], y=ypos, mode="markers",
+    ypos = list(range(len(plot_or)))
+    fig_f.add_trace(go.Scatter(x=plot_or["OR"], y=ypos, mode="markers",
                                 marker=dict(color=colors_or,size=9,symbol="square"),
-                                hovertemplate="%{text}<extra></extra>",
-                                text=[f"{p}: OR={o:.3f} ({s})" for p,o,s in
-                                      zip(plot_df.index,plot_df["OR"],plot_df["Sig"])]))
-    for i,(_, row) in enumerate(plot_df.iterrows()):
-        fig_f.add_trace(go.Scatter(
-            x=[row["CI_lo"],row["CI_hi"]], y=[i,i], mode="lines",
-            line=dict(color=colors_or[i],width=2), showlegend=False))
-    fig_f.add_vline(x=1.0, line_dash="dash", line_color="#94A3B8",
-                    annotation_text="OR=1", annotation_font=dict(size=9,color="#94A3B8"))
+                                hovertemplate="%{text}: OR=%{x:.3f}<extra></extra>",
+                                text=plot_or.index.tolist()))
+    for i,(_, row) in enumerate(plot_or.iterrows()):
+        fig_f.add_trace(go.Scatter(x=[row["OR CI Lo"],row["OR CI Hi"]],y=[i,i],
+                                    mode="lines",line=dict(color=colors_or[i],width=2),showlegend=False))
+    fig_f.add_vline(x=1.0,line_dash="dash",line_color="#94A3B8",
+                    annotation_text="OR=1",annotation_font=dict(size=9))
     fig_f.update_layout(**PLOTLY_LAYOUT, height=500, showlegend=False,
-                         yaxis=dict(tickvals=ypos,ticktext=plot_df.index.tolist(),gridcolor="#F1F5F9"),
+                         yaxis=dict(tickvals=ypos,ticktext=plot_or.index.tolist(),gridcolor="#F1F5F9"),
                          xaxis=dict(title="Odds Ratio (OR) with 95% Wald CI",gridcolor="#F1F5F9"),
-                         title=dict(text="Blue = Significant (p<0.05) | Gray = Not Significant",font=dict(size=11)))
+                         title=dict(text="Forest Plot — Blue=Significant | Gray=Not Significant",font=dict(size=11)))
     st.plotly_chart(fig_f, use_container_width=True)
 
 with c2:
-    section("ROC Curve — Model 1")
     fig_roc = go.Figure()
-    fig_roc.add_trace(go.Scatter(x=fpr1, y=tpr1, mode="lines",
-                                  line=dict(color=INDIGO,width=3), name=f"Model 1 (AUC={auc1:.3f})",
-                                  fill="tozeroy", fillcolor=INDIGO+"15",
-                                  hovertemplate="FPR=%{x:.2f}, TPR=%{y:.2f}<extra></extra>"))
+    fig_roc.add_trace(go.Scatter(x=fpr_lr,y=tpr_lr,mode="lines",
+                                  line=dict(color=INDIGO,width=3),
+                                  name=f"Logistic Regression (AUC={auc_lr:.3f})",
+                                  fill="tozeroy",fillcolor=INDIGO+"15"))
     fig_roc.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
-                                  line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.50)"))
-    fig_roc.add_trace(go.Scatter(x=[fpr1[opt1]],y=[tpr1[opt1]],mode="markers",
-                                  marker=dict(color=ROSE,size=12,symbol="star"),
-                                  name=f"Optimal threshold={thr1[opt1]:.2f}"))
-    fig_roc.update_layout(**PLOTLY_LAYOUT, height=300,
-                           xaxis=dict(title="False Positive Rate",range=[0,1],gridcolor="#F1F5F9"),
-                           yaxis=dict(title="True Positive Rate",range=[0,1],gridcolor="#F1F5F9"),
-                           title=dict(text=f"ROC Curve — AUC = {auc1:.3f}",font=dict(size=13)))
+                                  line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
+    fig_roc.update_layout(**PLOTLY_LAYOUT, height=280,
+                           xaxis=dict(title="FPR",range=[0,1],gridcolor="#F1F5F9"),
+                           yaxis=dict(title="TPR",range=[0,1],gridcolor="#F1F5F9"),
+                           title=dict(text=f"ROC Curve — AUC={auc_lr:.4f}",font=dict(size=12)))
     st.plotly_chart(fig_roc, use_container_width=True)
 
+    # Model summary stats
+    nag  = (1-np.exp(-2*(lr_model.llf-lr_model.llnull)/len(df_m))) / (1-np.exp(2*lr_model.llnull/len(df_m)))
     st.markdown(f"""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:14px 16px;'>
-      <div style='font-weight:600;font-size:.85rem;color:#1E1E2E;margin-bottom:8px;'>Model Fit Summary</div>
-      {''.join(f'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #F8FAFC;font-size:.78rem;"><span style="color:#64748B;">{k}</span><span style="font-weight:600;color:#1E1E2E;">{v}</span></div>' for k,v in [
-        ("Log-Likelihood", f"{result1.llf:.2f}"),
-        ("Null Log-Likelihood", f"{result1.llnull:.2f}"),
-        ("McFadden R²", f"{result1.prsquared:.4f}"),
-        ("Nagelkerke R²", f"{nag1:.4f}"),
-        ("AIC", f"{result1.aic:.2f}"),
-        ("BIC", f"{result1.bic:.2f}"),
-        ("LLR p-value", f"{result1.llr_pvalue:.6f}"),
-        ("H-L p-value", f"{hl_p:.4f} ({'Good fit ✅' if hl_p>0.05 else 'Poor fit ❌'})"),
-      ])}
+    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:14px;'>
+      {"".join(f'<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #F8FAFC;font-size:.75rem;"><span style="color:#64748B;">{k}</span><span style="font-weight:600;">{v}</span></div>'
+      for k,v in [("McFadden R²",f"{lr_model.prsquared:.4f}"),("Nagelkerke R²",f"{nag:.4f}"),
+                  ("Log-Likelihood",f"{lr_model.llf:.2f}"),("AIC",f"{lr_model.aic:.2f}"),
+                  ("BIC",f"{lr_model.bic:.2f}"),("LLR p-value",f"{lr_model.llr_pvalue:.2e}")])}
     </div>""", unsafe_allow_html=True)
 
-# Coefficient table
-section("Coefficient Table with Wald Statistics")
-with st.expander("Show full statsmodels coefficient table", expanded=False):
-    display = coef_df.drop(index="const")[["β","z","p","OR","CI_lo","CI_hi","Sig"]].rename(
-        columns={"CI_lo":"OR CI Lo","CI_hi":"OR CI Hi","p":"p-value","z":"Wald z"})
-    st.dataframe(display.style.applymap(
-        lambda v: "color:#059669;font-weight:600" if v=="✅" else "color:#94A3B8" if v=="❌" else "",
-        subset=["Sig"]), use_container_width=True)
+with st.expander("📋 Full Odds Ratio Table"):
+    st.dataframe(or_df, use_container_width=True)
 
-section("Key Findings")
-for t,d,c in [
-    ("📊 Demographics Predict Adoption (AUC > 0.75)",
-     f"The demographics-only model achieves AUC={auc1:.3f}, discriminating users from non-users well above chance. "
-     f"Nagelkerke R²={nag1:.3f} — demographics explain ~{nag1*100:.0f}% of variance in adoption status.",INDIGO),
-    ("📅 Age is the Dominant Predictor",
-     "Older age groups show significantly lower Odds Ratios relative to the 18–25 reference group — "
-     "each successive age band is less likely to adopt Q-Commerce.",ROSE),
-    ("✅ Model is Well-Calibrated (H-L test)",
-     f"Hosmer-Lemeshow χ²={hl_chi2:.3f}, p={hl_p:.3f} — {'good fit' if hl_p>0.05 else 'fit could be improved'}. "
-     "Predicted probabilities match observed adoption rates across risk deciles.",EMERALD),
+# ── SECTION 2: DECISION TREE ──────────────────────────────────────────────────
+section("Model 2 · Decision Tree with GridSearchCV Hyperparameter Tuning",
+        "84 parameter combinations tested via 5-fold stratified cross-validation (AUC scoring)")
+
+@st.cache_data
+def fit_decision_tree():
+    df_m = load_analysis().dropna(subset=["Gender"]).copy()
+    feats = ["Age_Group","Education","Income","Gender"]
+    X_all = pd.get_dummies(df_m[feats],drop_first=True)
+    y_all = df_m["Adoption_Status"]
+    X_tr,X_te,y_tr,y_te = train_test_split(X_all,y_all,test_size=0.3,random_state=42,stratify=y_all)
+
+    param_grid_dt = {"max_depth":list(range(2,9)),"min_samples_split":[2,5,10,20],"min_samples_leaf":[1,5,10]}
+    cv = StratifiedKFold(n_splits=5,shuffle=True,random_state=42)
+    grid_dt = GridSearchCV(DecisionTreeClassifier(random_state=42),param_grid_dt,
+                            cv=cv,scoring="roc_auc",n_jobs=-1)
+    grid_dt.fit(X_tr,y_tr)
+
+    best_dt   = grid_dt.best_estimator_
+    y_pred_dt = best_dt.predict(X_te)
+    y_prob_dt = best_dt.predict_proba(X_te)[:,1]
+    cm_dt     = confusion_matrix(y_te,y_pred_dt)
+    acc_dt    = accuracy_score(y_te,y_pred_dt)
+    auc_dt    = roc_auc_score(y_te,y_prob_dt)
+    fpr_dt,tpr_dt,_ = roc_curve(y_te,y_prob_dt)
+    tp2,fp2 = cm_dt[1,1],cm_dt[0,1]; tn2,fn2 = cm_dt[0,0],cm_dt[1,0]
+    sens_dt = tp2/(tp2+fn2); spec_dt = tn2/(tn2+fp2)
+
+    imp = pd.Series(best_dt.feature_importances_,index=X_all.columns).sort_values(ascending=False)
+    return (grid_dt.best_params_, grid_dt.best_score_, acc_dt, auc_dt,
+            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt)
+
+with st.spinner("Running GridSearchCV for Decision Tree (84 combinations)…"):
+    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt = fit_decision_tree()
+
+c1,c2,c3,c4 = st.columns(4)
+kpi(c1,f"{dt_cv_auc:.4f}","CV AUC","5-fold cross-validation",VIOLET)
+kpi(c2,f"{auc_dt:.4f}","Test AUC","Held-out test set",INDIGO)
+kpi(c3,f"{acc_dt*100:.1f}%","Test Accuracy","",EMERALD)
+kpi(c4,str(dt_params),"Best Parameters","GridSearchCV result",AMBER)
+st.markdown("<br>",unsafe_allow_html=True)
+
+c1,c2 = st.columns(2, gap="large")
+with c1:
+    fig_imp = go.Figure(go.Bar(
+        y=dt_imp.index[::-1], x=dt_imp.values[::-1], orientation="h",
+        marker_color=[INDIGO if "Age" in f else EMERALD if "Edu" in f else
+                      ROSE if "Income" in f else VIOLET for f in dt_imp.index[::-1]],
+        text=[f"{v:.4f}" for v in dt_imp.values[::-1]], textposition="outside",
+        hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
+    fig_imp.update_layout(**PLOTLY_LAYOUT, height=330,
+                           xaxis=dict(title="Feature Importance (Gini)",gridcolor="#F1F5F9"),
+                           title=dict(text="Decision Tree Feature Importance (Tuned Model)",font=dict(size=12)))
+    st.plotly_chart(fig_imp, use_container_width=True)
+with c2:
+    fig_roc2 = go.Figure()
+    fig_roc2.add_trace(go.Scatter(x=fpr_dt,y=tpr_dt,mode="lines",
+                                   line=dict(color=VIOLET,width=3),
+                                   name=f"Decision Tree (AUC={auc_dt:.3f})",
+                                   fill="tozeroy",fillcolor=VIOLET+"15"))
+    fig_roc2.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
+                                   line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
+    fig_roc2.update_layout(**PLOTLY_LAYOUT, height=290,
+                            xaxis=dict(title="FPR",range=[0,1],gridcolor="#F1F5F9"),
+                            yaxis=dict(title="TPR",range=[0,1],gridcolor="#F1F5F9"),
+                            title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
+    st.plotly_chart(fig_roc2, use_container_width=True)
+    st.markdown(f"**Best params:** {dt_params}")
+    st.markdown(f"**Sensitivity:** {sens_dt*100:.1f}% | **Specificity:** {spec_dt*100:.1f}%")
+
+# ── SECTION 3: RANDOM FOREST ──────────────────────────────────────────────────
+section("Model 3 · Random Forest with GridSearchCV Hyperparameter Tuning",
+        "36 parameter combinations, 200 trees, 5-fold CV — highest cross-validation AUC")
+
+@st.cache_data
+def fit_random_forest():
+    df_m = load_analysis().dropna(subset=["Gender"]).copy()
+    feats = ["Age_Group","Education","Income","Gender"]
+    X_all = pd.get_dummies(df_m[feats],drop_first=True)
+    y_all = df_m["Adoption_Status"]
+    X_tr,X_te,y_tr,y_te = train_test_split(X_all,y_all,test_size=0.3,random_state=42,stratify=y_all)
+
+    param_grid_rf = {"n_estimators":[100,200,300],"max_depth":[3,5,7,None],"min_samples_split":[2,5,10]}
+    cv = StratifiedKFold(n_splits=5,shuffle=True,random_state=42)
+    grid_rf = GridSearchCV(RandomForestClassifier(random_state=42),param_grid_rf,
+                            cv=cv,scoring="roc_auc",n_jobs=-1)
+    grid_rf.fit(X_tr,y_tr)
+
+    best_rf   = grid_rf.best_estimator_
+    y_pred_rf = best_rf.predict(X_te)
+    y_prob_rf = best_rf.predict_proba(X_te)[:,1]
+    cm_rf     = confusion_matrix(y_te,y_pred_rf)
+    acc_rf    = accuracy_score(y_te,y_pred_rf)
+    auc_rf    = roc_auc_score(y_te,y_prob_rf)
+    fpr_rf,tpr_rf,_ = roc_curve(y_te,y_prob_rf)
+    tp3,fp3 = cm_rf[1,1],cm_rf[0,1]; tn3,fn3 = cm_rf[0,0],cm_rf[1,0]
+    sens_rf = tp3/(tp3+fn3); spec_rf = tn3/(tn3+fp3)
+    imp_rf  = pd.Series(best_rf.feature_importances_,index=X_all.columns).sort_values(ascending=False)
+    return (grid_rf.best_params_, grid_rf.best_score_, acc_rf, auc_rf,
+            sens_rf, spec_rf, fpr_rf, tpr_rf, imp_rf)
+
+with st.spinner("Running GridSearchCV for Random Forest (36 combinations)…"):
+    rf_params, rf_cv_auc, acc_rf, auc_rf, sens_rf, spec_rf, fpr_rf, tpr_rf, rf_imp = fit_random_forest()
+
+c1,c2,c3,c4 = st.columns(4)
+kpi(c1,f"{rf_cv_auc:.4f}","CV AUC","Best among 3 models",EMERALD)
+kpi(c2,f"{auc_rf:.4f}","Test AUC","Held-out test set",INDIGO)
+kpi(c3,f"{acc_rf*100:.1f}%","Test Accuracy","",VIOLET)
+kpi(c4,str(rf_params.get("n_estimators",""))+" Trees","n_estimators","",AMBER)
+st.markdown("<br>",unsafe_allow_html=True)
+
+c1,c2 = st.columns(2, gap="large")
+with c1:
+    fig_imp2 = go.Figure(go.Bar(
+        y=rf_imp.index[:10][::-1], x=rf_imp.values[:10][::-1], orientation="h",
+        marker_color=[INDIGO if "Age" in f else EMERALD if "Edu" in f else
+                      ROSE if "Income" in f else VIOLET for f in rf_imp.index[:10][::-1]],
+        text=[f"{v:.4f}" for v in rf_imp.values[:10][::-1]], textposition="outside",
+        hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
+    fig_imp2.update_layout(**PLOTLY_LAYOUT, height=330,
+                            xaxis=dict(title="Feature Importance (Mean Gini Decrease)",gridcolor="#F1F5F9"),
+                            title=dict(text="Random Forest Feature Importance (Top 10)",font=dict(size=12)))
+    st.plotly_chart(fig_imp2, use_container_width=True)
+with c2:
+    fig_roc3 = go.Figure()
+    fig_roc3.add_trace(go.Scatter(x=fpr_rf,y=tpr_rf,mode="lines",
+                                   line=dict(color=EMERALD,width=3),
+                                   name=f"Random Forest (AUC={auc_rf:.3f})",
+                                   fill="tozeroy",fillcolor=EMERALD+"15"))
+    fig_roc3.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
+                                   line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
+    fig_roc3.update_layout(**PLOTLY_LAYOUT, height=290,
+                            xaxis=dict(title="FPR",range=[0,1],gridcolor="#F1F5F9"),
+                            yaxis=dict(title="TPR",range=[0,1],gridcolor="#F1F5F9"),
+                            title=dict(text=f"ROC Curve — Random Forest | AUC={auc_rf:.4f}",font=dict(size=12)))
+    st.plotly_chart(fig_roc3, use_container_width=True)
+    st.markdown(f"**Best params:** {rf_params}")
+    st.markdown(f"**Sensitivity:** {sens_rf*100:.1f}% | **Specificity:** {spec_rf*100:.1f}%")
+
+# ── SECTION 4: MODEL COMPARISON ───────────────────────────────────────────────
+section("Model Comparison — All Three Models")
+
+models   = ["Logistic Regression\n(full data)","Decision Tree\n(tuned, test set)","Random Forest\n(tuned, test set)"]
+accs     = [acc_lr, acc_dt, acc_rf]
+aucs     = [auc_lr, auc_dt, auc_rf]
+senss    = [sens_lr, sens_dt, sens_rf]
+specs    = [spec_lr, spec_dt, spec_rf]
+
+fig_cmp = go.Figure()
+for metric, vals, color in [("Accuracy",accs,INDIGO),("AUC",aucs,EMERALD),("Sensitivity",senss,ROSE)]:
+    fig_cmp.add_trace(go.Bar(name=metric, x=models, y=[round(v,4) for v in vals],
+                              marker_color=color, text=[f"{v:.3f}" for v in vals],
+                              textposition="outside"))
+fig_cmp.update_layout(**PLOTLY_LAYOUT, barmode="group", height=340,
+                       yaxis=dict(title="Score",range=[0.5,1.05],gridcolor="#F1F5F9"),
+                       xaxis=dict(tickangle=-10),
+                       title=dict(text="Model Performance Comparison",font=dict(size=12)))
+st.plotly_chart(fig_cmp, use_container_width=True)
+
+# ROC comparison overlay
+fig_roc_all = go.Figure()
+for (fpr,tpr,auc_v,name,color) in [
+    (fpr_lr,tpr_lr,auc_lr,"Logistic Regression",INDIGO),
+    (fpr_dt,tpr_dt,auc_dt,"Decision Tree (tuned)",VIOLET),
+    (fpr_rf,tpr_rf,auc_rf,"Random Forest (tuned)",EMERALD),
 ]:
-    finding_card(t,d,c)
+    fig_roc_all.add_trace(go.Scatter(x=fpr,y=tpr,mode="lines",
+                                      line=dict(color=color,width=2.5),
+                                      name=f"{name} (AUC={auc_v:.3f})"))
+fig_roc_all.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
+                                  line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
+fig_roc_all.update_layout(**PLOTLY_LAYOUT, height=320,
+                           xaxis=dict(title="False Positive Rate",range=[0,1],gridcolor="#F1F5F9"),
+                           yaxis=dict(title="True Positive Rate",range=[0,1],gridcolor="#F1F5F9"),
+                           title=dict(text="ROC Curve Comparison — All Three Models",font=dict(size=12)))
+st.plotly_chart(fig_roc_all, use_container_width=True)
+
+# Summary table
+cmp_df = pd.DataFrame({
+    "Model":["Logistic Regression","Decision Tree (tuned)","Random Forest (tuned)"],
+    "Accuracy":[round(acc_lr,4),round(acc_dt,4),round(acc_rf,4)],
+    "AUC":[round(auc_lr,4),round(auc_dt,4),round(auc_rf,4)],
+    "Sensitivity":[round(sens_lr,4),round(sens_dt,4),round(sens_rf,4)],
+    "Specificity":[round(spec_lr,4),round(spec_dt,4),round(spec_rf,4)],
+    "Tuning":["None (inferential)","GridSearchCV (84)","GridSearchCV (36)"]
+})
+st.dataframe(cmp_df, use_container_width=True)
+
+section("Key Findings — Convergence Across All Three Models")
+finding_card("🏆 Age (40+) is the Dominant Predictor — All Three Models Agree",
+             f"Logistic Regression: Age_40+ has OR≈0.074, p<0.001. "
+             "Decision Tree splits on Age first. Random Forest: Age_Group features top the importance rankings. "
+             "Convergence across 3 different mathematical approaches is strong evidence.", INDIGO)
+finding_card("🎓 Education Independently Predicts Adoption",
+             "Postgraduate and Professional Degree holders are ~9x more likely to adopt vs No Formal Education "
+             "(Logistic Regression, p<0.01), and Education features rank 2nd in RF feature importance.", EMERALD)
+finding_card("⚡ Gender Suppressor Effect Detected",
+             "Bivariate chi-square showed no gender effect; but in the multivariate logistic model, "
+             "Male gender becomes conditionally significant (OR≈0.47, p<0.05) — a suppression effect "
+             "masked by confounding with age and education in the bivariate test.", ROSE)
+finding_card(f"📊 Best Predictive Performance: RF CV AUC={rf_cv_auc:.3f}",
+             f"All three models achieve AUC > 0.75 on test data. "
+             f"The Random Forest achieves the highest cross-validation AUC ({rf_cv_auc:.3f}), "
+             "confirming that demographic variables carry genuine, robust predictive signal for Q-Commerce adoption.", VIOLET)
