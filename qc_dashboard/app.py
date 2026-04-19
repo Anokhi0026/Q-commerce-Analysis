@@ -42,6 +42,11 @@ users = get_users()
 non_users_df = load_analysis()
 nu = non_users_df[non_users_df["Adoption_Status"] == 0]
 
+if "Aware_QC" in df.columns:
+    aware = (df["Aware_QC"] == "Yes").sum()
+else:
+    aware = 0
+
 # ── KPI Row ────────────────────────────────────────────────────────────────────
 k1,k2,k3,k4,k5,k6 = st.columns(6)
 kpi(k1, "341",  "Total Respondents", "Vadodara, 2024–25")
