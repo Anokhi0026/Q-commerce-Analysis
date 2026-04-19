@@ -35,8 +35,8 @@ def freq_bar(data, order, title, colors=None):
         hovertemplate="%{x}: %{y} users<extra></extra>"
     ))
     fig.update_layout(**PLOTLY_LAYOUT, height=300,
-                       title=dict(text=title, font=dict(size=13)),
-                       yaxis=dict(gridcolor="#F1F5F9"))
+                       title=dict(text=title, font=dict(size=13)))
+    fig.update_yaxes(gridcolor="#F1F5F9")
     return fig
 
 with tab1:
@@ -96,8 +96,9 @@ with tab3:
             hovertemplate="%{y}: %{x} users<extra></extra>"
         ))
         fig.update_layout(**PLOTLY_LAYOUT, height=300,
-                           xaxis=dict(title="No. of Users",gridcolor="#F1F5F9"),
                            title=dict(text="Products Ordered (Multi-response)",font=dict(size=13)))
+        fig.update_xaxes(dict(title="No. of Users",gridcolor="#F1F5F9"))
+        
         st.plotly_chart(fig, use_container_width=True)
 
 # ── Section 2: Kruskal-Wallis ─────────────────────────────────────────────────
@@ -158,9 +159,9 @@ for col, sc, sl in zip([c1,c2,c3], sat_vars, sat_lbls):
                   annotation_text=f"μ={data.mean():.2f}", annotation_position="top right",
                   annotation_font=dict(size=9))
     fig.update_layout(**PLOTLY_LAYOUT, height=250,
-                       title=dict(text=sl,font=dict(size=12)),
-                       xaxis=dict(tickvals=[1,2,3,4,5],gridcolor="#F1F5F9"),
-                       yaxis=dict(gridcolor="#F1F5F9"))
+                       title=dict(text=sl,font=dict(size=12)))
+    fig.update_xaxes(dict(tickvals=[1,2,3,4,5],gridcolor="#F1F5F9"))
+    fig.update_yaxes(dict(gridcolor="#F1F5F9"))
     col.plotly_chart(fig, use_container_width=True)
 
 # ── Section 3: Spearman Correlation ───────────────────────────────────────────
