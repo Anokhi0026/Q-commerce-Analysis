@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from scipy.stats import chi2_contingency, kruskal, spearmanr
+import os
 
 # ── Colour palette (consistent across all pages) ───────────────────────────────
 INDIGO   = "#4F46E5"
