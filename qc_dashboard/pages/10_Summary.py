@@ -210,15 +210,16 @@ methods = [
 
 c1,c2 = st.columns(2)
 half  = len(methods)//2
-for col_w, subset in [(c1, methods[:half]),(c2, methods[half:])]:
+for col_idx, (col_w, subset) in enumerate([(c1, methods[:half]),(c2, methods[half:])]):
     with col_w:
         for i,(name,desc) in enumerate(subset):
+            num = i + 1 + half * col_idx
             col_w.markdown(f"""
             <div style='display:flex;gap:10px;align-items:flex-start;padding:7px 0;
                         border-bottom:1px solid #F1F5F9;'>
               <div style='min-width:22px;height:22px;border-radius:50%;background:{INDIGO};color:#fff;
                           font-size:.65rem;font-weight:700;display:flex;align-items:center;
-                          justify-content:center;flex-shrink:0;margin-top:1px;'>{i+1+half*(col_w==c2)}</div>
+                          justify-content:center;flex-shrink:0;margin-top:1px;'>{num}</div>
               <div>
                 <div style='font-size:.8rem;font-weight:600;color:#1E1E2E;'>{name}</div>
                 <div style='font-size:.73rem;color:#64748B;'>{desc}</div>

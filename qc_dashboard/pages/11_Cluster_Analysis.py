@@ -69,17 +69,17 @@ cdf, users_full, X, SHORT_13, scaler = prepare_cluster_data()
 section("Step 1 · Optimal K — Elbow Method + Silhouette Score")
 
 @st.cache_data
-def find_optimal_k():
+def find_optimal_k(_X):
     K_RANGE = range(2,9)
     wcss_v, sil_v = [], []
     for k in K_RANGE:
         km = KMeans(n_clusters=k, n_init=50, random_state=42, max_iter=500)
-        labels = km.fit_predict(X)
+        labels = km.fit_predict(_X)
         wcss_v.append(km.inertia_)
-        sil_v.append(silhouette_score(X, labels))
+        sil_v.append(silhouette_score(_X, labels))
     return list(K_RANGE), wcss_v, sil_v
 
-K_RANGE, wcss_v, sil_v = find_optimal_k()
+K_RANGE, wcss_v, sil_v = find_optimal_k(X)
 
 c1,c2 = st.columns(2, gap="large")
 with c1:
@@ -123,18 +123,18 @@ st.markdown(f"""
 section("Step 2 · Final K-Means Model (K=3)")
 
 @st.cache_data
-def run_kmeans():
+def run_kmeans(_X, _scaler, _cdf, _users_full):
     km = KMeans(n_clusters=3, n_init=100, max_iter=1000, random_state=42)
-    labels = km.fit_predict(X)
-    sil    = silhouette_score(X, labels)
-    sil_s  = silhouette_samples(X, labels)
+    labels = km.fit_predict(_X)
+    sil    = silhouette_score(_X, labels)
+    sil_s  = silhouette_samples(_X, labels)
     centroids_std  = km.cluster_centers_
-    centroids_orig = scaler.inverse_transform(centroids_std)
-    cdf2   = cdf.copy(); cdf2["Cluster"] = labels
-    uf2    = users_full.copy(); uf2["Cluster"] = labels
+    centroids_orig = _scaler.inverse_transform(centroids_std)
+    cdf2   = _cdf.copy(); cdf2["Cluster"] = labels
+    uf2    = _users_full.copy(); uf2["Cluster"] = labels
     return labels, sil, sil_s, centroids_orig, cdf2, uf2, km
 
-labels, final_sil, sil_samples, centroids_orig, cdf2, users_c, km_model = run_kmeans()
+labels, final_sil, sil_samples, centroids_orig, cdf2, users_c, km_model = run_kmeans(X, scaler, cdf, users_full)
 sizes = pd.Series(labels).value_counts().sort_index()
 
 c1,c2,c3,c4 = st.columns(4)
@@ -275,17 +275,17 @@ section("Step 6 · Statistical Validation — Kruskal-Wallis H Test",
         "H₀: Median scores are equal across clusters | Significant result confirms clusters are truly different")
 
 @st.cache_data
-def validate_clusters():
+def validate_clusters(_cdf2, _SHORT_13):
     rows = []
-    for var in SHORT_13:
-        groups = [cdf2[cdf2["Cluster"]==c_id][var].dropna().values for c_id in range(3)]
+    for var in _SHORT_13:
+        groups = [_cdf2[_cdf2["Cluster"]==c_id][var].dropna().values for c_id in range(3)]
         if all(len(g)>=3 for g in groups):
             H,p = kruskal(*groups)
             rows.append({"Variable":var,"H":round(H,3),"p-value":round(p,6),
                           "Sig":"✅ Yes" if p<0.05 else "❌ No"})
     return pd.DataFrame(rows)
 
-val_df = validate_clusters()
+val_df = validate_clusters(cdf2, SHORT_13)
 sig_pct = (val_df["Sig"]=="✅ Yes").sum()/len(val_df)*100
 kpi_c1, kpi_c2, kpi_c3 = st.columns(3)
 kpi(kpi_c1,f"{int(sig_pct)}%","Variables Significant","p<0.05 across clusters",EMERALD)

@@ -379,7 +379,7 @@ with c2:
                   for nm,grp in non_users_raw_clean.groupby("Age_Group")
                   if len(grp[selected].dropna())>=3}
         dunn_df = dunn_posthoc(g_dict)
-        st.dataframe(dunn_df.style.applymap(
+        st.dataframe(dunn_df.style.map(
             lambda v: "color:#059669;font-weight:600" if v=="✅" else "",
             subset=["Sig"]), use_container_width=True)
     else:
