@@ -57,44 +57,42 @@ st.markdown("<br>", unsafe_allow_html=True)
 left, right = st.columns([1.2, 1], gap="large")
 
 with left:
-  section("Introduction", "What is Q-Commerce and why does it matter?")
+    section("Introduction", "What is Q-Commerce and why does it matter?")
 
-  cards_html = ""
-  for icon, title, desc in [
-      ("🏪","Dark Stores","Micro-fulfilment centres in urban neighbourhoods"),
-      ("⚡","10–30 Min Delivery","Speed as the core value proposition"),
-      ("🤖","AI-Driven Logistics","Real-time routing & inventory optimisation"),
-      ("📱","App-First","Entirely mobile-driven ordering experience"),
-  ]:
-      cards_html += f"""
-      <div style='flex:1 1 45%;background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
-        <div style='font-size:1.2rem;'>{icon}</div>
-        <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
-        <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
+    cards = ""
+    for icon, title, desc in [
+        ("🏪","Dark Stores","Micro-fulfilment centres in urban neighbourhoods"),
+        ("⚡","10–30 Min Delivery","Speed as the core value proposition"),
+        ("🤖","AI-Driven Logistics","Real-time routing & inventory optimisation"),
+        ("📱","App-First","Entirely mobile-driven ordering experience"),
+    ]:
+        cards += f"""
+        <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
+          <div style='font-size:1.2rem;'>{icon}</div>
+          <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
+          <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
+        </div>
+        """
+
+    
+    st.markdown(f"""
+    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
+      <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
+        <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
+        groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
+        <i>dark stores</i> and AI-driven logistics. Unlike traditional e-commerce, Q-Commerce
+        prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
+      </p>
+
+      <div style='margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
+        {cards}
       </div>
-      """
-
-  html = f"""
-  <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
-
-    <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
-      <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
-      groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
-      <i>dark stores</i> and AI-driven logistics.
-    </p>
-
-    <div style='margin-top:18px;display:flex;flex-wrap:wrap;gap:12px;'>
-      {cards_html}
     </div>
+    """, unsafe_allow_html=True)
 
-  </div>
-  """
-
-  st.markdown(html, unsafe_allow_html=True)
-
-  section("Why We Chose This Topic")
-  st.markdown("""
-    <div style='flex:1 1 45%;background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
+    section("Why We Chose This Topic")
+    st.markdown("""
+    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;'>
     """ + "".join([f"""
     <div style='display:flex;align-items:flex-start;gap:12px;padding:8px 0;
                 border-bottom:1px solid #F1F5F9;'>
