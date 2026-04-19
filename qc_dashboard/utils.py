@@ -65,7 +65,6 @@ def load_raw():
     file_path = os.path.join(BASE_DIR, "data", "me.xlsx")
 
     df = pd.read_excel(file_path)
-    df.columns = df.columns.str.strip().str.replace(" ", "_")
     return df
 
 @st.cache_data
