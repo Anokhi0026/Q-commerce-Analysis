@@ -13,7 +13,7 @@ page_header("Sampling Frame & Sample Size", "Research Design",
 c1, c2, c3, c4 = st.columns(4)
 kpi(c1, "Primary", "Data Type",    "Collected via questionnaire")
 kpi(c2, "18+",     "Target Age",   "Adult Vadodara residents", EMERALD)
-kpi(c3, "1.74M",  "Population",   "2011 Census estimate", AMBER)
+kpi(c3, "1.74Cr",  "Population",   "2011 Census estimate", AMBER)
 kpi(c4, "Multi-Stage","Sampling",  "Zone → Ward → Respondent", VIOLET)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -68,41 +68,33 @@ with right:
         text=samples, textposition="outside",
         hovertemplate="%{x}: n=%{y}<extra></extra>"
     ))
-    fig_bar.update_layout(
-    **PLOTLY_LAYOUT,
-    height=320,
-    title=dict(text="Sample Size by Ward (Total = 308, adjusted to 341)", font=dict(size=13))
-    )
-
-    fig_bar.update_xaxes(title="Selected Ward")
-    fig_bar.update_yaxes(title="Sample Size", range=[0,110])
+    fig_bar.update_layout(**PLOTLY_LAYOUT, height=320,
+        title=dict(text="Sample Size by Ward (Total = 308, adjusted to 341)", font=dict(size=13)),
+        yaxis=dict(title="Sample Size", range=[0,110], gridcolor="#F1F5F9"),
+        xaxis=dict(title="Selected Ward"))
     st.plotly_chart(fig_bar, use_container_width=True)
 
     section("Sample Size Formula — Cochran's Method")
     st.markdown("""
-      <div style='background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:20px;'>
-
-        <div style='font-family:monospace;font-size:1rem;text-align:center;padding:16px;
-                    background:#F8FAFC;border-radius:8px;margin-bottom:14px;'>
-          n = Z²·p·q / e²
-        </div>
-
-        <div style='display:flex;flex-wrap:wrap;gap:10px;'>
-      """ + "".join([f"""
-        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;flex:1 1 45%;min-width:180px;'>
+    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:20px;'>
+      <div style='font-family:monospace;font-size:1rem;text-align:center;padding:16px;
+                  background:#F8FAFC;border-radius:8px;margin-bottom:14px;'>
+        n = Z²·p·q / e²
+      </div>
+      <div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;'>
+    """ + "".join([f"""
+        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
           <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>{sym}</div>
           <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>{desc}</div>
-        </div>
-      """ for sym, desc in [
-          ("Z = 1.96","95% confidence level"),
-          ("p = 0.5","Maximum variance assumption"),
-          ("q = 1 - p = 0.5","Proportion not in group"),
-          ("e = 0.05","5% margin of error"),
-      ]]) + """
-        </div>
-
+        </div>"""
+        for sym, desc in [
+            ("Z = 1.96","95% confidence level"),
+            ("p = 0.5","Maximum variance assumption"),
+            ("q = 1 - p = 0.5","Proportion not in group"),
+            ("e = 0.05","5% margin of error"),
+        ]]) + """
       </div>
-      """, unsafe_allow_html=True)
+    </div>""", unsafe_allow_html=True)
 
     section("Pilot Survey")
     st.markdown("""

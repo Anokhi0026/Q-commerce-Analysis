@@ -45,11 +45,11 @@ with left:
                     padding:14px 18px;margin-bottom:8px;'>
           <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;'>
             <div style='font-weight:700;font-size:.9rem;color:#1E1E2E;'>{sig_icon} {var}</div>
-            <div style='font-size:.75rem;color:#64748B;'>χ² = {chi2:.3f} | p {sig_text.split(' ',1)[1] if ' ' in sig_text else sig_text}</div>
+            <div style='font-size:.75rem;color:#64748B;'>χ² = {chi2:.3f} | p {sig_text.split(' ',1)[1]}</div>
           </div>
           <div style='display:flex;align-items:center;gap:8px;'>
             <div style='flex:1;background:#F1F5F9;border-radius:20px;height:8px;'>
-              <div style='width:{min(max(bar_w, 0), 100)}%;background:{v_color};border-radius:20px;height:8px;'></div>
+              <div style='width:{bar_w}%;background:{v_color};border-radius:20px;height:8px;'></div>
             </div>
             <div style='min-width:80px;text-align:right;'>
               <span style='font-weight:700;color:{v_color};font-size:.9rem;'>V = {v:.3f}</span>
@@ -80,8 +80,8 @@ with right:
                       annotation_text=label, annotation_position="top right",
                       annotation_font=dict(size=9,color=color))
     fig.update_layout(**PLOTLY_LAYOUT, height=300,
+                       xaxis=dict(title="Cramér's V (Effect Size)", range=[0,0.7], gridcolor="#F1F5F9"),
                        title=dict(text="Effect Size: Blue = Significant | Gray = Not Significant", font=dict(size=11)))
-    fig.update_xaxes(title="Cramér's V (Effect Size)", range=[0,0.7])
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("""
@@ -127,12 +127,10 @@ for tab, (col, order) in zip(tab_vars, demo_configs):
                                font=dict(size=9, color="#64748B"))
 
         fig.update_layout(**PLOTLY_LAYOUT, barmode="stack", height=360,
-                           title=dict(text=f"Adoption Rate by {col} (%)", font=dict(size=13))
-                           )
-        
-        fig.update_yaxes(title="% of group", range=[0,110])
-        fig.update_xaxes(tickangle=-20)
-        st.plotly_chart(fig, width="stretch")
+                           title=dict(text=f"Adoption Rate by {col} (%)", font=dict(size=13)),
+                           yaxis=dict(title="% of group", range=[0,110],gridcolor="#F1F5F9"),
+                           xaxis=dict(tickangle=-20))
+        st.plotly_chart(fig, use_container_width=True)
 
 section("Normality Check — Shapiro-Wilk on Age")
 stat, p_sw = shapiro(df["Age"].dropna())

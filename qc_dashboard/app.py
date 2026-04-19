@@ -53,50 +53,35 @@ kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── What is Q-Commerce ─────────────────────────────────────────
+# ── What is Q-Commerce ─────────────────────────────────────────────────────────
 left, right = st.columns([1.2, 1], gap="large")
 
 with left:
     section("Introduction", "What is Q-Commerce and why does it matter?")
-
-    cards = ""
-    for icon, title, desc in [
-        ("🏪","Dark Stores","Micro-fulfilment centres in urban neighbourhoods"),
-        ("⚡","10–30 Min Delivery","Speed as the core value proposition"),
-        ("🤖","AI-Driven Logistics","Real-time routing & inventory optimisation"),
-        ("📱","App-First","Entirely mobile-driven ordering experience"),
-    ]:
-        cards += f"""
+    st.markdown("""
+    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
+      <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
+        <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
+        groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
+        <i>dark stores</i> and AI-driven logistics. Unlike traditional e-commerce, Q-Commerce
+        prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
+      </p>
+      <div style='margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
+    """ + "".join([f"""
         <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
           <div style='font-size:1.2rem;'>{icon}</div>
           <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
           <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
-        </div>
-        """
-
-    
-    st.markdown(f"""
-      <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
-
-        <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
-          <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
-          groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
-          <i>dark stores</i> and AI-driven logistics. Unlike traditional e-commerce, Q-Commerce
-          prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
-        </p>
-
-        <div style='margin-top:18px;display:flex;flex-wrap:wrap;gap:12px;'>
-
-          {cards.replace(
-              "<div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>",
-              "<div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;flex:1 1 45%;min-width:180px;'>"
-          )}
-
-        </div>
-
+        </div>"""
+        for icon,title,desc in [
+            ("🏪","Dark Stores","Micro-fulfilment centres in urban neighbourhoods"),
+            ("⚡","10–30 Min Delivery","Speed as the core value proposition"),
+            ("🤖","AI-Driven Logistics","Real-time routing & inventory optimisation"),
+            ("📱","App-First","Entirely mobile-driven ordering experience"),
+        ]]) + """
       </div>
-      """, unsafe_allow_html=True)
-    
+    </div>
+    """, unsafe_allow_html=True)
 
     section("Why We Chose This Topic")
     st.markdown("""
@@ -140,9 +125,9 @@ with right:
     section("Apps Awareness vs Usage")
     apps    = ["Blinkit", "Zepto", "Swiggy Instamart"]
     aware   = [
-        (df["App_usex1"].str.strip() == "Blinkit").sum() + (df["App_usex2"].str.strip() == " Blinkit").sum(),
-        (df["App_usex2"].str.strip() == " Zepto").sum() + (df["App_usex1"].str.strip() == "Zepto").sum(),
-        (df["App_usex3"].str.strip() == " Swiggy Instamart").sum(),
+        (df["App_usex1"] == "Blinkit").sum() + (df["App_usex2"] == " Blinkit").sum(),
+        (df["App_usex2"] == " Zepto").sum() + (df["App_usex1"] == "Zepto").sum(),
+        (df["App_usex3"] == " Swiggy Instamart").sum(),
     ]
     usage   = [
         (users["App_Used"] == "Blinkit").sum(),
@@ -151,7 +136,7 @@ with right:
     ]
     fig_app = go.Figure()
     fig_app.add_trace(go.Bar(name="Aware", x=apps, y=aware,
-                              marker_color=AMBER, text=aware, textposition="outside"))
+                              marker_color=INDIGO+"99", text=aware, textposition="outside"))
     fig_app.add_trace(go.Bar(name="Primary Users", x=apps, y=usage,
                               marker_color=INDIGO, text=usage, textposition="outside"))
     fig_app.update_layout(**PLOTLY_LAYOUT, height=240, barmode="group",
