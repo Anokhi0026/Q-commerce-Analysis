@@ -67,16 +67,16 @@ with left:
         ("📱","App-First","Entirely mobile-driven ordering experience"),
     ]:
         cards += f"""
-        <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
+        <div style='flex: 1 1 45%; background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
           <div style='font-size:1.2rem;'>{icon}</div>
           <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
           <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
         </div>
         """
 
-    
     st.markdown(f"""
     <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
+
       <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
         <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
         groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
@@ -84,9 +84,10 @@ with left:
         prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
       </p>
 
-      <div style='margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
+      <div style='margin-top:18px; display:flex; flex-wrap:wrap; gap:12px;'>
         {cards}
       </div>
+
     </div>
     """, unsafe_allow_html=True)
 
