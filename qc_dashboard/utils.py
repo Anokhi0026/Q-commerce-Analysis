@@ -67,7 +67,7 @@ def load_raw():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(BASE_DIR, "data", "me.xlsx")
 
-    df = pd.read_excel(file_path)
+    df = pd.read_excel(file_path,skiprows=1,sheet_name="raw")
 
     df.columns = (
         df.columns
