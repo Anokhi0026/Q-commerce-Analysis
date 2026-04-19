@@ -117,11 +117,11 @@ with c2:
         **PLOTLY_LAYOUT,
         barmode="group",
         height=380,
-        title=dict(text="Awareness vs. Active Usage by App", font=dict(size=13)),
-        legend=dict(x=0.6, y=0.95)
+        title=dict(text="Awareness vs. Active Usage by App", font=dict(size=13))
     )
 
     fig.update_yaxes(title="Count")
+    fig.update_layout(legend=dict(x=0.6, y=0.95))
 
     st.plotly_chart(fig, width="stretch")
 
