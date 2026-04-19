@@ -48,6 +48,8 @@ with tab1:
         fig = go.Figure(go.Bar(x=age_cnt.index, y=age_cnt.values,
                                 marker_color=PALETTE[:5], text=age_cnt.values, textposition="outside"))
         fig.update_layout(**PLOTLY_LAYOUT, height=320, title=dict(text="Age Group Distribution (n=341)", font=dict(size=13)))
+        fig.update_yaxes(title="% of group", range=[0,105])
+        fig.update_xaxes(tickangle=-20)
         st.plotly_chart(fig, use_container_width=True)
     with c2:
         st.plotly_chart(adoption_bar(df,"Age_Group",AGE_ORDER,"Adoption Rate by Age Group (%)"), use_container_width=True)
