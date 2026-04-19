@@ -74,7 +74,7 @@ with tab1:
         ), use_container_width=True)
     with c2:
         st.plotly_chart(freq_bar(
-            df["How long have you been using Q-Commerce apps?"],
+            users["How long have you been using Q-Commerce apps?"],
             ["Less than 3 months", "3-6 months", "6-12 months", "More than a year"],
             "Usage Tenure",
             [SKY, VIOLET, AMBER, EMERALD]
