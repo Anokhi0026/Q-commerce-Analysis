@@ -15,7 +15,7 @@ page_header("Sampling Frame & Sample Size", "Research Design",
 c1, c2, c3, c4 = st.columns(4)
 kpi(c1, "Primary", "Data Type",    "Collected via questionnaire")
 kpi(c2, "18+",     "Target Age",   "Adult Vadodara residents", EMERALD)
-kpi(c3, "1.74Cr",  "Population",   "2011 Census estimate", AMBER)
+kpi(c3, "1.74M",  "Population",   "2011 Census estimate", AMBER)
 kpi(c4, "Multi-Stage","Sampling",  "Zone → Ward → Respondent", VIOLET)
 
 st.markdown("<br>", unsafe_allow_html=True)
