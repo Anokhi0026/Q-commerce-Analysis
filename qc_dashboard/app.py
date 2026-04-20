@@ -33,7 +33,7 @@ st.markdown(f"""
   </p>
   <div style='display:flex;gap:12px;flex-wrap:wrap;'>
     {''.join(f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;">{t}</span>'
-    for t in ['n = 341 respondents','Vadodara, Gujarat','MSc Statistics 2024–25','Prof. Vipul Kalamkar'])}
+    for t in ['n = 341 respondents','Vadodara, Gujarat','MSc Statistics 2024–26'])}
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -51,7 +51,7 @@ kpi(k2, "228",  "Q-Commerce Users",  "66.9% adoption rate", EMERALD)
 kpi(k3, "113",  "Non-Users",         "33.1% non-adoption",  ROSE)
 kpi(k4, f"{(df['Aware_QC']=='Yes').sum()}", "QC Aware", "Heard of Q-Commerce", SKY)
 kpi(k5, "5",    "Objectives",        "Primary + Secondary", VIOLET)
-kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
+#kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
  
 st.markdown("<br>", unsafe_allow_html=True)
  
