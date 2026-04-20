@@ -157,55 +157,6 @@ finding_card("🔴 Older Age Groups Dominate Non-Adoption",
 section("2 · Stated Reasons for Non-Adoption",
         "Multi-select question: respondents could select all reasons that apply (n=113)")
 
-non_u_anal2 = df_anal[df_anal["Adoption_Status"] == 0].copy()
-reason_counts = non_u_anal2[REASONS].sum()
-reason_pct    = (reason_counts / len(non_u) * 100).round(2)
-reason_df     = pd.DataFrame({"Label": REASON_LABELS,
-                               "Count": reason_counts.values,
-                               "Pct":   reason_pct.values}
-                             ).sort_values("Count", ascending=True)
-
-c1, c2 = st.columns([1.4, 1], gap="large")
-with c1:
-    fig_r = go.Figure(go.Bar(
-        y=reason_df["Label"], x=reason_df["Count"],
-        orientation="h",
-        marker_color=[ROSE if p > 20 else AMBER if p > 10 else "#CBD5E1"
-                      for p in reason_df["Pct"]],
-        text=[f"n={int(c)}  ({p:.1f}%)" for c, p in
-              zip(reason_df["Count"], reason_df["Pct"])],
-        textposition="outside",
-        hovertemplate="%{y}: %{x} non-users<extra></extra>"
-    ))
-    fig_r.update_layout(**PLOTLY_LAYOUT, height=380,
-                        title=dict(text="Non-Adoption Reasons (Multi-select, n=113)", font=dict(size=13)))
-    fig_r.update_xaxes(title="Number of Non-Users", gridcolor="#F1F5F9", range=[0, reason_df["Count"].max()+8])
-    st.plotly_chart(fig_r, use_container_width=True, key="fig_reasons")
-
-with c2:
-    fig_pie = go.Figure(go.Pie(
-        labels=reason_df["Label"], values=reason_df["Count"],
-        hole=0.45,
-        marker_colors=[ROSE, AMBER, EMERALD, INDIGO, VIOLET, SKY, "#DB2777", "#CBD5E1"],
-        textinfo="percent", textfont=dict(size=11),
-        hovertemplate="%{label}: %{value} (%{percent})<extra></extra>"
-    ))
-    fig_pie.update_layout(**{k:v for k,v in PLOTLY_LAYOUT.items() if k not in ["xaxis","yaxis"]},
-                          height=380,
-                          title=dict(text="Share of Stated Barriers", font=dict(size=13)))
-    st.plotly_chart(fig_pie, use_container_width=True, key="fig_reasons_pie")
-
-finding_card("👁️ Lack of Awareness is the #1 Barrier (29.2%)",
-             "The largest segment of non-adopters simply hasn't been reached — not rejected Q-commerce. "
-             "Preference for local stores (24.8%) reflects habitual purchasing. Together >50% of reasons "
-             "are non-economic, suggesting awareness campaigns over price cuts.", ROSE)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 3 — OPEN-ENDED REASONS
-# ══════════════════════════════════════════════════════════════════════════════
-section("3 · Open-Ended Barriers (Qualitative)",
-        "Free-text responses mapped to categories")
-
 reason_map = {
     "Delivery charges are high": "High Delivery Charges",
     " Product quality concerns": "Product Quality Concerns",
@@ -252,11 +203,16 @@ fig_open.update_layout(**PLOTLY_LAYOUT, height=380,
 fig_open.update_xaxes(title="Frequency", gridcolor="#F1F5F9",
                       range=[0, open_sorted.max() + 8])
 st.plotly_chart(fig_open, use_container_width=True, key="fig_open_barriers")
+finding_card("👁️ Lack of Awareness is the #1 Barrier (29.2%)",
+             "The largest segment of non-adopters simply hasn't been reached — not rejected Q-commerce. "
+             "Preference for local stores (24.8%) reflects habitual purchasing. Together >50% of reasons "
+             "are non-economic, suggesting awareness campaigns over price cuts.", ROSE)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 4 — CHI-SQUARE: BARRIERS vs ADOPTION
 # ══════════════════════════════════════════════════════════════════════════════
-section("4 · Chi-Square Tests — Barriers vs Adoption Status",
+section("3 · Chi-Square Tests — Barriers vs Adoption Status",
         "H₀: The barrier is independent of Q-Commerce adoption | α = 0.05")
 
 barrier_vars   = ["R_Lack_Awareness","R_Prefer_Local","R_Trust_Issue","R_App_Discomfort"]
@@ -321,7 +277,7 @@ finding_card("✅ All 4 Barriers Significantly Associated with Non-Adoption",
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 5 — WILLINGNESS TO TRY
 # ══════════════════════════════════════════════════════════════════════════════
-section("5 · Willingness to Try Q-Commerce (Non-Users)",
+section("4 · Willingness to Try Q-Commerce (Non-Users)",
         "Would non-users be willing to try Q-Commerce in the future?")
 
 will_col = "NonUser_Willing_Try"
@@ -383,7 +339,7 @@ if will_col in non_u.columns:
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 6 — BARRIER LIKERT ANALYSIS
 # ══════════════════════════════════════════════════════════════════════════════
-section("6 · Conditional Adoption Barrier Items — Likert Analysis",
+section("5 · Conditional Adoption Barrier Items — Likert Analysis",
         "7 statements: 'I would consider using Q-Commerce if…' | Scale: 1=Strongly Disagree → 5=Strongly Agree")
 
 barrier_data = non_u_r[BARRIER_COLS].copy()
@@ -464,7 +420,7 @@ finding_card("🏆 Lower Delivery Charges & Trust are Top Conditional Drivers",
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 7 — MANN-WHITNEY U: GENDER DIFFERENCES
 # ══════════════════════════════════════════════════════════════════════════════
-section("7 · Mann-Whitney U Test — Gender Differences in Barriers",
+section("6 · Mann-Whitney U Test — Gender Differences in Barriers",
         "H₀: No difference in barrier intensity between Male and Female non-users | α = 0.05")
 
 non_u_full = non_u_r.copy()
