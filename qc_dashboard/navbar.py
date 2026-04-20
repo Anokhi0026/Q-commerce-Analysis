@@ -14,7 +14,7 @@ PAGES = {
     "Drivers":            ("search",    "pages/8_Obj4_Drivers.py"),
     "Cluster Analysis":   ("puzzle",    "pages/11_Cluster_Analysis.py"),
     "Predictive":         ("robot",     "pages/9_Obj5_Predictive.py"),
-    "Non-User Analysis": ("exclamation-circle", "pages/13_Non_User_Analysis.py"),
+    "Non-User Analysis":  ("exclamation-circle", "pages/13_Non_User_Analysis.py"),
     "Summary":            ("stars",     "pages/10_Summary.py"),
 }
 
