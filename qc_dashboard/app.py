@@ -1,7 +1,8 @@
 import streamlit as st
 import plotly.graph_objects as go
 from utils import *
- 
+
+st.session_state["current_page"] = "app.py"
 st.set_page_config("Q-Commerce Vadodara", "⚡", layout="wide", initial_sidebar_state="expanded")
  
 st.markdown("""
