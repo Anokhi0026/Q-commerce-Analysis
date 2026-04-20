@@ -4,18 +4,16 @@ import pandas as pd
 from utils import *
 
 st.set_page_config("Sampling & Design", "📐", layout="wide")
-st.session_state["current_page"] = "pages/2_Sampling.py"
 st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>", unsafe_allow_html=True)
-from navbar import navbar
-navbar()
-page_header("Sampling Frame & Sample Size", "Sampling Design",
+sidebar()
+page_header("Sampling Frame & Sample Size", "Research Design",
             "Multi-stage stratified sampling across four zones of Vadodara with Cochran's formula for sample size determination.")
 
 # ── Sampling Info ──────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 kpi(c1, "Primary", "Data Type",    "Collected via questionnaire")
 kpi(c2, "18+",     "Target Age",   "Adult Vadodara residents", EMERALD)
-kpi(c3, "1.74M",  "Population",   "2011 Census estimate", AMBER)
+kpi(c3, "1.74Cr",  "Population",   "2011 Census estimate", AMBER)
 kpi(c4, "Multi-Stage","Sampling",  "Zone → Ward → Respondent", VIOLET)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -77,24 +75,70 @@ with right:
     st.plotly_chart(fig_bar, use_container_width=True)
 
     section("Sample Size Formula — Cochran's Method")
-    st.markdown("""
+    st.markdown(f"""
     <div style='background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:20px;'>
-      <div style='font-family:monospace;font-size:1rem;text-align:center;padding:16px;
-                  background:#F8FAFC;border-radius:8px;margin-bottom:14px;'>
-        n = Z²·p·q / e²
+
+      <!-- Step 1: Cochran Formula -->
+      <div style='font-size:.72rem;font-weight:600;color:{INDIGO};text-transform:uppercase;
+                  letter-spacing:.08em;margin-bottom:8px;'>Step 1 — Cochran Formula (Infinite Population)</div>
+      <div style='font-family:monospace;font-size:1.1rem;text-align:center;padding:16px;
+                  background:#F8FAFC;border-radius:8px;margin-bottom:14px;border:1px solid #E2E8F0;'>
+        n₀ = Z²·p·q / e²
       </div>
-      <div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;'>
-    """ + "".join([f"""        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
-          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>{sym}</div>
-          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>{desc}</div>
-        </div>"""
-        for sym, desc in [
-            ("Z = 1.96","95% confidence level"),
-            ("p = 0.5","Maximum variance assumption"),
-            ("q = 1 - p = 0.5","Proportion not in group"),
-            ("e = 0.05","5% margin of error"),
-        ]]) + """
+      <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;'>
+        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
+          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>Z = 1.96</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>95% confidence level</div>
+        </div>
+        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
+          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>p = 0.5</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Maximum variance assumption</div>
+        </div>
+        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
+          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>q = 1 − p = 0.5</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Proportion not in group</div>
+        </div>
+        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
+          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>e = 0.05</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>5% margin of error</div>
+        </div>
       </div>
+
+      <!-- Computed n0 -->
+      <div style='text-align:center;background:{INDIGO}10;border:1px solid {INDIGO}30;
+                  border-radius:8px;padding:10px;margin-bottom:18px;font-size:.85rem;color:#1E1E2E;'>
+        n₀ = (1.96)² × 0.5 × 0.5 / (0.05)² = <b style='color:{INDIGO};font-size:1rem;'>384</b>
+      </div>
+
+      <!-- Divider -->
+      <div style='border-top:1px solid #E2E8F0;margin-bottom:16px;'></div>
+
+      <!-- Step 2: FPC Formula -->
+      <div style='font-size:.72rem;font-weight:600;color:{EMERALD};text-transform:uppercase;
+                  letter-spacing:.08em;margin-bottom:8px;'>Step 2 — Finite Population Correction (FPC)</div>
+      <div style='font-family:monospace;font-size:1.05rem;text-align:center;padding:16px;
+                  background:#F0FDF4;border-radius:8px;margin-bottom:14px;border:1px solid #BBF7D0;'>
+        n = n₀ / (1 + (n₀ − 1) / N)
+      </div>
+      <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;'>
+        <div style='background:#F0FDF4;border-radius:8px;padding:10px 12px;'>
+          <div style='font-family:monospace;font-weight:700;color:{EMERALD};font-size:.95rem;'>n₀ = 384</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Initial Cochran sample size</div>
+        </div>
+        <div style='background:#F0FDF4;border-radius:8px;padding:10px 12px;'>
+          <div style='font-family:monospace;font-weight:700;color:{EMERALD};font-size:.95rem;'>N = 1,74,00,000</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Vadodara population (2011 Census)</div>
+        </div>
+      </div>
+
+      <!-- Computed n -->
+      <div style='text-align:center;background:{EMERALD}10;border:1px solid {EMERALD}30;
+                  border-radius:8px;padding:10px;font-size:.85rem;color:#1E1E2E;'>
+        n = 384 / (1 + (384 − 1) / 1,74,00,000) ≈ <b style='color:{EMERALD};font-size:1rem;'>384</b>
+        &nbsp;→ adjusted to <b style='color:{EMERALD};font-size:1rem;'>308</b> per zone,
+        then <b style='color:{EMERALD};font-size:1rem;'>341</b> after pilot adjustment
+      </div>
+
     </div>""", unsafe_allow_html=True)
 
     section("Pilot Survey")
