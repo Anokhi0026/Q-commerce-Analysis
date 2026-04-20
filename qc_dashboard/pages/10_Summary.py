@@ -13,7 +13,8 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Research Summary", "Complete Findings & Conclusions",
             "A consolidated view of all analytical results — 5 objectives, cluster analysis, "
             "correspondence analysis — with consumer insights and study limitations.")
