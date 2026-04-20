@@ -1,10 +1,14 @@
 """
 utils.py — shared data loading, constants, and style helpers
 """
+import os as _os
 import pandas as pd
 import numpy as np
 import streamlit as st
 from scipy.stats import chi2_contingency, kruskal, spearmanr
+
+# ── Absolute path to data directory (works regardless of where streamlit is run from)
+_DATA_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "data")
 
 # ── Colour palette (consistent across all pages) ───────────────────────────────
 INDIGO   = "#4F46E5"
@@ -19,15 +23,18 @@ LIGHT    = "#F1F5F9"
 PALETTE  = [INDIGO, ROSE, EMERALD, AMBER, SKY, VIOLET, "#DB2777", "#EA580C"]
 C_SCALE  = [[0, "#EEF2FF"], [0.5, "#818CF8"], [1, "#3730A3"]]   # indigo gradient
 
+# xaxis/yaxis are NOT in PLOTLY_LAYOUT — define them explicitly per chart
+# to avoid "got multiple values for keyword argument" TypeError
 PLOTLY_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Inter, sans-serif", color="#374151", size=12),
     margin=dict(t=50, b=30, l=20, r=20),
-    xaxis=dict(showgrid=True, gridcolor="#F1F5F9", zeroline=False),
-    yaxis=dict(showgrid=True, gridcolor="#F1F5F9", zeroline=False),
     legend=dict(bgcolor="rgba(0,0,0,0)", borderwidth=0),
 )
+
+# Standard axis defaults — use with fig.update_xaxes / fig.update_yaxes
+AXIS_STYLE = dict(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
 
 # ── Likert / variable constants ────────────────────────────────────────────────
 LIKERT_MAP = {"Strongly Disagree":1,"Disagree":2,"Neutral":3,"Agree":4,"Strongly Agree":5}
@@ -60,12 +67,12 @@ OCC_ORDER    = ["Student","Working professional","Self-employed","Homemaker","Re
 # ── Data loaders ───────────────────────────────────────────────────────────────
 @st.cache_data
 def load_raw():
-    df = pd.read_excel("data/me.xlsx", sheet_name="raw", header=1)
+    df = pd.read_excel(_os.path.join(_DATA_DIR, "me.xlsx"), sheet_name="raw", header=1)
     return df
 
 @st.cache_data
 def load_analysis():
-    df = pd.read_excel("data/analysis_ready.xlsx")
+    df = pd.read_excel(_os.path.join(_DATA_DIR, "analysis_ready.xlsx"))
     return df
 
 @st.cache_data
@@ -124,19 +131,19 @@ def sidebar():
         """, unsafe_allow_html=True)
         st.markdown("---")
         st.markdown("<div style='font-size:0.7rem;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;'>Pages</div>", unsafe_allow_html=True)
-        st.page_link("app.py",                        label="🏠  Overview")
-        st.page_link("pages/1_Objectives.py",          label="🎯  Objectives")
-        st.page_link("pages/2_Sampling.py",            label="📐  Sampling & Design")
-        st.page_link("pages/3_Questionnaire.py",       label="📋  Questionnaire")
-        st.page_link("pages/4_Demographics.py",        label="👥  Demographics")
-        st.page_link("pages/5_Obj1_Apps.py",           label="📱  Obj 1 — App Usage")
-        st.page_link("pages/6_Obj2_Adoption.py",       label="🔗  Obj 2 — Adoption")
-        st.page_link("pages/7_Obj3_Behavior.py",       label="📊  Obj 3 — Behavior")
-        st.page_link("pages/8_Obj4_Drivers.py",        label="🔍  Obj 4 — Drivers")
-        st.page_link("pages/9_Obj5_Predictive.py",        label="🤖  Obj 5 — Predictive")
-        st.page_link("pages/11_Cluster_Analysis.py",    label="🧩  Cluster Analysis")
+        st.page_link("app.py",                              label="🏠  Overview")
+        st.page_link("pages/1_Objectives.py",               label="🎯  Objectives")
+        st.page_link("pages/2_Sampling.py",                 label="📐  Sampling & Design")
+        st.page_link("pages/3_Questionnaire.py",            label="📋  Questionnaire")
+        st.page_link("pages/4_Demographics.py",             label="👥  Demographics")
+        st.page_link("pages/5_Obj1_Apps.py",                label="📱  Obj 1 — App Usage")
+        st.page_link("pages/6_Obj2_Adoption.py",            label="🔗  Obj 2 — Adoption")
+        st.page_link("pages/7_Obj3_Behavior.py",            label="📊  Obj 3 — Behavior")
+        st.page_link("pages/8_Obj4_Drivers.py",             label="🔍  Obj 4 — Drivers")
+        st.page_link("pages/9_Obj5_Predictive.py",          label="🤖  Obj 5 — Predictive")
+        st.page_link("pages/11_Cluster_Analysis.py",        label="🧩  Cluster Analysis")
         st.page_link("pages/12_Correspondence_Analysis.py", label="📍  Correspondence Analysis")
-        st.page_link("pages/10_Summary.py",             label="✨  Summary")
+        st.page_link("pages/10_Summary.py",                 label="✨  Summary")
         st.markdown("---")
         st.markdown("""<div style='font-size:0.7rem;color:#94A3B8;line-height:1.7;'>
         🎓 MSc Statistics<br>MS University of Baroda<br>📍 Vadodara, Gujarat<br>n = 341

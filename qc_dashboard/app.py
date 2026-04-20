@@ -67,8 +67,7 @@ with left:
         prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
       </p>
       <div style='margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
-    """ + "".join([f"""
-        <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
+    """ + "".join([f"""        <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
           <div style='font-size:1.2rem;'>{icon}</div>
           <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
           <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
@@ -86,8 +85,7 @@ with left:
     section("Why We Chose This Topic")
     st.markdown("""
     <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;'>
-    """ + "".join([f"""
-    <div style='display:flex;align-items:flex-start;gap:12px;padding:8px 0;
+    """ + "".join([f"""    <div style='display:flex;align-items:flex-start;gap:12px;padding:8px 0;
                 border-bottom:1px solid #F1F5F9;'>
       <span style='font-size:1.1rem;'>{icon}</span>
       <div>
@@ -141,6 +139,8 @@ with right:
                               marker_color=INDIGO, text=usage, textposition="outside"))
     fig_app.update_layout(**PLOTLY_LAYOUT, height=240, barmode="group",
                            title=dict(text="Awareness vs. Active Usage", font=dict(size=13)))
+    fig_app.update_xaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
+    fig_app.update_yaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
     st.plotly_chart(fig_app, use_container_width=True)
 
     section("Team")
