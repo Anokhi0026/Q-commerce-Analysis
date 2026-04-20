@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from utils import *
 
+st.session_state["current_page"] = "pages/10_Summary.py"
 st.set_page_config("Summary", "✨", layout="wide")
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
