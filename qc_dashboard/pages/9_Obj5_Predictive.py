@@ -118,7 +118,7 @@ with c1:
     fig_f.update_layout(**PLOTLY_LAYOUT, height=500, showlegend=False, title=dict(text="Forest Plot — Blue=Significant | Gray=Not Significant",font=dict(size=11)))
     fig_f.update_xaxes(title="Odds Ratio (OR) with 95% Wald CI",gridcolor="#F1F5F9")
     fig_f.update_yaxes(tickvals=ypos,ticktext=plot_or.index.tolist(),gridcolor="#F1F5F9")
-    st.plotly_chart(fig_f, use_container_width=True)
+    st.plotly_chart(fig_f, use_container_width=True, key="fig_f")
 
 with c2:
     fig_roc = go.Figure()
@@ -131,7 +131,7 @@ with c2:
     fig_roc.update_layout(**PLOTLY_LAYOUT, height=280, title=dict(text=f"ROC Curve — AUC={auc_lr:.4f}",font=dict(size=12)))
     fig_roc.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
     fig_roc.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc, use_container_width=True)
+    st.plotly_chart(fig_roc, use_container_width=True, key="fig_roc")
 
     # Model summary stats
     nag  = (1-np.exp(-2*(lr_model.llf-lr_model.llnull)/len(df_m))) / (1-np.exp(2*lr_model.llnull/len(df_m)))
@@ -327,7 +327,7 @@ def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]
     return fig
 
 st.plotly_chart(build_plotly_tree(best_dt, dt_feature_names),
-                use_container_width=True, config={"scrollZoom": True})
+                use_container_width=True, config={"scrollZoom": True}, key="fig_dt_tree")
 
 
 c1,c2 = st.columns(2, gap="large")
@@ -340,7 +340,7 @@ with c1:
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
     fig_imp.update_layout(**PLOTLY_LAYOUT, height=330, title=dict(text="Decision Tree Feature Importance (Tuned Model)",font=dict(size=12)))
     fig_imp.update_xaxes(title="Feature Importance (Gini)",gridcolor="#F1F5F9")
-    st.plotly_chart(fig_imp, use_container_width=True)
+    st.plotly_chart(fig_imp, use_container_width=True, key="fig_imp_dt")
 with c2:
     fig_roc2 = go.Figure()
     fig_roc2.add_trace(go.Scatter(x=fpr_dt,y=tpr_dt,mode="lines",
@@ -352,7 +352,7 @@ with c2:
     fig_roc2.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
     fig_roc2.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
     fig_roc2.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc2, use_container_width=True)
+    st.plotly_chart(fig_roc2, use_container_width=True, key="fig_roc2")
     st.markdown(f"**Best params:** {dt_params}")
     st.markdown(f"**Sensitivity:** {sens_dt*100:.1f}% | **Specificity:** {spec_dt*100:.1f}%")
 
@@ -534,9 +534,6 @@ def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]
     )
     return fig
 
-st.plotly_chart(build_plotly_tree(best_dt, dt_feature_names),
-                use_container_width=True, config={"scrollZoom": True})
-
 
 c1,c2 = st.columns(2, gap="large")
 with c1:
@@ -548,7 +545,7 @@ with c1:
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
     fig_imp2.update_layout(**PLOTLY_LAYOUT, height=330, title=dict(text="Random Forest Feature Importance (Top 10)",font=dict(size=12)))
     fig_imp2.update_xaxes(title="Feature Importance (Mean Gini Decrease)",gridcolor="#F1F5F9")
-    st.plotly_chart(fig_imp2, use_container_width=True)
+    st.plotly_chart(fig_imp2, use_container_width=True, key="fig_imp_rf")
 with c2:
     fig_roc3 = go.Figure()
     fig_roc3.add_trace(go.Scatter(x=fpr_rf,y=tpr_rf,mode="lines",
@@ -560,7 +557,7 @@ with c2:
     fig_roc3.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Random Forest | AUC={auc_rf:.4f}",font=dict(size=12)))
     fig_roc3.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
     fig_roc3.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc3, use_container_width=True)
+    st.plotly_chart(fig_roc3, use_container_width=True, key="fig_roc3")
     st.markdown(f"**Best params:** {rf_params}")
     st.markdown(f"**Sensitivity:** {sens_rf*100:.1f}% | **Specificity:** {spec_rf*100:.1f}%")
 
@@ -581,7 +578,7 @@ for metric, vals, color in [("Accuracy",accs,INDIGO),("AUC",aucs,EMERALD),("Sens
 fig_cmp.update_layout(**PLOTLY_LAYOUT, barmode="group", height=340, title=dict(text="Model Performance Comparison",font=dict(size=12)))
 fig_cmp.update_xaxes(tickangle=-10)
 fig_cmp.update_yaxes(title="Score",range=[0.5,1.05],gridcolor="#F1F5F9")
-st.plotly_chart(fig_cmp, use_container_width=True)
+st.plotly_chart(fig_cmp, use_container_width=True, key="fig_cmp")
 
 # ROC comparison overlay
 fig_roc_all = go.Figure()
@@ -598,7 +595,7 @@ fig_roc_all.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
 fig_roc_all.update_layout(**PLOTLY_LAYOUT, height=320, title=dict(text="ROC Curve Comparison — All Three Models",font=dict(size=12)))
 fig_roc_all.update_xaxes(title="False Positive Rate",range=[0,1],gridcolor="#F1F5F9")
 fig_roc_all.update_yaxes(title="True Positive Rate",range=[0,1],gridcolor="#F1F5F9")
-st.plotly_chart(fig_roc_all, use_container_width=True)
+st.plotly_chart(fig_roc_all, use_container_width=True, key="fig_roc_all")
 
 # Summary table
 cmp_df = pd.DataFrame({
