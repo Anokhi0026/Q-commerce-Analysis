@@ -116,7 +116,7 @@ with c1:
         text=[f"V={v:.3f}" for v in vs_[::-1]], textposition="outside"))
     for t,c in [(0.1,SLATE),(0.3,AMBER),(0.5,ROSE)]:
         fig.add_vline(x=t, line_dash="dot", line_color=c, opacity=0.5)
-    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
     fig.update_xaxes(title="Cramér's V",range=[0,0.7],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
@@ -131,7 +131,7 @@ with c2:
         text=[f"{m:.2f}/5" for m in means], textposition="outside"))
     fig.add_hline(y=3.5, line_dash="dot", line_color=AMBER, opacity=0.7,
                   annotation_text="≥3.5 target", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
     fig.update_yaxes(title="Mean Score",range=[0,5.2],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
@@ -143,7 +143,7 @@ with c3:
         text=[f"AUC={v:.3f}" for v in aucs_], textposition="outside"))
     fig.add_hline(y=0.5, line_dash="dash", line_color=SLATE, opacity=0.5,
                   annotation_text="Random classifier", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
     fig.update_yaxes(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
