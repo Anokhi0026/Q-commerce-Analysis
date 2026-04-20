@@ -11,7 +11,6 @@ from scipy.stats import mannwhitneyu, chi2 as chi2_dist
 from utils import *
 
 st.set_page_config("Obj 5 — Predictive", "🤖", layout="wide")
-st.session_state["current_page"] = "pages/9_Obj5_Predictive.py"
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 html,body,[class*='css']{font-family:'Inter',sans-serif;}
@@ -19,8 +18,7 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-from navbar import navbar
-navbar()
+sidebar()
 page_header("Objective 5", "Predictive Models for Q-Commerce Adoption",
             "Three complementary models — Logistic Regression (statsmodels), Decision Tree (GridSearchCV tuned), "
             "and Random Forest (GridSearchCV tuned) — with a convergence-based final interpretation.")
