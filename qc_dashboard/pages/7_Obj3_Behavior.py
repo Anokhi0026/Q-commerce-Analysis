@@ -13,7 +13,8 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Objective 3", "Usage Behavior Patterns of Q-Commerce Consumers",
             "Examining app preference, tenure, spending, delivery time, payment methods, product categories, "
             "satisfaction scores, and their cross-demographic relationships. Filter: users only (n=228).")
