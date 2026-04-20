@@ -112,28 +112,37 @@ border:1px solid #E2E8F0;'>
 # ── ANALYSIS 3: CHI-SQUARE ─────────────────────────
 section("Analysis 3 · Chi-Square Test (Barriers vs Adoption)")
 
-BARRIER_COLS = [
-    "R_High_Charges","R_Quality_Concern","R_No_Need",
-    "R_Prefer_Local","R_Trust_Issue","R_App_Discomfort",
-    "R_Lack_Awareness","R_Not_Available"
-]
+# ✅ USE CORRECT COLUMN NAMES (from your dataset)
+BARRIER_COLS = ['1','2','3','4','5','6','7','8']
+
+# ✅ MAP FOR CLEAN DISPLAY
+BARRIER_LABELS = {
+    '1': "High Charges",
+    '2': "Quality Concern",
+    '3': "No Need",
+    '4': "Prefer Local Stores",
+    '5': "Trust Issues",
+    '6': "App Difficulty",
+    '7': "Lack of Awareness",
+    '8': "Not Available in Area"
+}
 
 rows = []
+
 for col in BARRIER_COLS:
-    ct = pd.crosstab(df[col], df["Adoption_Status"])
-    if ct.shape == (2,2):
-        chi2,p,_,_ = chi2_contingency(ct)
-        rows.append([col,chi2,p])
+    if col in df.columns:
+        ct = pd.crosstab(df[col], df["Adoption_Status"])
+        
+        if ct.shape == (2,2):
+            chi2, p, _, _ = chi2_contingency(ct)
+            rows.append([col, chi2, p])
 
 chi_df = pd.DataFrame(rows, columns=["Barrier","Chi2","p-value"])
+
+# ✅ Replace numbers with labels
+chi_df["Barrier"] = chi_df["Barrier"].map(BARRIER_LABELS)
+
 st.dataframe(chi_df, use_container_width=True)
-
-finding_card(
-    "📊 Significant Barriers Identified",
-    "Barriers with statistically significant p-values directly influence adoption behavior.",
-    ROSE
-)
-
 # ── ANALYSIS 4: WILLINGNESS ────────────────────────
 section("Analysis 4 · Willingness to Try (Conditional Adoption)")
 
