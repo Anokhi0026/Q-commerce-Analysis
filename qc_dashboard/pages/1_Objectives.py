@@ -65,7 +65,7 @@ for tag, icon, title, desc, methods, color in objs:
     </div>""", unsafe_allow_html=True)
 
 section("Research Framework")
-c1, c2''', c3''' = st.columns(2)
+c1, c2 = st.columns(2)
 for col, icon, title, items in [
     (c1, "📥", "Data Collection", ["Primary data via Google Forms","341 respondents","Vadodara residents aged 18+","Multi-stage sampling"]),
     (c2, "🔬", "Analytical Methods", ["Descriptive statistics","Inferential tests (χ², KW)","Factor & cluster analysis","Logistic regression"]),
