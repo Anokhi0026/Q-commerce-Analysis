@@ -15,8 +15,7 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-from navbar import navbar
-navbar()
+sidebar()
 page_header("Non-User Barrier Analysis",
             "Why do 113 respondents not use Q-Commerce apps?",
             "Demographic profile, non-adoption reasons, barrier Likert analysis, "
@@ -24,10 +23,39 @@ page_header("Non-User Barrier Analysis",
             "across all 113 non-adopters in Vadodara.")
 
 # ── DATA ───────────────────────────────────────────────────────────────────────
-df       = load_analysis()
+# Use load_raw() as single source — it has all demographic + barrier + reason columns
 df_raw   = load_raw()
-non_u    = df[df["Adoption_Status"] == 0].copy()
+df_anal  = load_analysis()
+
+# Use raw for demographics; merge reason/barrier cols from analysis if needed
+df       = df_raw.copy()
 non_u_r  = df_raw[df_raw["Adoption_Status"] == 0].copy().reset_index(drop=True)
+
+# Merge analysis columns (R_* reason flags, NonUser_Willing_Try) into raw if missing
+reason_flags = ["R_High_Charges","R_Quality_Concern","R_No_Need","R_Prefer_Local",
+                "R_Trust_Issue","R_App_Discomfort","R_Lack_Awareness","R_Not_Available",
+                "NonUser_Willing_Try"]
+missing_cols = [c for c in reason_flags if c not in df_raw.columns]
+if missing_cols and all(c in df_anal.columns for c in missing_cols):
+    # Align on index and merge missing columns
+    df_raw_idx  = df_raw.reset_index(drop=True)
+    df_anal_idx = df_anal.reset_index(drop=True)
+    for c in missing_cols:
+        df_raw_idx[c] = df_anal_idx[c]
+    df   = df_raw_idx.copy()
+    non_u = df[df["Adoption_Status"] == 0].copy().reset_index(drop=True)
+    non_u_r = non_u
+else:
+    df    = df_raw.copy()
+    non_u = non_u_r.copy()
+
+# Derive Age_Group if missing (raw may store numeric Age)
+if "Age_Group" not in df.columns and "Age" in df.columns:
+    bins   = [17, 25, 33, 41, 49, 200]
+    labels = ["18-25","26-33","34-41","42-49","50 or above"]
+    df["Age_Group"]    = pd.cut(df["Age"], bins=bins, labels=labels)
+    non_u["Age_Group"] = pd.cut(non_u["Age"], bins=bins, labels=labels)
+    non_u_r = non_u
 
 LIKERT_MAP = {"Strongly Disagree":1,"Disagree":2,"Neutral":3,"Agree":4,"Strongly Agree":5}
 
@@ -74,7 +102,9 @@ tab_age, tab_edu, tab_inc, tab_occ = st.tabs(["Age Group","Education","Income","
 def demo_bar(col, order, tab):
     with tab:
         ct = pd.crosstab(df[col], df["Adoption_Status"])
-        ct.columns = ["Non-User","User"]
+        # Rename columns safely regardless of whether values are 0/1 or strings
+        col_map = {ct.columns[0]: "Non-User", ct.columns[1]: "User"} if len(ct.columns) == 2 else {}
+        ct = ct.rename(columns=col_map)
         ct = ct.reindex([o for o in order if o in ct.index])
         ct_pct = ct.div(ct.sum(axis=1), axis=0) * 100
 
@@ -232,7 +262,7 @@ barrier_labels = ["Lack of Awareness","Prefer Local Stores","Trust Issues","App 
 
 chi2_results = []
 for var, label in zip(barrier_vars, barrier_labels):
-    ct = pd.crosstab(df[var], df["Adoption_Status"])
+    ct = pd.crosstab(df_raw[var], df_raw["Adoption_Status"])
     chi2_v, p_v, dof, _ = chi2_contingency(ct)
     n   = ct.values.sum()
     cv  = np.sqrt(chi2_v / (n * (min(ct.shape)-1)))
