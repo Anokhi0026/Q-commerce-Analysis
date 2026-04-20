@@ -45,13 +45,13 @@ non_users_df = load_analysis()
 nu = non_users_df[non_users_df["Adoption_Status"] == 0]
  
 # ── KPI Row ────────────────────────────────────────────────────────────────────
-k1,k2,k3,k4,k5,k6 = st.columns(6)
+k1,k2,k3,k4,k5 = st.columns(5)
 kpi(k1, "341",  "Total Respondents", "Vadodara, 2024–25")
 kpi(k2, "228",  "Q-Commerce Users",  "66.9% adoption rate", EMERALD)
 kpi(k3, "113",  "Non-Users",         "33.1% non-adoption",  ROSE)
 kpi(k4, f"{(df['Aware_QC']=='Yes').sum()}", "QC Aware", "Heard of Q-Commerce", SKY)
 kpi(k5, "5",    "Objectives",        "Primary + Secondary", VIOLET)
-#kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
+
  
 st.markdown("<br>", unsafe_allow_html=True)
  
