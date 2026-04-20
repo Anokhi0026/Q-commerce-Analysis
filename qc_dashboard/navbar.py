@@ -19,7 +19,7 @@ PAGES = {
 
 def navbar():
     # ✅ GLOBAL FONT + SIZE (applies to ALL pages)
-    st.markdown(f"""
+    st.markdown("""
     <style>
     
     /* GLOBAL */
