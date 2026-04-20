@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from utils import *
 
+st.session_state["current_page"] = "pages/2_Sampling.py"
 st.set_page_config("Sampling & Design", "📐", layout="wide")
 st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>", unsafe_allow_html=True)
 from navbar import navbar
