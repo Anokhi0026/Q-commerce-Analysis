@@ -200,8 +200,8 @@ profile.index = CLUSTER_NAMES
 fig_hm = go.Figure(go.Heatmap(
     z=profile.T.values, x=CLUSTER_NAMES, y=SHORT_13,
     colorscale=[[0,"#FEF2F2"],[0.3,"#FCA5A5"],[0.5,"#FCD34D"],[0.7,"#86EFAC"],[1,"#15803D"]],
-    vmin=2.2, vmax=5.0,
-    text=profile.T.round(2).values, texttemplate="%{text:.2f}",
+    zmin=2.2, zmax=5.0,
+    texttemplate="%{z:.2f}",
     textfont=dict(size=10),
     colorbar=dict(title="Mean Score (1–5)"),
     hovertemplate="%{y} | %{x}: %{z:.2f}<extra></extra>"))
