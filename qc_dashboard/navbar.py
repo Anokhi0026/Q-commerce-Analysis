@@ -2,23 +2,23 @@ from streamlit_option_menu import option_menu
 import streamlit as st
 
 PAGES = {
-    "Overview":              ("house",      "app"),
-    "Objectives":            ("bullseye",   "pages/1_Objectives"),
-    "Sampling & Design":     ("rulers",     "pages/2_Sampling"),
-    "Questionnaire":         ("clipboard",  "pages/3_Questionnaire"),
-    "Demographics":          ("people",     "pages/4_Demographics"),
-    "App Usage":             ("phone",      "pages/5_Obj1_Apps"),
-    "Adoption":              ("link",       "pages/6_Obj2_Adoption"),
-    "Behavior":              ("bar-chart",  "pages/7_Obj3_Behavior"),
-    "Drivers":               ("search",     "pages/8_Obj4_Drivers"),
-    "Predictive":            ("robot",      "pages/9_Obj5_Predictive"),
-    "Cluster Analysis":      ("puzzle",     "pages/11_Cluster_Analysis"),
-    "Correspondence":        ("geo-alt",    "pages/12_Correspondence_Analysis"),
-    "Summary":               ("stars",      "pages/10_Summary"),
+    "Overview":           ("house",     "app.py"),
+    "Objectives":         ("bullseye",  "pages/1_Objectives.py"),
+    "Sampling & Design":  ("rulers",    "pages/2_Sampling.py"),
+    "Questionnaire":      ("clipboard", "pages/3_Questionnaire.py"),
+    "Demographics":       ("people",    "pages/4_Demographics.py"),
+    "App Usage":          ("phone",     "pages/5_Obj1_Apps.py"),
+    "Adoption":           ("link",      "pages/6_Obj2_Adoption.py"),
+    "Behavior":           ("bar-chart", "pages/7_Obj3_Behavior.py"),
+    "Drivers":            ("search",    "pages/8_Obj4_Drivers.py"),
+    "Predictive":         ("robot",     "pages/9_Obj5_Predictive.py"),
+    "Cluster Analysis":   ("puzzle",    "pages/11_Cluster_Analysis.py"),
+    "Correspondence":     ("geo-alt",   "pages/12_Correspondence_Analysis.py"),
+    "Summary":            ("stars",     "pages/10_Summary.py"),
 }
 
 def navbar():
-    option_menu(
+    selected = option_menu(
         menu_title=None,
         options=list(PAGES.keys()),
         icons=[v[0] for v in PAGES.values()],
@@ -43,3 +43,7 @@ def navbar():
             },
         }
     )
+
+    # Navigate to selected page
+    if selected and PAGES[selected][1] != st.session_state.get("current_page"):
+        st.switch_page(PAGES[selected][1])
