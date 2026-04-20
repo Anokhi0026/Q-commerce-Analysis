@@ -18,7 +18,8 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Objective 5", "Predictive Models for Q-Commerce Adoption",
             "Three complementary models — Logistic Regression (statsmodels), Decision Tree (GridSearchCV tuned), "
             "and Random Forest (GridSearchCV tuned) — with a convergence-based final interpretation.")
