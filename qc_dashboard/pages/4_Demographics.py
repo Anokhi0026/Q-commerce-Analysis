@@ -33,7 +33,7 @@ def adoption_bar(df_in, col, order, title):
     fig.add_trace(go.Bar(name="Non-User", x=ct_pct.index, y=ct_pct["Non-User"].round(1),
                           marker_color="#CBD5E1", text=ct_pct["Non-User"].round(1),
                           texttemplate="%{text}%", textposition="inside"))
-    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, barmode="stack", height=320,
+    fig.update_layout(**PLOTLY_LAYOUT, barmode="stack", height=320,
                        title=dict(text=title, font=dict(size=13)))
     fig.update_xaxes(tickangle=-20)
     fig.update_yaxes(title="% of group", range=[0,105],gridcolor="#F1F5F9")
@@ -80,7 +80,7 @@ with tab3:
         e_cnt = df["Education"].value_counts().reindex(EDU_ORDER).fillna(0)
         fig = go.Figure(go.Bar(x=e_cnt.index, y=e_cnt.values,
                                 marker_color=PALETTE[:5], text=e_cnt.values, textposition="outside"))
-        fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=320, title=dict(text="Education Distribution", font=dict(size=13)))
+        fig.update_layout(**PLOTLY_LAYOUT, height=320, title=dict(text="Education Distribution", font=dict(size=13)))
         fig.update_xaxes(tickangle=-20)
         st.plotly_chart(fig, use_container_width=True)
     with c2:
@@ -111,7 +111,7 @@ with tab5:
         i_cnt = df["Income"].value_counts().reindex(INCOME_ORDER).fillna(0)
         fig = go.Figure(go.Bar(x=i_cnt.index, y=i_cnt.values,
                                 marker_color=PALETTE[:5], text=i_cnt.values, textposition="outside"))
-        fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=320, title=dict(text="Income Distribution", font=dict(size=13)))
+        fig.update_layout(**PLOTLY_LAYOUT, height=320, title=dict(text="Income Distribution", font=dict(size=13)))
         fig.update_xaxes(tickangle=-25)
         st.plotly_chart(fig, use_container_width=True)
     with c2:
