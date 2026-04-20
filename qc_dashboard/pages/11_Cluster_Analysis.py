@@ -172,7 +172,7 @@ with c1:
     fig_pca.update_xaxes(title=f"PC1 ({var_e[0]:.1f}% variance)",gridcolor="#F1F5F9")
     fig_pca.update_yaxes(title=f"PC2 ({var_e[1]:.1f}% variance)",gridcolor="#F1F5F9")
     st.plotly_chart(fig_pca, use_container_width=True)
-
+"""
 with c2:
     # Silhouette by cluster
     fig_sil2 = go.Figure()
@@ -192,7 +192,7 @@ with c2:
     fig_sil2.update_xaxes(title="Silhouette Coefficient",gridcolor="#F1F5F9")
     fig_sil2.update_yaxes(showticklabels=False)
     st.plotly_chart(fig_sil2, use_container_width=True)
-
+"""
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Heatmap")
 
