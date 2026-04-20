@@ -4,9 +4,7 @@ import pandas as pd
 import numpy as np
 import statsmodels.formula.api as smf
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, roc_curve, classification_report
 from scipy.stats import mannwhitneyu, chi2 as chi2_dist
@@ -189,35 +187,148 @@ kpi(c1,f"{dt_cv_auc:.4f}","CV AUC","5-fold cross-validation",VIOLET)
 kpi(c2,f"{auc_dt:.4f}","Test AUC","Held-out test set",INDIGO)
 kpi(c3,f"{acc_dt*100:.1f}%","Test Accuracy","",EMERALD)
 kpi(c4,str(dt_params),"Best Parameters","GridSearchCV result",AMBER)
-
-section("Decision Tree Diagram — Tuned Model",
-        "Visual representation of the tuned decision tree. Blue = Adopter, Orange = Non-Adopter. Darker = purer node.")
-
-fig_tree, ax_tree = plt.subplots(figsize=(28, 12))
-plot_tree(
-    best_dt,
-    feature_names=dt_feature_names,
-    class_names=["Non-Adopter", "Adopter"],
-    filled=True,
-    rounded=True,
-    fontsize=7,
-    ax=ax_tree,
-    impurity=True,
-    proportion=False,
-    precision=3,
-)
-ax_tree.set_title(
-    f"Tuned Decision Tree (max_depth={dt_params.get('max_depth')}, "
-    f"min_samples_split={dt_params.get('min_samples_split')}, "
-    f"min_samples_leaf={dt_params.get('min_samples_leaf')})",
-    fontsize=11, pad=12
-)
-fig_tree.patch.set_facecolor("#FAFAFA")
-plt.tight_layout()
-st.pyplot(fig_tree, use_container_width=True)
-plt.close(fig_tree)
-
 st.markdown("<br>",unsafe_allow_html=True)
+
+section("Decision Tree Diagram — Interactive (Zoomable)",
+        "Each node shows: split condition, gini impurity, sample count, and predicted class. "
+        "Blue = Adopter nodes · Orange = Non-Adopter nodes. Zoom, pan, and hover for details.")
+
+def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]):
+    from sklearn.tree import _tree
+    tree_ = tree.tree_
+    node_count = tree_.node_count
+
+    # ── collect node info ──────────────────────────────────────────────────────
+    nodes = []
+    def recurse(node_id, depth, parent_x, parent_y, is_left, x_min, x_max):
+        x = (x_min + x_max) / 2
+        y = -depth
+
+        feat  = tree_.feature[node_id]
+        thr   = tree_.threshold[node_id]
+        gini  = tree_.impurity[node_id]
+        samp  = tree_.n_node_samples[node_id]
+        val   = tree_.value[node_id][0]
+        cls   = int(np.argmax(val))
+        is_leaf = (feat == _tree.TREE_UNDEFINED)
+
+        if is_leaf:
+            label = (f"<b>{class_names[cls]}</b><br>"
+                     f"gini={gini:.3f}<br>n={samp}<br>"
+                     f"[{int(val[0])}, {int(val[1])}]")
+        else:
+            fname = feature_names[feat]
+            label = (f"<b>{fname}</b><br>"
+                     f"≤ {thr:.3f}<br>"
+                     f"gini={gini:.3f}<br>n={samp}<br>"
+                     f"[{int(val[0])}, {int(val[1])}]")
+
+        color = "#4F46E5" if cls == 1 else "#F97316"
+        opacity = max(0.25, 1 - gini)
+
+        nodes.append(dict(
+            node_id=node_id, x=x, y=y,
+            label=label, color=color, opacity=opacity,
+            parent_x=parent_x, parent_y=parent_y,
+            is_leaf=is_leaf, depth=depth,
+            edge_label="True" if is_left else "False"
+        ))
+
+        if not is_leaf:
+            left  = tree_.children_left[node_id]
+            right = tree_.children_right[node_id]
+            mid   = (x_min + x_max) / 2
+            recurse(left,  depth+1, x, y, True,  x_min, mid)
+            recurse(right, depth+1, x, y, False, mid,   x_max)
+
+    recurse(0, 0, None, None, None, 0, 1)
+
+    # ── build figure ───────────────────────────────────────────────────────────
+    fig = go.Figure()
+
+    # Draw edges first
+    for n in nodes:
+        if n["parent_x"] is not None:
+            fig.add_trace(go.Scatter(
+                x=[n["parent_x"], n["x"]],
+                y=[n["parent_y"], n["y"]],
+                mode="lines",
+                line=dict(color="#CBD5E1", width=1.5),
+                hoverinfo="none",
+                showlegend=False
+            ))
+            # Edge label (True/False)
+            fig.add_annotation(
+                x=(n["parent_x"]+n["x"])/2,
+                y=(n["parent_y"]+n["y"])/2,
+                text=n["edge_label"],
+                showarrow=False,
+                font=dict(size=9, color="#64748B"),
+                bgcolor="rgba(255,255,255,0.7)",
+                borderpad=2
+            )
+
+    # Draw nodes
+    for n in nodes:
+        node_color = n["color"]
+        fig.add_trace(go.Scatter(
+            x=[n["x"]], y=[n["y"]],
+            mode="markers+text",
+            marker=dict(
+                size=28 if n["is_leaf"] else 34,
+                color=node_color,
+                opacity=n["opacity"],
+                line=dict(color="#fff", width=2),
+                symbol="square" if n["is_leaf"] else "square"
+            ),
+            text=[""],
+            hovertext=[n["label"]],
+            hovertemplate="%{hovertext}<extra></extra>",
+            showlegend=False
+        ))
+        # Node label as annotation for clean rendering
+        fig.add_annotation(
+            x=n["x"], y=n["y"],
+            text=n["label"],
+            showarrow=False,
+            font=dict(size=7.5, color="#fff"),
+            align="center",
+            bgcolor=node_color,
+            bordercolor="#fff",
+            borderwidth=1,
+            borderpad=3,
+            opacity=max(0.7, n["opacity"])
+        )
+
+    # Legend
+    for label, color in [("Adopter node", "#4F46E5"), ("Non-Adopter node", "#F97316")]:
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None], mode="markers",
+            marker=dict(size=12, color=color, symbol="square"),
+            name=label, showlegend=True
+        ))
+
+    max_depth = max(n["depth"] for n in nodes)
+    fig.update_layout(
+        **{k:v for k,v in PLOTLY_LAYOUT.items() if k != "legend"},
+        height=220 + max_depth * 110,
+        title=dict(
+            text=(f"Tuned Decision Tree — "
+                  f"max_depth={dt_params.get('max_depth')} | "
+                  f"min_samples_split={dt_params.get('min_samples_split')} | "
+                  f"min_samples_leaf={dt_params.get('min_samples_leaf')}"),
+            font=dict(size=12)
+        ),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
+        dragmode="pan",
+    )
+    return fig
+
+st.plotly_chart(build_plotly_tree(best_dt, dt_feature_names),
+                use_container_width=True, config={"scrollZoom": True})
+
 
 c1,c2 = st.columns(2, gap="large")
 with c1:
@@ -285,6 +396,147 @@ kpi(c2,f"{auc_rf:.4f}","Test AUC","Held-out test set",INDIGO)
 kpi(c3,f"{acc_rf*100:.1f}%","Test Accuracy","",VIOLET)
 kpi(c4,str(rf_params.get("n_estimators",""))+" Trees","n_estimators","",AMBER)
 st.markdown("<br>",unsafe_allow_html=True)
+
+section("Decision Tree Diagram — Interactive (Zoomable)",
+        "Each node shows: split condition, gini impurity, sample count, and predicted class. "
+        "Blue = Adopter nodes · Orange = Non-Adopter nodes. Zoom, pan, and hover for details.")
+
+def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]):
+    from sklearn.tree import _tree
+    tree_ = tree.tree_
+    node_count = tree_.node_count
+
+    # ── collect node info ──────────────────────────────────────────────────────
+    nodes = []
+    def recurse(node_id, depth, parent_x, parent_y, is_left, x_min, x_max):
+        x = (x_min + x_max) / 2
+        y = -depth
+
+        feat  = tree_.feature[node_id]
+        thr   = tree_.threshold[node_id]
+        gini  = tree_.impurity[node_id]
+        samp  = tree_.n_node_samples[node_id]
+        val   = tree_.value[node_id][0]
+        cls   = int(np.argmax(val))
+        is_leaf = (feat == _tree.TREE_UNDEFINED)
+
+        if is_leaf:
+            label = (f"<b>{class_names[cls]}</b><br>"
+                     f"gini={gini:.3f}<br>n={samp}<br>"
+                     f"[{int(val[0])}, {int(val[1])}]")
+        else:
+            fname = feature_names[feat]
+            label = (f"<b>{fname}</b><br>"
+                     f"≤ {thr:.3f}<br>"
+                     f"gini={gini:.3f}<br>n={samp}<br>"
+                     f"[{int(val[0])}, {int(val[1])}]")
+
+        color = "#4F46E5" if cls == 1 else "#F97316"
+        opacity = max(0.25, 1 - gini)
+
+        nodes.append(dict(
+            node_id=node_id, x=x, y=y,
+            label=label, color=color, opacity=opacity,
+            parent_x=parent_x, parent_y=parent_y,
+            is_leaf=is_leaf, depth=depth,
+            edge_label="True" if is_left else "False"
+        ))
+
+        if not is_leaf:
+            left  = tree_.children_left[node_id]
+            right = tree_.children_right[node_id]
+            mid   = (x_min + x_max) / 2
+            recurse(left,  depth+1, x, y, True,  x_min, mid)
+            recurse(right, depth+1, x, y, False, mid,   x_max)
+
+    recurse(0, 0, None, None, None, 0, 1)
+
+    # ── build figure ───────────────────────────────────────────────────────────
+    fig = go.Figure()
+
+    # Draw edges first
+    for n in nodes:
+        if n["parent_x"] is not None:
+            fig.add_trace(go.Scatter(
+                x=[n["parent_x"], n["x"]],
+                y=[n["parent_y"], n["y"]],
+                mode="lines",
+                line=dict(color="#CBD5E1", width=1.5),
+                hoverinfo="none",
+                showlegend=False
+            ))
+            # Edge label (True/False)
+            fig.add_annotation(
+                x=(n["parent_x"]+n["x"])/2,
+                y=(n["parent_y"]+n["y"])/2,
+                text=n["edge_label"],
+                showarrow=False,
+                font=dict(size=9, color="#64748B"),
+                bgcolor="rgba(255,255,255,0.7)",
+                borderpad=2
+            )
+
+    # Draw nodes
+    for n in nodes:
+        node_color = n["color"]
+        fig.add_trace(go.Scatter(
+            x=[n["x"]], y=[n["y"]],
+            mode="markers+text",
+            marker=dict(
+                size=28 if n["is_leaf"] else 34,
+                color=node_color,
+                opacity=n["opacity"],
+                line=dict(color="#fff", width=2),
+                symbol="square" if n["is_leaf"] else "square"
+            ),
+            text=[""],
+            hovertext=[n["label"]],
+            hovertemplate="%{hovertext}<extra></extra>",
+            showlegend=False
+        ))
+        # Node label as annotation for clean rendering
+        fig.add_annotation(
+            x=n["x"], y=n["y"],
+            text=n["label"],
+            showarrow=False,
+            font=dict(size=7.5, color="#fff"),
+            align="center",
+            bgcolor=node_color,
+            bordercolor="#fff",
+            borderwidth=1,
+            borderpad=3,
+            opacity=max(0.7, n["opacity"])
+        )
+
+    # Legend
+    for label, color in [("Adopter node", "#4F46E5"), ("Non-Adopter node", "#F97316")]:
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None], mode="markers",
+            marker=dict(size=12, color=color, symbol="square"),
+            name=label, showlegend=True
+        ))
+
+    max_depth = max(n["depth"] for n in nodes)
+    fig.update_layout(
+        **{k:v for k,v in PLOTLY_LAYOUT.items() if k != "legend"},
+        height=220 + max_depth * 110,
+        title=dict(
+            text=(f"Tuned Decision Tree — "
+                  f"max_depth={dt_params.get('max_depth')} | "
+                  f"min_samples_split={dt_params.get('min_samples_split')} | "
+                  f"min_samples_leaf={dt_params.get('min_samples_leaf')}"),
+            font=dict(size=12)
+        ),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
+        dragmode="pan",
+    )
+    return fig
+
+st.plotly_chart(build_plotly_tree(best_dt, dt_feature_names),
+                use_container_width=True, config={"scrollZoom": True})
+
 
 c1,c2 = st.columns(2, gap="large")
 with c1:
