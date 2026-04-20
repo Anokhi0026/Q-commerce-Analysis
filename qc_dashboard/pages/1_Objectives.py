@@ -3,7 +3,8 @@ from utils import *
 
 st.set_page_config("Objectives", "🎯", layout="wide")
 st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>", unsafe_allow_html=True)
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Objectives of the Project", "Research Objectives",
             "A structured framework of one primary and five secondary objectives guiding this statistical study.")
 
