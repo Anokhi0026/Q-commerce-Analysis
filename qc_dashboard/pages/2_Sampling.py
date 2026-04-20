@@ -104,11 +104,6 @@ with right:
         </div>
       </div>
 
-      <!-- Computed n0 -->
-      <div style='text-align:center;background:{INDIGO}10;border:1px solid {INDIGO}30;
-                  border-radius:8px;padding:10px;margin-bottom:18px;font-size:.85rem;color:#1E1E2E;'>
-        n₀ = (1.96)² × 0.5 × 0.5 / (0.05)² = <b style='color:{INDIGO};font-size:1rem;'>384</b>
-      </div>
 
       <!-- Divider -->
       <div style='border-top:1px solid #E2E8F0;margin-bottom:16px;'></div>
@@ -134,9 +129,8 @@ with right:
       <!-- Computed n -->
       <div style='text-align:center;background:{EMERALD}10;border:1px solid {EMERALD}30;
                   border-radius:8px;padding:10px;font-size:.85rem;color:#1E1E2E;'>
-        n = 384 / (1 + (384 − 1) / 1,74,00,000) ≈ <b style='color:{EMERALD};font-size:1rem;'>384</b>
-        &nbsp;→ adjusted to <b style='color:{EMERALD};font-size:1rem;'>308</b> per zone,
-        then <b style='color:{EMERALD};font-size:1rem;'>341</b> after pilot adjustment
+        &nbsp;→ Sample Size calculated <b style='color:{EMERALD};font-size:1rem;'>308</b> ,
+        <b style='color:{EMERALD};font-size:1rem;'>341</b> samples were collected
       </div>
 
     </div>""", unsafe_allow_html=True)
