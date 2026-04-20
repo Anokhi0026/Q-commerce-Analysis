@@ -90,7 +90,7 @@ with c1:
                                     hovertemplate="%{text}<extra></extra>"))
     fig_elbow.add_vline(x=3, line_dash="dash", line_color=ROSE, opacity=0.8,
                          annotation_text="Recommended K=3", annotation_font=dict(size=9,color=ROSE))
-    fig_elbow.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text="(a) Elbow Method — WCSS vs K",font=dict(size=12)))
+    fig_elbow.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text="(a) Elbow Method — WCSS vs K",font=dict(size=12)))
     fig_elbow.update_xaxes(title="Number of Clusters (K)", tickvals=K_RANGE, gridcolor="#F1F5F9")
     fig_elbow.update_yaxes(title="WCSS",gridcolor="#F1F5F9")
     st.plotly_chart(fig_elbow, use_container_width=True)
@@ -104,7 +104,7 @@ with c2:
                        annotation_text="Selected K=3", annotation_font=dict(size=9,color=AMBER))
     fig_sil.add_hline(y=0.1, line_dash="dot", line_color=SLATE, opacity=0.6,
                        annotation_text="Min acceptable (0.10)", annotation_font=dict(size=9))
-    fig_sil.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text="(b) Silhouette Score vs K",font=dict(size=12)))
+    fig_sil.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text="(b) Silhouette Score vs K",font=dict(size=12)))
     fig_sil.update_xaxes(title="K", tickvals=K_RANGE, gridcolor="#F1F5F9")
     fig_sil.update_yaxes(title="Avg Silhouette Score",gridcolor="#F1F5F9")
     st.plotly_chart(fig_sil, use_container_width=True)
@@ -166,7 +166,7 @@ with c1:
             mode="markers", showlegend=False,
             marker=dict(color=CLUSTER_COLORS[c_id], size=16, symbol="star",
                         line=dict(color="#000",width=1.2))))
-    fig_pca.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=380, title=dict(text=f"PCA Cluster Scatter (PC1+PC2 = {sum(var_e):.1f}% variance)",font=dict(size=12)))
+    fig_pca.update_layout(**PLOTLY_LAYOUT, height=380, title=dict(text=f"PCA Cluster Scatter (PC1+PC2 = {sum(var_e):.1f}% variance)",font=dict(size=12)))
     fig_pca.update_xaxes(title=f"PC1 ({var_e[0]:.1f}% variance)",gridcolor="#F1F5F9")
     fig_pca.update_yaxes(title=f"PC2 ({var_e[1]:.1f}% variance)",gridcolor="#F1F5F9")
     st.plotly_chart(fig_pca, use_container_width=True)
@@ -186,7 +186,7 @@ with c2:
     fig_sil2.add_vline(x=final_sil, line_dash="dash", line_color=ROSE,
                         annotation_text=f"Avg={final_sil:.3f}",
                         annotation_font=dict(size=9,color=ROSE))
-    fig_sil2.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=380, showlegend=True, title=dict(text="Silhouette Plot (sorted by cluster)",font=dict(size=12)))
+    fig_sil2.update_layout(**PLOTLY_LAYOUT, height=380, showlegend=True, title=dict(text="Silhouette Plot (sorted by cluster)",font=dict(size=12)))
     fig_sil2.update_xaxes(title="Silhouette Coefficient",gridcolor="#F1F5F9")
     fig_sil2.update_yaxes(showticklabels=False)
     st.plotly_chart(fig_sil2, use_container_width=True)
@@ -243,7 +243,7 @@ with behav_tab1:
                 fig_bh.add_trace(go.Bar(name=CLUSTER_NAMES[c_id], x=bord, y=cnt_b_pct.reindex(bord).fillna(0),
                                          marker_color=CLUSTER_COLORS[c_id],
                                          hovertemplate=f"{CLUSTER_NAMES[c_id]}: %{{y:.1f}}<extra></extra>"))
-            fig_bh.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, barmode="group", height=290, title=dict(text=bname,font=dict(size=12)))
+            fig_bh.update_layout(**PLOTLY_LAYOUT, barmode="group", height=290, title=dict(text=bname,font=dict(size=12)))
             fig_bh.update_xaxes(tickangle=-15)
             fig_bh.update_yaxes(title="% within cluster",gridcolor="#F1F5F9")
             st.plotly_chart(fig_bh, use_container_width=True)
@@ -258,7 +258,7 @@ with behav_tab2:
             fig_demo.add_trace(go.Bar(name=CLUSTER_NAMES[c_id], x=demo_order, y=cnt_d_pct,
                                        marker_color=CLUSTER_COLORS[c_id], opacity=0.85,
                                        hovertemplate=f"{CLUSTER_NAMES[c_id]}: %{{y:.1f}}%<extra></extra>"))
-        fig_demo.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, barmode="group", height=260, title=dict(text=f"Cluster Composition — {demo_col}",font=dict(size=12)))
+        fig_demo.update_layout(**PLOTLY_LAYOUT, barmode="group", height=260, title=dict(text=f"Cluster Composition — {demo_col}",font=dict(size=12)))
         fig_demo.update_xaxes(tickangle=-15)
         fig_demo.update_yaxes(title="% within cluster",gridcolor="#F1F5F9")
         st.plotly_chart(fig_demo, use_container_width=True)
@@ -292,7 +292,7 @@ fig_val = go.Figure(go.Bar(
     text=[f"H={row['H']} {row['Sig']}" for _,row in val_df.iterrows()],
     textposition="outside",
     hovertemplate="%{y}: H=%{x:.2f}<extra></extra>"))
-fig_val.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=360, title=dict(text="Kruskal-Wallis H by Variable (Green=Significant)",font=dict(size=12)))
+fig_val.update_layout(**PLOTLY_LAYOUT, height=360, title=dict(text="Kruskal-Wallis H by Variable (Green=Significant)",font=dict(size=12)))
 fig_val.update_xaxes(title="H Statistic",gridcolor="#F1F5F9")
 st.plotly_chart(fig_val, use_container_width=True)
 
