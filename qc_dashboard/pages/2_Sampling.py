@@ -68,7 +68,7 @@ with right:
         text=samples, textposition="outside",
         hovertemplate="%{x}: n=%{y}<extra></extra>"
     ))
-    fig_bar.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=320,
+    fig_bar.update_layout(**PLOTLY_LAYOUT, height=320,
         title=dict(text="Sample Size by Ward (Total = 308, adjusted to 341)", font=dict(size=13)))
     fig_bar.update_xaxes(title="Selected Ward")
     fig_bar.update_yaxes(title="Sample Size", range=[0,110], gridcolor="#F1F5F9")
