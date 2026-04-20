@@ -2,9 +2,9 @@ import streamlit as st
 import plotly.graph_objects as go
 from utils import *
 
-st.session_state["current_page"] = "app.py"
+
 st.set_page_config("Q-Commerce Vadodara", "⚡", layout="wide", initial_sidebar_state="expanded")
- 
+st.session_state["current_page"] = "app.py"
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
