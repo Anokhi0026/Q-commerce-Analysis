@@ -1,53 +1,81 @@
 import streamlit as st
-import pandas as pd
 import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
 from scipy.stats import chi2_contingency, mannwhitneyu, kruskal
 from utils import *
 
 st.set_page_config("Non-User Analysis", "🚫", layout="wide")
 st.session_state["current_page"] = "pages/13_Non_User_Analysis.py"
 
+st.markdown("""<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+html,body,[class*='css']{font-family:'Inter',sans-serif;}
+.stApp{background:#FAFAFA;}
+section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
+</style>""", unsafe_allow_html=True)
+
 from navbar import navbar
 navbar()
 
 page_header(
     "Non-User Analysis",
-    "Understanding Barriers to Adoption",
-    "Statistical analysis of non-users to identify demographic patterns, barriers, and adoption potential."
+    "Barriers & Adoption Potential",
+    "Understanding demographic profile, non-adoption rate, barriers, and statistical testing of non-users."
 )
 
-# ── LOAD DATA ─────────────────────────────────────────────
 df = load_raw()
 non_users = df[df["Adoption_Status"] == 0]
 
-# ── 1. DEMOGRAPHIC PROFILE ────────────────────────────────
-section("1 · Demographic Profile of Non-Users")
+# ── KPI ─────────────────────────────────────────────
+k1,k2,k3 = st.columns(3)
+kpi(k1, str(len(non_users)), "Non-Users", "Sample size", ROSE)
+kpi(k2, f"{len(non_users)/len(df)*100:.1f}%", "Non-Adoption Rate", "Population %", INDIGO)
+kpi(k3, "Barrier Study", "Focus", "Adoption resistance", AMBER)
+st.markdown("<br>", unsafe_allow_html=True)
 
-for col in ["Age_Group", "Gender", "Income", "Education"]:
-    ct = non_users[col].value_counts(normalize=True) * 100
+# ── ANALYSIS 1: DEMOGRAPHIC PROFILE ─────────────────
+section("Analysis 1 · Demographic Profile of Non-Users")
+
+for col in ["Age_Group","Gender","Income","Education"]:
+    ct = non_users[col].value_counts(normalize=True)*100
     
     fig = go.Figure(go.Bar(
         x=ct.index,
         y=ct.values,
         text=[f"{v:.1f}%" for v in ct.values],
-        textposition="outside"
+        textposition="outside",
+        marker_color=INDIGO
     ))
     
-    fig.update_layout(title=f"{col} Distribution (Non-Users)", height=350)
+    fig.update_layout(**PLOTLY_LAYOUT,
+        height=280,
+        title=dict(text=f"{col} Distribution", font=dict(size=12))
+    )
+    
     st.plotly_chart(fig, use_container_width=True)
 
-# ── 2. NON-ADOPTION % ─────────────────────────────────────
-section("2 · Non-Adoption Percentage")
+finding_card(
+    "👥 Non-Users Concentrated in Specific Segments",
+    "Non-adoption is not random — certain demographic groups show higher resistance, indicating targeted intervention potential.",
+    INDIGO
+)
 
-total = len(df)
-non = len(non_users)
+# ── ANALYSIS 2: NON-ADOPTION % ─────────────────────
+section("Analysis 2 · Non-Adoption Rate")
 
-k1,k2 = st.columns(2)
-kpi(k1, str(non), "Non-Users", "Count", ROSE)
-kpi(k2, f"{(non/total)*100:.1f}%", "Non-Adoption Rate", "Percentage", INDIGO)
+st.markdown(f"""
+<div style='background:#fff;border-radius:12px;padding:20px;text-align:center;
+border:1px solid #E2E8F0;'>
+<div style='font-size:2.5rem;font-weight:800;color:{ROSE};'>
+{len(non_users)/len(df)*100:.1f}%
+</div>
+<div style='font-size:.9rem;color:#64748B;'>Population Not Using Q-Commerce</div>
+</div>
+""", unsafe_allow_html=True)
 
-# ── 3. CHI-SQUARE TEST ────────────────────────────────────
-section("3 · Chi-Square Test (Barrier vs Adoption)")
+# ── ANALYSIS 3: CHI-SQUARE ─────────────────────────
+section("Analysis 3 · Chi-Square Test (Barriers vs Adoption)")
 
 BARRIER_COLS = [
     "R_High_Charges","R_Quality_Concern","R_No_Need",
@@ -55,21 +83,24 @@ BARRIER_COLS = [
     "R_Lack_Awareness","R_Not_Available"
 ]
 
-chi_results = []
-
+rows = []
 for col in BARRIER_COLS:
     ct = pd.crosstab(df[col], df["Adoption_Status"])
     if ct.shape == (2,2):
         chi2,p,_,_ = chi2_contingency(ct)
-        chi_results.append([col,chi2,p])
+        rows.append([col,chi2,p])
 
-chi_df = pd.DataFrame(chi_results, columns=["Barrier","Chi2","p-value"])
-st.dataframe(chi_df)
+chi_df = pd.DataFrame(rows, columns=["Barrier","Chi2","p-value"])
+st.dataframe(chi_df, use_container_width=True)
 
-st.markdown("**Interpretation:** Barriers with p < 0.05 significantly influence adoption behavior.")
+finding_card(
+    "📊 Significant Barriers Identified",
+    "Barriers with statistically significant p-values directly influence adoption behavior.",
+    ROSE
+)
 
-# ── 4. WILLINGNESS TO TRY ─────────────────────────────────
-section("4 · Willingness to Try (Likert Analysis)")
+# ── ANALYSIS 4: WILLINGNESS ────────────────────────
+section("Analysis 4 · Willingness to Try (Conditional Adoption)")
 
 LIKERT_COLS = [
     "I would consider using Q-commerce if delivery charges were lower",
@@ -77,76 +108,66 @@ LIKERT_COLS = [
     "I would consider using Q-commerce apps if prices were competitive"
 ]
 
-likert_df = non_users[LIKERT_COLS].copy()
-
+lk = non_users[LIKERT_COLS].copy()
 for col in LIKERT_COLS:
-    likert_df[col] = likert_df[col].map(LIKERT_MAP)
+    lk[col] = lk[col].map(LIKERT_MAP)
 
-desc = likert_df.mean().sort_values()
+means = lk.mean().sort_values()
 
 fig = go.Figure(go.Bar(
-    y=desc.index,
-    x=desc.values,
+    y=means.index,
+    x=means.values,
     orientation="h",
-    text=[f"{v:.2f}" for v in desc.values],
+    marker_color=EMERALD,
+    text=[f"{v:.2f}" for v in means.values],
     textposition="outside"
 ))
 
-fig.update_layout(title="Willingness to Adopt Based on Conditions", height=400)
+fig.update_layout(**PLOTLY_LAYOUT,
+    height=300,
+    title=dict(text="Adoption Willingness (Mean Scores)", font=dict(size=12))
+)
+
 st.plotly_chart(fig, use_container_width=True)
 
-# ── 5. MANN-WHITNEY ───────────────────────────────────────
-section("5 · Mann–Whitney U Test (Gender Differences)")
+# ── ANALYSIS 5: MANN-WHITNEY ───────────────────────
+section("Analysis 5 · Mann–Whitney U Test (Gender Differences)")
 
-mw_results = []
-
+mw_rows = []
 for col in LIKERT_COLS:
-    g1 = likert_df[non_users["Gender"]=="Male"][col].dropna()
-    g2 = likert_df[non_users["Gender"]=="Female"][col].dropna()
-    
+    g1 = lk[non_users["Gender"]=="Male"][col].dropna()
+    g2 = lk[non_users["Gender"]=="Female"][col].dropna()
     if len(g1)>2 and len(g2)>2:
         U,p = mannwhitneyu(g1,g2)
-        mw_results.append([col,U,p])
+        mw_rows.append([col,U,p])
 
-mw_df = pd.DataFrame(mw_results, columns=["Variable","U","p-value"])
-st.dataframe(mw_df)
+mw_df = pd.DataFrame(mw_rows, columns=["Variable","U","p-value"])
+st.dataframe(mw_df, use_container_width=True)
 
-st.markdown("**Interpretation:** Significant p-values indicate gender-based differences in perception.")
+# ── ANALYSIS 6: KRUSKAL ────────────────────────────
+section("Analysis 6 · Kruskal–Wallis Test (Age Group Differences)")
 
-# ── 6. KRUSKAL-WALLIS ─────────────────────────────────────
-section("6 · Kruskal–Wallis Test (Age Group Differences)")
-
-kw_results = []
-
+kw_rows = []
 for col in LIKERT_COLS:
-    groups = [grp[col].dropna().values for name, grp in non_users.groupby("Age_Group")]
-    
+    groups = [grp[col].dropna().values for _, grp in non_users.groupby("Age_Group")]
     if len(groups)>1:
         H,p = kruskal(*groups)
-        kw_results.append([col,H,p])
+        kw_rows.append([col,H,p])
 
-kw_df = pd.DataFrame(kw_results, columns=["Variable","H","p-value"])
-st.dataframe(kw_df)
+kw_df = pd.DataFrame(kw_rows, columns=["Variable","H","p-value"])
+st.dataframe(kw_df, use_container_width=True)
 
-st.markdown("**Interpretation:** Significant results indicate variation across age groups.")
-
-# ── FINAL INTERPRETATION ──────────────────────────────────
-section("7 · Final Insights")
+# ── FINAL INSIGHT ──────────────────────────────────
+section("Final Insights")
 
 finding_card(
-    "🚧 Key Barriers",
-    "High charges, trust issues, and lack of awareness significantly affect non-adoption.",
+    "🚧 Core Barriers",
+    "Pricing, trust, and awareness are the strongest inhibitors of adoption.",
     ROSE
 )
 
 finding_card(
-    "📊 Demographic Influence",
-    "Age and socio-economic factors influence adoption behavior more than gender.",
-    INDIGO
-)
-
-finding_card(
-    "🎯 Strategic Insight",
-    "Reducing delivery cost and improving trust can significantly convert non-users.",
+    "📈 Conversion Opportunity",
+    "Many non-users are conditionally willing — reducing key barriers can drive adoption.",
     EMERALD
 )
