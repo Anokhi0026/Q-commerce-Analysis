@@ -10,10 +10,10 @@ PAGES = {
     "App Usage":          ("phone",     "pages/5_Obj1_Apps.py"),
     "Adoption":           ("link",      "pages/6_Obj2_Adoption.py"),
     "Behavior":           ("bar-chart", "pages/7_Obj3_Behavior.py"),
-    "Drivers":            ("search",    "pages/8_Obj4_Drivers.py"),
-    "Predictive":         ("robot",     "pages/9_Obj5_Predictive.py"),
-    "Cluster Analysis":   ("puzzle",    "pages/11_Cluster_Analysis.py"),
     "Correspondence":     ("geo-alt",   "pages/12_Correspondence_Analysis.py"),
+    "Drivers":            ("search",    "pages/8_Obj4_Drivers.py"),
+    "Cluster Analysis":   ("puzzle",    "pages/11_Cluster_Analysis.py"),
+    "Predictive":         ("robot",     "pages/9_Obj5_Predictive.py"),
     "Summary":            ("stars",     "pages/10_Summary.py"),
 }
 
