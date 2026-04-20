@@ -188,7 +188,7 @@ kmo_v, chi2_b, df_b, p_b, eigenvalues, n_factors, ldf, pct_var = run_efa()
 c1,c2,c3 = st.columns(3)
 kmo_qual = ("Marvellous" if kmo_v>=0.9 else "Meritorious" if kmo_v>=0.8 else "Middling" if kmo_v>=0.7 else "Mediocre" if kmo_v>=0.6 else "Poor")
 kpi(c1,f"{kmo_v:.3f}","KMO Value",kmo_qual,EMERALD)
-kpi(c2,f"p={p_b:.4f}","Bartlett's Test","Sig → EFA appropriate",INDIGO)
+kpi(c2,f"p<0.05","Bartlett's Test","Sig → EFA appropriate",INDIGO)
 kpi(c3,str(n_factors),"Factors Retained",f"Kaiser criterion (EV>1)",VIOLET)
 st.markdown("<br>",unsafe_allow_html=True)
 
