@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 import statsmodels.formula.api as smf
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, roc_curve, classification_report
 from scipy.stats import mannwhitneyu, chi2 as chi2_dist
@@ -175,17 +177,46 @@ def fit_decision_tree():
     sens_dt = tp2/(tp2+fn2); spec_dt = tn2/(tn2+fp2)
 
     imp = pd.Series(best_dt.feature_importances_,index=X_all.columns).sort_values(ascending=False)
+    feature_names = list(X_all.columns)
     return (grid_dt.best_params_, grid_dt.best_score_, acc_dt, auc_dt,
-            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt)
+            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt, best_dt, feature_names)
 
 with st.spinner("Running GridSearchCV for Decision Tree (84 combinations)…"):
-    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt = fit_decision_tree()
+    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt, best_dt, dt_feature_names = fit_decision_tree()
 
 c1,c2,c3,c4 = st.columns(4)
 kpi(c1,f"{dt_cv_auc:.4f}","CV AUC","5-fold cross-validation",VIOLET)
 kpi(c2,f"{auc_dt:.4f}","Test AUC","Held-out test set",INDIGO)
 kpi(c3,f"{acc_dt*100:.1f}%","Test Accuracy","",EMERALD)
 kpi(c4,str(dt_params),"Best Parameters","GridSearchCV result",AMBER)
+
+section("Decision Tree Diagram — Tuned Model",
+        "Visual representation of the tuned decision tree. Blue = Adopter, Orange = Non-Adopter. Darker = purer node.")
+
+fig_tree, ax_tree = plt.subplots(figsize=(28, 12))
+plot_tree(
+    best_dt,
+    feature_names=dt_feature_names,
+    class_names=["Non-Adopter", "Adopter"],
+    filled=True,
+    rounded=True,
+    fontsize=7,
+    ax=ax_tree,
+    impurity=True,
+    proportion=False,
+    precision=3,
+)
+ax_tree.set_title(
+    f"Tuned Decision Tree (max_depth={dt_params.get('max_depth')}, "
+    f"min_samples_split={dt_params.get('min_samples_split')}, "
+    f"min_samples_leaf={dt_params.get('min_samples_leaf')})",
+    fontsize=11, pad=12
+)
+fig_tree.patch.set_facecolor("#FAFAFA")
+plt.tight_layout()
+st.pyplot(fig_tree, use_container_width=True)
+plt.close(fig_tree)
+
 st.markdown("<br>",unsafe_allow_html=True)
 
 c1,c2 = st.columns(2, gap="large")
