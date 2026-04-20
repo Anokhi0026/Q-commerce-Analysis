@@ -13,7 +13,8 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Correspondence Analysis", "Visualising Associations Between Categorical Variables",
             "Five CA biplots revealing demographic-behavioural patterns among Q-Commerce adopters (n=228). "
             "Points close together in biplot space share similar profiles — rows (●) and columns (▲) near each other indicate association.")
