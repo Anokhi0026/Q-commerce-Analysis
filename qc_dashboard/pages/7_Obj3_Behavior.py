@@ -5,8 +5,8 @@ import numpy as np
 from scipy.stats import chi2_contingency, kruskal, spearmanr
 from utils import *
 
-st.session_state["current_page"] = "pages/7_Obj3_Behavior.py"
 st.set_page_config("Obj 3 — Usage Behavior", "📊", layout="wide")
+st.session_state["current_page"] = "pages/7_Obj3_Behavior.py"
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 html,body,[class*='css']{font-family:'Inter',sans-serif;}
