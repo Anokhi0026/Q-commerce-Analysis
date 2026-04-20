@@ -74,7 +74,7 @@ def ca_biplot(ct, row_var, col_var, title, row_color=INDIGO, col_color=ROSE):
         name=col_var.replace("_"," "),
         hovertemplate="%{text}: D1=%{x:.3f}, D2=%{y:.3f}<extra></extra>"))
 
-    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=430, title=dict(text=f"{title}<br><sup>χ²({dof})={chi2_v:.2f}, p {p_str} | "
+    fig.update_layout(**PLOTLY_LAYOUT, height=430, title=dict(text=f"{title}<br><sup>χ²({dof})={chi2_v:.2f}, p {p_str} | "
                                        f"Dim1+Dim2 = {pct_dim.sum():.1f}% variance explained</sup>",
                                   font=dict(size=12)),
                        legend=dict(x=0.01,y=0.99))
