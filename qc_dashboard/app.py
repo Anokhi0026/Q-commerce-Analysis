@@ -1,23 +1,4 @@
 import streamlit as st
-
-def set_bg(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("{image_url}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        </style>
-        unsafe_allow_html=True
-    )
-
-# Use it
-set_bg("https://media.licdn.com/dms/image/v2/D4D12AQHBcvkio_kKbg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1684499143750?e=1778112000&v=beta&t=cRPdIsy31ayEbwFyAgX0cbsWID4EjiSKmJh4F6R5gVc")
-
-import streamlit as st
 import plotly.graph_objects as go
 from utils import *
 
