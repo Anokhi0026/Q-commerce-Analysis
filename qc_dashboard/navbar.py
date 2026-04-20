@@ -18,11 +18,22 @@ PAGES = {
 }
 
 def navbar():
+    # Detect current page from session state
+    current = st.session_state.get("current_page", "app.py")
+    page_paths = [v[1] for v in PAGES.values()]
+    page_names = list(PAGES.keys())
+    
+    # Find index of current page so it stays highlighted
+    try:
+        current_index = page_paths.index(current)
+    except ValueError:
+        current_index = 0
+
     selected = option_menu(
         menu_title=None,
-        options=list(PAGES.keys()),
+        options=page_names,
         icons=[v[0] for v in PAGES.values()],
-        default_index=0,
+        default_index=current_index,  # ← highlights the actual current page
         orientation="horizontal",
         styles={
             "container": {
@@ -44,6 +55,7 @@ def navbar():
         }
     )
 
-    # Navigate to selected page
-    if selected and PAGES[selected][1] != st.session_state.get("current_page"):
-        st.switch_page(PAGES[selected][1])
+    # Only navigate if user clicked a DIFFERENT page
+    selected_path = PAGES[selected][1]
+    if selected_path != current:
+        st.switch_page(selected_path)
