@@ -123,7 +123,7 @@ with c2:
     fig_roc.add_trace(go.Scatter(x=fpr_lr,y=tpr_lr,mode="lines",
                                   line=dict(color=INDIGO,width=3),
                                   name=f"Logistic Regression (AUC={auc_lr:.3f})",
-                                  fill="tozeroy",fillcolor=INDIGO+"15"))
+                                  fill="tozeroy",fillcolor=rgba(79,70,229,0.08)))
     fig_roc.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                   line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
     fig_roc.update_layout(**PLOTLY_LAYOUT, height=280, title=dict(text=f"ROC Curve — AUC={auc_lr:.4f}",font=dict(size=12)))
@@ -202,7 +202,7 @@ with c2:
     fig_roc2.add_trace(go.Scatter(x=fpr_dt,y=tpr_dt,mode="lines",
                                    line=dict(color=VIOLET,width=3),
                                    name=f"Decision Tree (AUC={auc_dt:.3f})",
-                                   fill="tozeroy",fillcolor=VIOLET+"15"))
+                                   fill="tozeroy",fillcolor=rgba(124,58,237,0.08)))
     fig_roc2.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                    line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
     fig_roc2.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
@@ -269,7 +269,7 @@ with c2:
     fig_roc3.add_trace(go.Scatter(x=fpr_rf,y=tpr_rf,mode="lines",
                                    line=dict(color=EMERALD,width=3),
                                    name=f"Random Forest (AUC={auc_rf:.3f})",
-                                   fill="tozeroy",fillcolor=EMERALD+"15"))
+                                   fill="tozeroy",fillcolor=rgba(5,150,105,0.08)))
     fig_roc3.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                    line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
     fig_roc3.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Random Forest | AUC={auc_rf:.4f}",font=dict(size=12)))
