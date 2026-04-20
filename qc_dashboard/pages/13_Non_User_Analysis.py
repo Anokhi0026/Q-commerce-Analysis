@@ -37,24 +37,34 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ── ANALYSIS 1: DEMOGRAPHIC PROFILE ─────────────────
 section("Analysis 1 · Demographic Profile of Non-Users")
 
-for col in ["Age_Group","Gender","Income","Education"]:
-    ct = non_users[col].value_counts(normalize=True)*100
-    
-    fig = go.Figure(go.Bar(
-        x=ct.index,
-        y=ct.values,
-        text=[f"{v:.1f}%" for v in ct.values],
-        textposition="outside",
-        marker_color=INDIGO
-    ))
-    
-    fig.update_layout(**PLOTLY_LAYOUT,
-        height=280,
-        title=dict(text=f"{col} Distribution", font=dict(size=12))
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
+cols = ["Age_Group","Gender","Income","Education"]
 
+c1, c2 = st.columns(2)
+row_pairs = [(cols[0], cols[1]), (cols[2], cols[3])]
+
+for row, (col1, col2) in zip([c1, c2], row_pairs):
+    with row:
+        subcol1, subcol2 = st.columns(2)
+
+        for col, container in zip([col1, col2], [subcol1, subcol2]):
+            with container:
+                ct = non_users[col].value_counts(normalize=True) * 100
+
+                fig = go.Figure(go.Bar(
+                    x=ct.index,
+                    y=ct.values,
+                    text=[f"{v:.1f}%" for v in ct.values],
+                    textposition="outside",
+                    marker_color=INDIGO
+                ))
+
+                fig.update_layout(
+                    **PLOTLY_LAYOUT,
+                    height=260,
+                    title=dict(text=col.replace("_"," "), font=dict(size=12))
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
 finding_card(
     "👥 Non-Users Concentrated in Specific Segments",
     "Non-adoption is not random — certain demographic groups show higher resistance, indicating targeted intervention potential.",
