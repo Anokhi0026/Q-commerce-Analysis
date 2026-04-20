@@ -91,12 +91,12 @@ with right:
           <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>95% confidence level</div>
         </div>
         <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
-          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>p = 0.5</div>
-          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Maximum variance assumption</div>
+          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>p = 0.85</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'></div>
         </div>
         <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
-          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>q = 1 − p = 0.5</div>
-          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Proportion not in group</div>
+          <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>q = 1 − p = 0.15</div>
+          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'></div>
         </div>
         <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
           <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>e = 0.05</div>
@@ -115,21 +115,11 @@ with right:
                   background:#F0FDF4;border-radius:8px;margin-bottom:14px;border:1px solid #BBF7D0;'>
         n = n₀ / (1 + (n₀ − 1) / N)
       </div>
-      <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;'>
-        <div style='background:#F0FDF4;border-radius:8px;padding:10px 12px;'>
-          <div style='font-family:monospace;font-weight:700;color:{EMERALD};font-size:.95rem;'>n₀ = 384</div>
-          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Initial Cochran sample size</div>
-        </div>
-        <div style='background:#F0FDF4;border-radius:8px;padding:10px 12px;'>
-          <div style='font-family:monospace;font-weight:700;color:{EMERALD};font-size:.95rem;'>N = 1,74,00,000</div>
-          <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>Vadodara population (2011 Census)</div>
-        </div>
-      </div>
-
+      
       <!-- Computed n -->
       <div style='text-align:center;background:{EMERALD}10;border:1px solid {EMERALD}30;
                   border-radius:8px;padding:10px;font-size:.85rem;color:#1E1E2E;'>
-        &nbsp;→ Sample Size calculated <b style='color:{EMERALD};font-size:1rem;'>308</b> ,
+        &nbsp; Sample Size calculated <b style='color:{EMERALD};font-size:1rem;'>308</b> ,
         <b style='color:{EMERALD};font-size:1rem;'>341</b> samples were collected
       </div>
 
