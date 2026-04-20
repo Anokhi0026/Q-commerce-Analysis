@@ -91,7 +91,7 @@ with right:
         for sym, desc in [
             ("Z = 1.96","95% confidence level"),
             ("p = 0.58","Estimated population proportion"),
-            ("q = 1 - p = 0.15"),
+            ("q = 1 - p = 0.15",""),
             ("e = 0.05","5% margin of error"),
         ]]) + """
       </div>
