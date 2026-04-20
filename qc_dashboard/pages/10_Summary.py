@@ -5,7 +5,6 @@ import numpy as np
 from utils import *
 
 st.set_page_config("Summary", "✨", layout="wide")
-st.session_state["current_page"] = "pages/10_Summary.py"
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 html,body,[class*='css']{font-family:'Inter',sans-serif;}
@@ -13,11 +12,10 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-from navbar import navbar
-navbar()
-page_header("Research Summary", "Complete Findings & Strategic Conclusions",
+sidebar()
+page_header("Research Summary", "Complete Findings & Conclusions",
             "A consolidated view of all analytical results — 5 objectives, cluster analysis, "
-            "correspondence analysis — with strategic recommendations and study limitations.")
+            "correspondence analysis — with consumer insights and study limitations.")
 
 # ── Master scorecard ───────────────────────────────────────────────────────────
 st.markdown(f"""
@@ -46,37 +44,37 @@ all_findings = [
     (INDIGO,"📱","Objective 1","Most-Used Apps",[
         ("Blinkit leads with 62.3% market share","142 of 228 users — near-oligopolistic structure; first-mover advantage"),
         ("Two-tier market: Zepto + Swiggy = ~35%","Neither can challenge Blinkit's dominance in the short term"),
-        ("High awareness, lower active usage","Significant awareness-to-usage gap exists for all platforms — conversion opportunity"),
+        ("High awareness, lower active usage","Significant awareness-to-usage gap exists for all platforms"),
     ]),
     (ROSE,"🔗","Objective 2","Adoption Patterns",[
         ("Age is the strongest predictor (V=0.588, Strong)","χ²=117.8, p<0.001 — each older age band shows lower adoption"),
-        ("Education: Moderate effect (V=0.407)","Higher education → digital literacy → adoption; persists after controlling for age"),
-        ("Gender: No effect (V=0.037, p=0.79)","Male and female adopt equally — challenges gendered digital adoption assumptions"),
+        ("Education: Moderate effect (V=0.407)","Higher education → digital literacy → adoption"),
+        ("Gender: No effect (V=0.037, p=0.79)","Male and female adopt equally"),
     ]),
     (EMERALD,"📊","Objective 3","Usage Behavior",[
-        ("Evening+Night = 63% of orders","End-of-day top-up shopping; optimize dark-store staffing for 5–11 PM"),
+        ("Evening+Night = 63% of orders","End-of-day top-up shopping; peak ordering window 5–11 PM"),
         ("₹200–₹400 dominant order bracket","Small, targeted replenishment — not bulk grocery runs"),
         ("Satisfaction-loyalty-advocacy chain confirmed","Strong Spearman ρ among satisfaction, continuity, recommendation"),
     ]),
     (AMBER,"🔍","Objective 4","Key Drivers",[
-        ("Cronbach's α=0.768 (Acceptable reliability)","10-item scale is valid; all subsequent EFA analyses are statistically justified"),
+        ("Cronbach's α=0.768 (Acceptable reliability)","10-item scale is valid; EFA analyses are statistically justified"),
         ("Convenience dominates (Time Saving, Lifestyle Fit rank top)","Price incentives matter less and show more response variance"),
-        ("Lack of Awareness = #1 non-adoption barrier (29.2%)","Not rejection — non-exposure. Reachable via targeted campaigns"),
+        ("Lack of Awareness = #1 non-adoption barrier (29.2%)","Not rejection — non-exposure"),
     ]),
     (VIOLET,"🤖","Objective 5","Predictive Models",[
         ("Logistic Regression: AUC=0.847, Accuracy=80.1%","Age_40+ (OR≈0.074, p<0.001) and Education (OR≈9×) are dominant"),
         ("Gender suppressor effect detected","Multivariate model reveals gender effect masked in bivariate chi-square"),
-        ("RF CV AUC highest; all 3 models converge on same findings","Age + Education dominate; Income/Occupation lose significance when controlled"),
+        ("RF CV AUC highest; all 3 models converge on same findings","Age + Education dominate across all model types"),
     ]),
     (SKY,"🧩","Cluster Analysis","3 Consumer Segments",[
-        ("Active Engagers — highest attitudes, most satisfied","Power users, primary revenue base; target for loyalty programs"),
-        ("Passive Users — below average on all items","At-risk of churn; re-engagement campaigns with convenience messaging"),
-        ("Convenience Purists — time-saving and urgent needs driven","Emergency top-up users; respond to speed and reliability messaging"),
+        ("Active Engagers — highest attitudes, most satisfied","Power users with strongest loyalty and recommendation scores"),
+        ("Passive Users — below average on all items","Occasional users with weaker engagement and lower satisfaction"),
+        ("Convenience Purists — time-saving and urgent needs driven","Emergency top-up users; less influenced by discounts"),
     ]),
     ("#DB2777","📍","Correspondence Analysis","Categorical Associations",[
-        ("CA1: Blinkit↔Young (18–25), Zepto↔26–33 segment","Clear platform-age segmentation; Blinkit dominates youth"),
-        ("CA2: Night/Midnight↔18–25, Morning↔40+","Age-stratified delivery time preferences — strong operational implication"),
-        ("CA4: Students↔UPI, Retired↔CoD","Payment method is occupation-driven; trust campaigns should target homemakers/retired"),
+        ("CA1: Blinkit↔Young (18–25), Zepto↔26–33 segment","Clear platform-age segmentation in consumer choice"),
+        ("CA2: Night/Midnight↔18–25, Morning↔40+","Age-stratified delivery time preferences"),
+        ("CA4: Students↔UPI, Retired↔CoD","Payment method is strongly occupation-driven"),
     ]),
 ]
 
@@ -119,7 +117,8 @@ with c1:
     for t,c in [(0.1,SLATE),(0.3,AMBER),(0.5,ROSE)]:
         fig.add_vline(x=t, line_dash="dot", line_color=c, opacity=0.5)
     fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
-    fig.update_xaxes(title="Cramér's V",range=[0,0.7],gridcolor="#F1F5F9")
+    fig.update_xaxes(title="Cramér's V", range=[0,0.7], gridcolor="#F1F5F9")
+    fig.update_yaxes(gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 with c2:
@@ -134,7 +133,8 @@ with c2:
     fig.add_hline(y=3.5, line_dash="dot", line_color=AMBER, opacity=0.7,
                   annotation_text="≥3.5 target", annotation_font=dict(size=9))
     fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
-    fig.update_yaxes(title="Mean Score",range=[0,5.2],gridcolor="#F1F5F9")
+    fig.update_yaxes(title="Mean Score", range=[0,5.2], gridcolor="#F1F5F9")
+    fig.update_xaxes(gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 with c3:
@@ -146,34 +146,54 @@ with c3:
     fig.add_hline(y=0.5, line_dash="dash", line_color=SLATE, opacity=0.5,
                   annotation_text="Random classifier", annotation_font=dict(size=9))
     fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
-    fig.update_yaxes(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9")
+    fig.update_yaxes(title="AUC", range=[0.4,0.95], gridcolor="#F1F5F9")
+    fig.update_xaxes(gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
-# ── Strategic Recommendations ──────────────────────────────────────────────────
-section("Strategic Recommendations")
-recs = [
-    ("🎯 Target 18–33 With High Education First",
-     "This demographic has the highest adoption probability across all models. "
-     "Platform growth should concentrate acquisition here before expanding to harder-to-reach segments.", INDIGO),
-    ("📣 Awareness Campaigns Are #1 Priority for Non-Users",
-     "29.2% of non-users simply haven't been exposed. Simple offline+digital campaigns in Vadodara's wards "
-     "(especially North and East) can convert this reachable non-adopter segment.", ROSE),
-    ("⏰ Optimise Operations for the 5–11 PM Window",
-     "63% of orders come in evening/night. Dark-store staffing, fleet availability, and push notifications "
-     "should all be concentrated in this window — especially for users aged 18–33.", EMERALD),
-    ("💳 'First UPI Order' Incentive for CoD Users",
-     "32% still use CoD. Graduated incentives (first UPI order discount, wallet cashback) can shift this "
-     "segment without losing them — occupation-targeted campaigns work best (homemakers, retired).", AMBER),
-    ("🏪 Simplify Onboarding for 40+ Users",
-     "The logistic model (OR≈0.074) and all three models agree: 40+ is the largest adoption gap. "
-     "Simplified UI, vernacular language support, and in-store demo kiosks address digital literacy barriers.", VIOLET),
-    ("🧩 Segment-Specific Marketing Using Cluster Profiles",
-     "Active Engagers → loyalty rewards. Passive Users → re-engagement + speed messaging. "
-     "Convenience Purists → reliability and emergency availability messaging. Don't treat all users identically.", SKY),
+# ── Key Consumer Insights ──────────────────────────────────────────────────────
+section("Key Consumer Insights")
+st.markdown("""
+<div style='background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;
+            padding:10px 16px;margin-bottom:16px;font-size:.8rem;color:#1D4ED8;'>
+  These insights describe <b>who consumers are, what drives their behaviour, and what barriers they face</b>
+  — derived directly from the statistical findings of this study.
+</div>""", unsafe_allow_html=True)
+
+insights = [
+    ("⏰ Convenience Is the Core Adoption Motive",
+     "Time-saving and lifestyle compatibility are the top-ranked reasons consumers adopt Q-Commerce "
+     "— ranked above discounts and product variety. Consumers primarily use it to avoid disrupting "
+     "their work or study schedule, not for price benefits.",
+     INDIGO),
+    ("🎓 Digital Literacy Shapes Adoption More Than Income",
+     "Education (V=0.407) predicts adoption more strongly than household income (V=0.246). "
+     "Consumers with higher education are more confident navigating apps and trusting digital payments "
+     "— suggesting literacy is a larger barrier than affordability for non-adopters.",
+     EMERALD),
+    ("🧓 Older Consumers Have Distinct and Real Barriers",
+     "Consumers aged 40+ are dramatically less likely to adopt (OR≈0.074). Their hesitation stems "
+     "from app navigation discomfort, data privacy concerns, and comfort with offline routines — "
+     "not from indifference to fast delivery as a concept.",
+     ROSE),
+    ("💳 CoD Preference Reflects Trust Deficit, Not Inertia",
+     "32.5% of Q-Commerce users still prefer Cash on Delivery. This is concentrated among homemakers "
+     "and retired respondents who report lower trust in digital payment systems — indicating a genuine "
+     "confidence gap rather than simple habit.",
+     AMBER),
+    ("🛒 Consumers Use Q-Commerce for Top-Ups, Not Bulk Shopping",
+     "72.4% of orders are below ₹400 and categories are dominated by groceries, snacks, and daily "
+     "essentials. Consumers position Q-Commerce as a supplement to planned shopping — fulfilling "
+     "immediate, small-basket needs when something runs out unexpectedly.",
+     VIOLET),
+    ("😐 A Large Segment Is Retained but Not Habitual",
+     "Cluster analysis identifies a 'Passive Users' segment with below-average attitude and satisfaction "
+     "scores. These consumers order occasionally and only under specific circumstances — they are "
+     "not dissatisfied enough to leave, but have not integrated Q-Commerce into their daily routine.",
+     SKY),
 ]
 
 c1,c2 = st.columns(2, gap="large")
-for i,(title,text,color) in enumerate(recs):
+for i,(title,text,color) in enumerate(insights):
     col = c1 if i%2==0 else c2
     col.markdown(f"""
     <div style='background:#fff;border:1px solid #E2E8F0;border-left:4px solid {color};
@@ -223,7 +243,7 @@ for col_idx, (col_w, subset) in enumerate([(c1, methods[:half]),(c2, methods[hal
               </div>
             </div>""", unsafe_allow_html=True)
 
-# ── Limitations ────────────────────────────────────────────────────────────────
+# ── Limitations & Future Scope ─────────────────────────────────────────────────
 section("Limitations & Future Scope")
 lc1,lc2 = st.columns(2, gap="large")
 with lc1:
@@ -244,12 +264,12 @@ with lc2:
     <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:18px;'>
       <div style='font-weight:700;font-size:.88rem;color:#14532D;margin-bottom:10px;'>🔭 Future Scope</div>
       {"".join(f'<div style="font-size:.78rem;color:#15803D;padding:3px 0;">• {l}</div>' for l in [
-        "Longitudinal study to track adoption over 12–18 months",
-        "Expand to other Tier-2 cities for cross-city comparison (Surat, Rajkot)",
-        "Add platform-side data: delivery time actuals, dark-store coverage maps",
-        "Deep qualitative interviews with Passive Users and non-adopters",
-        "Price elasticity modelling and willingness-to-pay analysis",
-        "Social network analysis of referral patterns among Active Engagers",
+        "Longitudinal study to track consumer adoption behaviour over 12–18 months",
+        "Expand to other Tier-2 cities for cross-city consumer comparison (Surat, Rajkot)",
+        "Qualitative interviews to understand consumer trust and privacy concerns in depth",
+        "Focus groups with Passive Users and non-adopters to map unmet needs",
+        "Consumer willingness-to-pay and price sensitivity modelling",
+        "Social network analysis of referral and word-of-mouth patterns among Active Engagers",
       ])}
     </div>""", unsafe_allow_html=True)
 
