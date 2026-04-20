@@ -11,7 +11,7 @@ page_header("Questionnaire Design", "Data Collection Instrument",
 
 # ── Overview ───────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
-kpi(c1, "8",      "Total Pages",     "Questionnaire sections")
+kpi(c1, "7",      "Total Sections",     "Questionnaire sections")
 kpi(c2, "~35",    "Questions",       "Across all sections", EMERALD)
 kpi(c3, "5–10",   "Minutes",         "Estimated completion", AMBER)
 kpi(c4, "Google", "Platform",        "Forms-based survey", VIOLET)
@@ -43,9 +43,6 @@ sections = [
     ("7","Non-User Barrier Likert","🔒","#DB2777",
      ["7 conditional adoption statements: Lower charges, Quality guarantee, App guidance,\nCompetitive prices, Delivery availability, Discounts, Trust & security"],
      "Identifies what would trigger adoption among non-users — key for strategic recommendations."),
-    ("8","Additional Context","ℹ️",SLATE,
-     ["Open-ended feedback","Referral behaviour"],
-     "Supplementary qualitative and social influence data."),
 ]
 
 for num, title, icon, color, items, note in sections:
