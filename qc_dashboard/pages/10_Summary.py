@@ -245,35 +245,7 @@ for col_idx, (col_w, subset) in enumerate([(c1, methods[:half]),(c2, methods[hal
               </div>
             </div>""", unsafe_allow_html=True)
 
-# ── Limitations & Future Scope ─────────────────────────────────────────────────
-section("Limitations & Future Scope")
-lc1,lc2 = st.columns(2, gap="large")
-with lc1:
-    st.markdown(f"""
-    <div style='background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:18px;'>
-      <div style='font-weight:700;font-size:.88rem;color:#92400E;margin-bottom:10px;'>⚠️ Limitations</div>
-      {"".join(f'<div style="font-size:.78rem;color:#78350F;padding:3px 0;">• {l}</div>' for l in [
-        "Convenience sampling — may not represent all of Vadodara equally",
-        "Cross-sectional design — cannot track adoption dynamics over time",
-        "Non-user factor scores imputed with user-sample mean in Obj 5",
-        "CA requires `prince` library; implemented via NumPy SVD (same math)",
-        "Cluster labels (Active/Passive/Purists) are interpretive, not definitive",
-        "4 respondents excluded from Obj 5 due to missing Gender values",
-      ])}
-    </div>""", unsafe_allow_html=True)
-with lc2:
-    st.markdown(f"""
-    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:18px;'>
-      <div style='font-weight:700;font-size:.88rem;color:#14532D;margin-bottom:10px;'>🔭 Future Scope</div>
-      {"".join(f'<div style="font-size:.78rem;color:#15803D;padding:3px 0;">• {l}</div>' for l in [
-        "Longitudinal study to track consumer adoption behaviour over 12–18 months",
-        "Expand to other Tier-2 cities for cross-city consumer comparison (Surat, Rajkot)",
-        "Qualitative interviews to understand consumer trust and privacy concerns in depth",
-        "Focus groups with Passive Users and non-adopters to map unmet needs",
-        "Consumer willingness-to-pay and price sensitivity modelling",
-        "Social network analysis of referral and word-of-mouth patterns among Active Engagers",
-      ])}
-    </div>""", unsafe_allow_html=True)
+
 
 st.markdown(f"""
 <div style='background:linear-gradient(135deg,#1E1E2E,#2D2D4E);border-radius:16px;
