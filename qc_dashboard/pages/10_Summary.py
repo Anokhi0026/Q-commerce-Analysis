@@ -25,8 +25,7 @@ st.markdown(f"""
     Research Scorecard · Q-Commerce Vadodara · n=341
   </div>
   <div style='display:grid;grid-template-columns:repeat(7,1fr);gap:16px;'>
-    {"".join(f'''
-    <div style='text-align:center;'>
+    {"".join(f'''    <div style='text-align:center;'>
       <div style='font-size:1.6rem;font-weight:800;color:{col};font-family:monospace;'>{val}</div>
       <div style='font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:#64748B;margin-top:4px;'>{lbl}</div>
     </div>''' for val,lbl,col in [
@@ -93,8 +92,7 @@ for color, icon, tag, title, finds in all_findings:
         </div>
       </div>
       <div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;'>
-    """ + "".join([f"""
-        <div style='background:{color}06;border:1px solid {color}18;border-radius:8px;padding:10px 12px;'>
+    """ + "".join([f"""        <div style='background:{color}06;border:1px solid {color}18;border-radius:8px;padding:10px 12px;'>
           <div style='font-weight:600;font-size:.78rem;color:#1E1E2E;margin-bottom:3px;'>{f[0]}</div>
           <div style='font-size:.72rem;color:#475569;line-height:1.5;'>{f[1]}</div>
         </div>""" for f in finds]) + """
@@ -118,9 +116,8 @@ with c1:
         text=[f"V={v:.3f}" for v in vs_[::-1]], textposition="outside"))
     for t,c in [(0.1,SLATE),(0.3,AMBER),(0.5,ROSE)]:
         fig.add_vline(x=t, line_dash="dot", line_color=c, opacity=0.5)
-    fig.update_layout(**PLOTLY_LAYOUT, height=240,
-                       xaxis=dict(title="Cramér's V",range=[0,0.7],gridcolor="#F1F5F9"),
-                       title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
+    fig.update_xaxes(title="Cramér's V",range=[0,0.7],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 with c2:
@@ -134,9 +131,8 @@ with c2:
         text=[f"{m:.2f}/5" for m in means], textposition="outside"))
     fig.add_hline(y=3.5, line_dash="dot", line_color=AMBER, opacity=0.7,
                   annotation_text="≥3.5 target", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, height=240,
-                       yaxis=dict(title="Mean Score",range=[0,5.2],gridcolor="#F1F5F9"),
-                       title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
+    fig.update_yaxes(title="Mean Score",range=[0,5.2],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 with c3:
@@ -147,9 +143,8 @@ with c3:
         text=[f"AUC={v:.3f}" for v in aucs_], textposition="outside"))
     fig.add_hline(y=0.5, line_dash="dash", line_color=SLATE, opacity=0.5,
                   annotation_text="Random classifier", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, height=240,
-                       yaxis=dict(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9"),
-                       title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
+    fig.update_yaxes(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 # ── Strategic Recommendations ──────────────────────────────────────────────────

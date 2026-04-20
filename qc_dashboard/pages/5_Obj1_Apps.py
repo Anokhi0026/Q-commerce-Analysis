@@ -59,10 +59,9 @@ with c2:
     fig.add_trace(go.Bar(name="Primary User", x=apps, y=usage_counts.values,
                           marker_color=[INDIGO,EMERALD,ROSE,AMBER],
                           text=usage_counts.values, textposition="outside"))
-    fig.update_layout(**PLOTLY_LAYOUT, barmode="group", height=380,
-                       title=dict(text="Awareness vs. Active Usage by App", font=dict(size=13)),
-                       yaxis=dict(title="Count", gridcolor="#F1F5F9"),
-                       legend=dict(x=0.6, y=0.95))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, barmode="group", height=380,
+                       title=dict(text="Awareness vs. Active Usage by App", font=dict(size=13)), legend=dict(x=0.6, y=0.95))
+    fig.update_yaxes(title="Count", gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 section("Key Findings")

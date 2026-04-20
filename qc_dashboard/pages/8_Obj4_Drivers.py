@@ -70,9 +70,9 @@ with c2:
         textposition="outside", hovertemplate="%{y}: r=%{x:.3f}<extra></extra>"))
     fig_itc.add_vline(x=0.3, line_dash="dash", line_color=ROSE, opacity=0.8,
                       annotation_text="Min threshold (0.30)", annotation_font=dict(size=9,color=ROSE))
-    fig_itc.update_layout(**PLOTLY_LAYOUT, height=320,
-                           title=dict(text=f"Item-Total Correlations (α={alpha:.3f})",font=dict(size=12)),
-                           xaxis=dict(title="Corrected Item-Total r",gridcolor="#F1F5F9"))
+    fig_itc.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=320,
+                           title=dict(text=f"Item-Total Correlations (α={alpha:.3f})",font=dict(size=12)))
+    fig_itc.update_xaxes(title="Corrected Item-Total r",gridcolor="#F1F5F9")
     st.plotly_chart(fig_itc, use_container_width=True)
 
 with st.expander("📋 Full item-total correlation table"):
@@ -100,9 +100,8 @@ fig_rank.add_vline(x=3.0, line_dash="dot", line_color="#94A3B8",
                    annotation_text="Neutral (3.0)", annotation_font=dict(size=9,color="#94A3B8"))
 fig_rank.add_vline(x=4.0, line_dash="dot", line_color=INDIGO,
                    annotation_text="Agree (4.0)", annotation_font=dict(size=9,color=INDIGO))
-fig_rank.update_layout(**PLOTLY_LAYOUT, height=390,
-                        xaxis=dict(title="Mean Likert Score (1–5)", range=[1,5.7],gridcolor="#F1F5F9"),
-                        title=dict(text="Ranked Adoption Driver Means (±1 SD, n=228)",font=dict(size=12)))
+fig_rank.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=390, title=dict(text="Ranked Adoption Driver Means (±1 SD, n=228)",font=dict(size=12)))
+fig_rank.update_xaxes(title="Mean Likert Score (1–5)", range=[1,5.7],gridcolor="#F1F5F9")
 st.plotly_chart(fig_rank, use_container_width=True)
 
 # Stacked Likert chart
@@ -205,10 +204,9 @@ with c1:
     fig_scree.add_vrect(x0=0.5, x1=n_factors+0.5, fillcolor=INDIGO+"12", line_width=0,
                          annotation_text=f"{n_factors} factors retained",
                          annotation_position="top left", annotation_font=dict(size=9,color=INDIGO))
-    fig_scree.update_layout(**PLOTLY_LAYOUT, height=310,
-                             xaxis=dict(title="Factor Number",tickvals=list(range(1,11)),gridcolor="#F1F5F9"),
-                             yaxis=dict(title="Eigenvalue",gridcolor="#F1F5F9"),
-                             title=dict(text=f"Scree Plot — {n_factors} Factors Retained",font=dict(size=12)))
+    fig_scree.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=310, title=dict(text=f"Scree Plot — {n_factors} Factors Retained",font=dict(size=12)))
+    fig_scree.update_xaxes(title="Factor Number",tickvals=list(range(1,11)),gridcolor="#F1F5F9")
+    fig_scree.update_yaxes(title="Eigenvalue",gridcolor="#F1F5F9")
     st.plotly_chart(fig_scree, use_container_width=True)
 
 with c2:
@@ -226,8 +224,7 @@ with c2:
 
 # Factor summary cards
 st.markdown(f"""<div style='display:grid;grid-template-columns:repeat({n_factors},1fr);gap:10px;margin:8px 0;'>
-""" + "".join([f"""
-  <div style='background:{PALETTE[i]}10;border:1px solid {PALETTE[i]}30;border-radius:10px;padding:12px;'>
+""" + "".join([f"""  <div style='background:{PALETTE[i]}10;border:1px solid {PALETTE[i]}30;border-radius:10px;padding:12px;'>
     <div style='font-weight:700;color:{PALETTE[i]};font-size:.85rem;'>Factor {i+1}</div>
     <div style='font-size:.7rem;color:#64748B;'>Variance: {pct_var[i]:.1f}%</div>
     <div style='margin-top:6px;'>{"".join(f'<div style="font-size:.72rem;color:#374151;padding:1px 0;">• {item}</div>' for item in ldf[f"F{i+1}"][np.abs(ldf[f"F{i+1}"])>=0.40].index)}</div>
@@ -276,9 +273,8 @@ with c1:
                       annotation_text="Neutral (3.0)", annotation_font=dict(size=9))
     fig_bar.add_vline(x=4.0, line_dash="dot", line_color=ROSE,
                       annotation_text="Agree (4.0)", annotation_font=dict(size=9,color=ROSE))
-    fig_bar.update_layout(**PLOTLY_LAYOUT, height=330,
-                           xaxis=dict(range=[1,5.8],gridcolor="#F1F5F9"),
-                           title=dict(text="Barrier Item Mean Scores (Non-users, n=113)",font=dict(size=12)))
+    fig_bar.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=330, title=dict(text="Barrier Item Mean Scores (Non-users, n=113)",font=dict(size=12)))
+    fig_bar.update_xaxes(range=[1,5.8],gridcolor="#F1F5F9")
     st.plotly_chart(fig_bar, use_container_width=True)
 
 with c2:
@@ -297,9 +293,8 @@ with c2:
         text=[f"n={v} ({v/len(non_u)*100:.1f}%)" for v in r_v[::-1]],
         textposition="outside",
         hovertemplate="%{y}: %{x} non-users<extra></extra>"))
-    fig_r.update_layout(**PLOTLY_LAYOUT, height=330,
-                         xaxis=dict(title="No. of Non-Users",gridcolor="#F1F5F9"),
-                         title=dict(text="Open-Ended Non-Adoption Reasons",font=dict(size=12)))
+    fig_r.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=330, title=dict(text="Open-Ended Non-Adoption Reasons",font=dict(size=12)))
+    fig_r.update_xaxes(title="No. of Non-Users",gridcolor="#F1F5F9")
     st.plotly_chart(fig_r, use_container_width=True)
 
 # ── ANALYSIS 5: MANN-WHITNEY + KRUSKAL + DUNN ─────────────────────────────────
@@ -366,9 +361,8 @@ with c1:
         text=[f"H={r['H']} {r['Sig']}" for _,r in kw_barr_df.iterrows()],
         textposition="outside",
         hovertemplate="%{y}: H=%{x:.2f}<extra></extra>"))
-    fig_kw.update_layout(**PLOTLY_LAYOUT, height=290,
-                          xaxis=dict(title="H Statistic",gridcolor="#F1F5F9"),
-                          title=dict(text="Kruskal-Wallis H by Barrier Item",font=dict(size=12)))
+    fig_kw.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text="Kruskal-Wallis H by Barrier Item",font=dict(size=12)))
+    fig_kw.update_xaxes(title="H Statistic",gridcolor="#F1F5F9")
     st.plotly_chart(fig_kw, use_container_width=True)
 
 with c2:

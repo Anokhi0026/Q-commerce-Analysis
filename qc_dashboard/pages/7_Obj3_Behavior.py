@@ -46,10 +46,10 @@ def freq_bar(series, order, title, colors=None, horiz=False):
     else:
         fig = go.Figure(go.Bar(x=cnt.index, y=cnt.values, marker_color=clrs,
                                 text=texts, textposition="outside"))
-    fig.update_layout(**PLOTLY_LAYOUT, height=290,
-                       title=dict(text=title, font=dict(size=12)),
-                       xaxis=dict(gridcolor="#F1F5F9", tickangle=-15),
-                       yaxis=dict(gridcolor="#F1F5F9"))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290,
+                       title=dict(text=title, font=dict(size=12)))
+    fig.update_xaxes(gridcolor="#F1F5F9", tickangle=-15)
+    fig.update_yaxes(gridcolor="#F1F5F9")
     return fig
 
 # ── ANALYSIS 1 ─────────────────────────────────────────────────────────────────
@@ -93,9 +93,8 @@ with t2:
             marker_color=[INDIGO,AMBER,EMERALD,VIOLET],
             text=[f"{int(v)} ({v/total_p*100:.1f}%)" for v in pay_cnt.values[::-1]],
             textposition="outside"))
-        fig_pay.update_layout(**PLOTLY_LAYOUT, height=290,
-                               xaxis=dict(title="Count",gridcolor="#F1F5F9"),
-                               title=dict(text="(e) Payment Method",font=dict(size=12)))
+        fig_pay.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text="(e) Payment Method",font=dict(size=12)))
+        fig_pay.update_xaxes(title="Count",gridcolor="#F1F5F9")
         st.plotly_chart(fig_pay, use_container_width=True)
     finding_card("💳 UPI (54%) Leads, CoD (32.5%) Persists",
                  "72.4% of users spend below ₹400 — small, targeted top-up purchases. "
@@ -123,9 +122,8 @@ with t3:
             marker_color=PALETTE[:len(cat_s)],
             text=[f"{v} ({v/len(users)*100:.1f}%)" for v in cat_s.values],
             textposition="outside"))
-        fig_cat.update_layout(**PLOTLY_LAYOUT, height=290,
-                               xaxis=dict(title="No. of Users",gridcolor="#F1F5F9"),
-                               title=dict(text="Product Categories (Multi-response)",font=dict(size=12)))
+        fig_cat.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text="Product Categories (Multi-response)",font=dict(size=12)))
+        fig_cat.update_xaxes(title="No. of Users",gridcolor="#F1F5F9")
         st.plotly_chart(fig_cat, use_container_width=True)
 
     # Delivery Time × Age Group heatmap
@@ -227,10 +225,10 @@ for col_w, sc, sl in zip([c1,c2,c3], sat_vars_list, sat_lbls):
     fig  = go.Figure(go.Bar(x=cnt.index, y=cnt.values, marker_color=INDIGO, text=cnt.values, textposition="outside"))
     fig.add_vline(x=data.mean(), line_dash="dash", line_color=ROSE, opacity=0.8,
                   annotation_text=f"μ={data.mean():.2f}", annotation_font=dict(size=9,color=ROSE))
-    fig.update_layout(**PLOTLY_LAYOUT, height=230,
-                       title=dict(text=f"{sl}\n(μ={data.mean():.2f}, SD={data.std():.2f})",font=dict(size=10)),
-                       xaxis=dict(tickvals=[1,2,3,4,5],gridcolor="#F1F5F9"),
-                       yaxis=dict(gridcolor="#F1F5F9"))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=230,
+                       title=dict(text=f"{sl}\n(μ={data.mean():.2f}, SD={data.std():.2f})",font=dict(size=10)))
+    fig.update_xaxes(tickvals=[1,2,3,4,5],gridcolor="#F1F5F9")
+    fig.update_yaxes(gridcolor="#F1F5F9")
     col_w.plotly_chart(fig, use_container_width=True)
 
 st.markdown("<div style='font-weight:600;font-size:.85rem;margin:10px 0 4px;'>3B · Kruskal-Wallis H Test</div>",unsafe_allow_html=True)

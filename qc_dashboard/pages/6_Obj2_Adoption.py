@@ -79,9 +79,8 @@ with right:
         fig.add_vline(x=threshold, line_dash="dot", line_color=color, opacity=0.6,
                       annotation_text=label, annotation_position="top right",
                       annotation_font=dict(size=9,color=color))
-    fig.update_layout(**PLOTLY_LAYOUT, height=300,
-                       xaxis=dict(title="Cramér's V (Effect Size)", range=[0,0.7], gridcolor="#F1F5F9"),
-                       title=dict(text="Effect Size: Blue = Significant | Gray = Not Significant", font=dict(size=11)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=300, title=dict(text="Effect Size: Blue = Significant | Gray = Not Significant", font=dict(size=11)))
+    fig.update_xaxes(title="Cramér's V (Effect Size)", range=[0,0.7], gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("""
@@ -126,10 +125,10 @@ for tab, (col, order) in zip(tab_vars, demo_configs):
             fig.add_annotation(x=cat, y=103, text=f"n={cnt}", showarrow=False,
                                font=dict(size=9, color="#64748B"))
 
-        fig.update_layout(**PLOTLY_LAYOUT, barmode="stack", height=360,
-                           title=dict(text=f"Adoption Rate by {col} (%)", font=dict(size=13)),
-                           yaxis=dict(title="% of group", range=[0,110],gridcolor="#F1F5F9"),
-                           xaxis=dict(tickangle=-20))
+        fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, barmode="stack", height=360,
+                           title=dict(text=f"Adoption Rate by {col} (%)", font=dict(size=13)))
+        fig.update_xaxes(tickangle=-20)
+        fig.update_yaxes(title="% of group", range=[0,110],gridcolor="#F1F5F9")
         st.plotly_chart(fig, use_container_width=True)
 
 section("Normality Check — Shapiro-Wilk on Age")

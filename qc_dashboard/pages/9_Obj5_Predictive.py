@@ -113,10 +113,9 @@ with c1:
                                     mode="lines",line=dict(color=colors_or[i],width=2),showlegend=False))
     fig_f.add_vline(x=1.0,line_dash="dash",line_color="#94A3B8",
                     annotation_text="OR=1",annotation_font=dict(size=9))
-    fig_f.update_layout(**PLOTLY_LAYOUT, height=500, showlegend=False,
-                         yaxis=dict(tickvals=ypos,ticktext=plot_or.index.tolist(),gridcolor="#F1F5F9"),
-                         xaxis=dict(title="Odds Ratio (OR) with 95% Wald CI",gridcolor="#F1F5F9"),
-                         title=dict(text="Forest Plot — Blue=Significant | Gray=Not Significant",font=dict(size=11)))
+    fig_f.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=500, showlegend=False, title=dict(text="Forest Plot — Blue=Significant | Gray=Not Significant",font=dict(size=11)))
+    fig_f.update_xaxes(title="Odds Ratio (OR) with 95% Wald CI",gridcolor="#F1F5F9")
+    fig_f.update_yaxes(tickvals=ypos,ticktext=plot_or.index.tolist(),gridcolor="#F1F5F9")
     st.plotly_chart(fig_f, use_container_width=True)
 
 with c2:
@@ -127,10 +126,9 @@ with c2:
                                   fill="tozeroy",fillcolor=INDIGO+"15"))
     fig_roc.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                   line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
-    fig_roc.update_layout(**PLOTLY_LAYOUT, height=280,
-                           xaxis=dict(title="FPR",range=[0,1],gridcolor="#F1F5F9"),
-                           yaxis=dict(title="TPR",range=[0,1],gridcolor="#F1F5F9"),
-                           title=dict(text=f"ROC Curve — AUC={auc_lr:.4f}",font=dict(size=12)))
+    fig_roc.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=280, title=dict(text=f"ROC Curve — AUC={auc_lr:.4f}",font=dict(size=12)))
+    fig_roc.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
+    fig_roc.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
     st.plotly_chart(fig_roc, use_container_width=True)
 
     # Model summary stats
@@ -196,9 +194,8 @@ with c1:
                       ROSE if "Income" in f else VIOLET for f in dt_imp.index[::-1]],
         text=[f"{v:.4f}" for v in dt_imp.values[::-1]], textposition="outside",
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
-    fig_imp.update_layout(**PLOTLY_LAYOUT, height=330,
-                           xaxis=dict(title="Feature Importance (Gini)",gridcolor="#F1F5F9"),
-                           title=dict(text="Decision Tree Feature Importance (Tuned Model)",font=dict(size=12)))
+    fig_imp.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=330, title=dict(text="Decision Tree Feature Importance (Tuned Model)",font=dict(size=12)))
+    fig_imp.update_xaxes(title="Feature Importance (Gini)",gridcolor="#F1F5F9")
     st.plotly_chart(fig_imp, use_container_width=True)
 with c2:
     fig_roc2 = go.Figure()
@@ -208,10 +205,9 @@ with c2:
                                    fill="tozeroy",fillcolor=VIOLET+"15"))
     fig_roc2.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                    line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
-    fig_roc2.update_layout(**PLOTLY_LAYOUT, height=290,
-                            xaxis=dict(title="FPR",range=[0,1],gridcolor="#F1F5F9"),
-                            yaxis=dict(title="TPR",range=[0,1],gridcolor="#F1F5F9"),
-                            title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
+    fig_roc2.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
+    fig_roc2.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
+    fig_roc2.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
     st.plotly_chart(fig_roc2, use_container_width=True)
     st.markdown(f"**Best params:** {dt_params}")
     st.markdown(f"**Sensitivity:** {sens_dt*100:.1f}% | **Specificity:** {spec_dt*100:.1f}%")
@@ -265,9 +261,8 @@ with c1:
                       ROSE if "Income" in f else VIOLET for f in rf_imp.index[:10][::-1]],
         text=[f"{v:.4f}" for v in rf_imp.values[:10][::-1]], textposition="outside",
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
-    fig_imp2.update_layout(**PLOTLY_LAYOUT, height=330,
-                            xaxis=dict(title="Feature Importance (Mean Gini Decrease)",gridcolor="#F1F5F9"),
-                            title=dict(text="Random Forest Feature Importance (Top 10)",font=dict(size=12)))
+    fig_imp2.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=330, title=dict(text="Random Forest Feature Importance (Top 10)",font=dict(size=12)))
+    fig_imp2.update_xaxes(title="Feature Importance (Mean Gini Decrease)",gridcolor="#F1F5F9")
     st.plotly_chart(fig_imp2, use_container_width=True)
 with c2:
     fig_roc3 = go.Figure()
@@ -277,10 +272,9 @@ with c2:
                                    fill="tozeroy",fillcolor=EMERALD+"15"))
     fig_roc3.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                    line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
-    fig_roc3.update_layout(**PLOTLY_LAYOUT, height=290,
-                            xaxis=dict(title="FPR",range=[0,1],gridcolor="#F1F5F9"),
-                            yaxis=dict(title="TPR",range=[0,1],gridcolor="#F1F5F9"),
-                            title=dict(text=f"ROC Curve — Random Forest | AUC={auc_rf:.4f}",font=dict(size=12)))
+    fig_roc3.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Random Forest | AUC={auc_rf:.4f}",font=dict(size=12)))
+    fig_roc3.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
+    fig_roc3.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
     st.plotly_chart(fig_roc3, use_container_width=True)
     st.markdown(f"**Best params:** {rf_params}")
     st.markdown(f"**Sensitivity:** {sens_rf*100:.1f}% | **Specificity:** {spec_rf*100:.1f}%")
@@ -299,10 +293,9 @@ for metric, vals, color in [("Accuracy",accs,INDIGO),("AUC",aucs,EMERALD),("Sens
     fig_cmp.add_trace(go.Bar(name=metric, x=models, y=[round(v,4) for v in vals],
                               marker_color=color, text=[f"{v:.3f}" for v in vals],
                               textposition="outside"))
-fig_cmp.update_layout(**PLOTLY_LAYOUT, barmode="group", height=340,
-                       yaxis=dict(title="Score",range=[0.5,1.05],gridcolor="#F1F5F9"),
-                       xaxis=dict(tickangle=-10),
-                       title=dict(text="Model Performance Comparison",font=dict(size=12)))
+fig_cmp.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, barmode="group", height=340, title=dict(text="Model Performance Comparison",font=dict(size=12)))
+fig_cmp.update_xaxes(tickangle=-10)
+fig_cmp.update_yaxes(title="Score",range=[0.5,1.05],gridcolor="#F1F5F9")
 st.plotly_chart(fig_cmp, use_container_width=True)
 
 # ROC comparison overlay
@@ -317,10 +310,9 @@ for (fpr,tpr,auc_v,name,color) in [
                                       name=f"{name} (AUC={auc_v:.3f})"))
 fig_roc_all.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
                                   line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
-fig_roc_all.update_layout(**PLOTLY_LAYOUT, height=320,
-                           xaxis=dict(title="False Positive Rate",range=[0,1],gridcolor="#F1F5F9"),
-                           yaxis=dict(title="True Positive Rate",range=[0,1],gridcolor="#F1F5F9"),
-                           title=dict(text="ROC Curve Comparison — All Three Models",font=dict(size=12)))
+fig_roc_all.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=320, title=dict(text="ROC Curve Comparison — All Three Models",font=dict(size=12)))
+fig_roc_all.update_xaxes(title="False Positive Rate",range=[0,1],gridcolor="#F1F5F9")
+fig_roc_all.update_yaxes(title="True Positive Rate",range=[0,1],gridcolor="#F1F5F9")
 st.plotly_chart(fig_roc_all, use_container_width=True)
 
 # Summary table

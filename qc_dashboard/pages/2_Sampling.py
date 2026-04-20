@@ -68,10 +68,10 @@ with right:
         text=samples, textposition="outside",
         hovertemplate="%{x}: n=%{y}<extra></extra>"
     ))
-    fig_bar.update_layout(**PLOTLY_LAYOUT, height=320,
-        title=dict(text="Sample Size by Ward (Total = 308, adjusted to 341)", font=dict(size=13)),
-        yaxis=dict(title="Sample Size", range=[0,110], gridcolor="#F1F5F9"),
-        xaxis=dict(title="Selected Ward"))
+    fig_bar.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=320,
+        title=dict(text="Sample Size by Ward (Total = 308, adjusted to 341)", font=dict(size=13)))
+    fig_bar.update_xaxes(title="Selected Ward")
+    fig_bar.update_yaxes(title="Sample Size", range=[0,110], gridcolor="#F1F5F9")
     st.plotly_chart(fig_bar, use_container_width=True)
 
     section("Sample Size Formula — Cochran's Method")
@@ -82,8 +82,7 @@ with right:
         n = Z²·p·q / e²
       </div>
       <div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;'>
-    """ + "".join([f"""
-        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
+    """ + "".join([f"""        <div style='background:#F8FAFC;border-radius:8px;padding:10px 12px;'>
           <div style='font-family:monospace;font-weight:700;color:{INDIGO};font-size:.95rem;'>{sym}</div>
           <div style='font-size:.75rem;color:#64748B;margin-top:2px;'>{desc}</div>
         </div>"""
