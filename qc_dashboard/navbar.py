@@ -19,42 +19,43 @@ PAGES = {
 
 def navbar():
     # ✅ GLOBAL FONT + SIZE (applies to ALL pages)
-    st.markdown(f"""
+    st.markdown("""
     <style>
-
-    /* Global font + size */
+    
+    /* GLOBAL */
     html, body, [class*="css"] {
-        font-size: 18px !important;
+        font-size: 20px !important;
         font-family: 'Inter', sans-serif;
     }
-
-    /* Headings */
-    h1 { font-size: 2.2rem !important; }
-    h2 { font-size: 1.8rem !important; }
-    h3 { font-size: 1.5rem !important; }
-
-    /* Text */
+    
+    /* HEADINGS */
+    h1 { font-size: 38px !important; }
+    h2 { font-size: 32px !important; }
+    h3 { font-size: 26px !important; }
+    
+    /* TEXT */
     p, label, span {
-        font-size: 1.05rem !important;
+        font-size: 22px !important;
     }
-
-    /* Sidebar */
+    
+    /* SIDEBAR */
     section[data-testid="stSidebar"] * {
-        font-size: 1rem !important;
+        font-size: 18px !important;
     }
-
-    /* Buttons */
+    
+    /* BUTTONS */
     button {
-        font-size: 1rem !important;
+        font-size: 18px !important;
     }
-
-    /* Dataframes */
+    
+    /* DATAFRAME */
     [data-testid="stDataFrame"] {
-        font-size: 0.95rem !important;
+        font-size: 16px !important;
     }
-
+    
     </style>
     """, unsafe_allow_html=True)
+    
     # Detect current page from session state
     current = st.session_state.get("current_page", "app.py")
     page_paths = [v[1] for v in PAGES.values()]
