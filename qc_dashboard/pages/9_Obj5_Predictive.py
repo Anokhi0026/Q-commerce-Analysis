@@ -10,8 +10,8 @@ from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, roc
 from scipy.stats import mannwhitneyu, chi2 as chi2_dist
 from utils import *
 
-st.session_state["current_page"] = "pages/9_Obj5_Predictive.py"
 st.set_page_config("Obj 5 — Predictive", "🤖", layout="wide")
+st.session_state["current_page"] = "pages/9_Obj5_Predictive.py"
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 html,body,[class*='css']{font-family:'Inter',sans-serif;}
