@@ -17,45 +17,83 @@ PAGES = {
     "Summary":            ("stars",     "pages/10_Summary.py"),
 }
 
-    def navbar():
-         # Detect current page from session state
-        current = st.session_state.get("current_page", "app.py")
-        page_paths = [v[1] for v in PAGES.values()]
-        page_names = list(PAGES.keys())
-        
-        try:
-            current_index = page_paths.index(current)
-        except ValueError:
-            current_index = 0
+def navbar():
+    # ✅ GLOBAL FONT + SIZE (applies to ALL pages)
+    st.markdown(f"""
+    <style>
     
-        selected = option_menu(
-            menu_title=None,
-            options=page_names,
-            icons=[v[0] for v in PAGES.values()],
-            default_index=current_index,
-            orientation="horizontal",
-            styles={
-                "container": {
-                    "padding": "0px 0px 8px 0px",
-                    "background-color": "#FAFAFA",
-                    "border-bottom": "1px solid #E2E8F0",
-                },
-                "nav-link": {
-                    "font-size": "16px",  # 👈 increased for visibility
-                    "padding": "6px 10px",
-                    "margin": "0px 1px",
-                    "border-radius": "6px",
-                },
-                "nav-link-selected": {
-                    "background-color": "#4F46E5",
-                    "color": "white",
-                    "font-weight": "600",
-                },
-            }
-        )
-             
-   
+    /* GLOBAL */
+    html, body, [class*="css"] {
+        font-size: 20px !important;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* HEADINGS */
+    h1 { font-size: 38px !important; }
+    h2 { font-size: 32px !important; }
+    h3 { font-size: 26px !important; }
+    
+    /* TEXT */
+    p, label, span {
+        font-size: 22px !important;
+    }
+    
+    /* SIDEBAR */
+    section[data-testid="stSidebar"] * {
+        font-size: 18px !important;
+    }
+    
+    /* BUTTONS */
+    button {
+        font-size: 18px !important;
+    }
+    
+    /* DATAFRAME */
+    [data-testid="stDataFrame"] {
+        font-size: 16px !important;
+    }
+    
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Detect current page from session state
+    current = st.session_state.get("current_page", "app.py")
+    page_paths = [v[1] for v in PAGES.values()]
+    page_names = list(PAGES.keys())
+    
+    # Find index of current page so it stays highlighted
+    try:
+        current_index = page_paths.index(current)
+    except ValueError:
+        current_index = 0
 
+    selected = option_menu(
+        menu_title=None,
+        options=page_names,
+        icons=[v[0] for v in PAGES.values()],
+        default_index=current_index,  # ← highlights the actual current page
+        orientation="horizontal",
+        styles={
+            "container": {
+                "padding": "0px 0px 8px 0px",
+                "background-color": "#FAFAFA",
+                "border-bottom": "1px solid #E2E8F0",
+            },
+            "nav-link": {
+                "font-size": "12px",
+                "padding": "6px 10px",
+                "margin": "0px 1px",
+                "border-radius": "6px",
+            },
+            "nav-link-selected": {
+                "background-color": "#4F46E5",
+                "color": "white",
+                "font-weight": "600",
+            },
+        }
+    )
+
+    # Only navigate if user clicked a DIFFERENT page
     selected_path = PAGES[selected][1]
     if selected_path != current:
         st.switch_page(selected_path)
