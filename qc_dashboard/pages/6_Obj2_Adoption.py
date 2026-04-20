@@ -6,7 +6,8 @@ from utils import *
 
 st.set_page_config("Obj 2 — Adoption", "🔗", layout="wide")
 st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>",unsafe_allow_html=True)
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Objective 2", "Consumer Adoption Patterns Based on Demographics",
             "Chi-Square tests and Cramér's V effect sizes revealing which demographic variables significantly predict Q-Commerce adoption.")
 
