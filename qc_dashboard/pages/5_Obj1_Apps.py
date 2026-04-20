@@ -2,25 +2,25 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd, numpy as np
 from utils import *
-
+ 
 st.set_page_config("Obj 1 — App Usage", "📱", layout="wide")
 st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>",unsafe_allow_html=True)
 sidebar()
 page_header("Objective 1", "Identifying the Most Used Q-Commerce Apps in Vadodara",
             "Descriptive analysis of app awareness and primary app usage among 228 Q-Commerce users.")
-
+ 
 df    = load_raw()
 users = get_users()
-
+ 
 k1,k2,k3,k4 = st.columns(4)
 kpi(k1,"228","Total Users","Q-Commerce adopters")
 kpi(k2,f"{(users['App_Used']=='Blinkit').sum()}","Blinkit Users","62% market share",INDIGO)
 kpi(k3,f"{(users['App_Used']=='Swiggy Instamart').sum()}","Swiggy Instamart","2nd most used",ROSE)
 kpi(k4,f"{(users['App_Used']=='Zepto').sum()}","Zepto","3rd most used",EMERALD)
-
+ 
 st.markdown("<br>",unsafe_allow_html=True)
 c1, c2 = st.columns(2, gap="large")
-
+ 
 with c1:
     section("Primary App Usage — Market Share")
     app_cnt = users["App_Used"].value_counts()
@@ -39,7 +39,7 @@ with c1:
                        annotations=[dict(text="<b>Blinkit</b><br>Leads", x=0.5, y=0.5,
                                          font=dict(size=13, color="#1E1E2E"), showarrow=False)])
     st.plotly_chart(fig, use_container_width=True)
-
+ 
 with c2:
     section("App Awareness vs. Primary Usage")
     apps = ["Blinkit", "Zepto", "Swiggy Instamart", "Other"]
@@ -51,10 +51,10 @@ with c2:
     aware_counts["Other"] = 0
     usage_counts = users["App_Used"].value_counts().reindex(apps).fillna(0).astype(int)
     aware_vals   = [aware_counts.get(a, 0) for a in apps]
-
+ 
     fig = go.Figure()
     fig.add_trace(go.Bar(name="Aware (heard of)", x=apps, y=aware_vals,
-                          marker_color=[c+"55" for c in [INDIGO,EMERALD,ROSE,AMBER]],
+                          marker_color=[hex_alpha(c, 0.33) for c in [INDIGO,EMERALD,ROSE,AMBER]],
                           text=aware_vals, textposition="outside"))
     fig.add_trace(go.Bar(name="Primary User", x=apps, y=usage_counts.values,
                           marker_color=[INDIGO,EMERALD,ROSE,AMBER],
@@ -63,7 +63,7 @@ with c2:
                        title=dict(text="Awareness vs. Active Usage by App", font=dict(size=13)), legend=dict(x=0.6, y=0.95))
     fig.update_yaxes(title="Count", gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
-
+ 
 section("Key Findings")
 finding_card("🏆 Blinkit Dominates with 62% Market Share",
              "142 out of 228 users (62.3%) identify Blinkit as their primary Q-Commerce app in Vadodara. "
