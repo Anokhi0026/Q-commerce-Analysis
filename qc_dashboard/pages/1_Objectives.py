@@ -6,7 +6,7 @@ st.session_state["current_page"] = "pages/1_Objectives.py"
 st.markdown("<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');html,body,[class*='css']{font-family:'Inter',sans-serif;}.stApp{background:#FAFAFA;}section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}</style>", unsafe_allow_html=True)
 from navbar import navbar
 navbar()
-page_header("Objectives of the Project", "Research Objectives",
+page_header("Objectives of the Project", "Objectives",
             "A structured framework of one primary and five secondary objectives guiding this statistical study.")
 
 st.markdown(f"""
@@ -65,11 +65,11 @@ for tag, icon, title, desc, methods, color in objs:
     </div>""", unsafe_allow_html=True)
 
 section("Research Framework")
-c1, c2, c3 = st.columns(3)
+c1, c2''', c3''' = st.columns(2)
 for col, icon, title, items in [
     (c1, "📥", "Data Collection", ["Primary data via Google Forms","341 respondents","Vadodara residents aged 18+","Multi-stage sampling"]),
     (c2, "🔬", "Analytical Methods", ["Descriptive statistics","Inferential tests (χ², KW)","Factor & cluster analysis","Logistic regression"]),
-    (c3, "📤", "Expected Outputs", ["Market share of QC apps","Demographic adoption profile","Consumer segment profiles","Predictive adoption model"]),
+    '''(c3, "📤", "Expected Outputs", ["Market share of QC apps","Demographic adoption profile","Consumer segment profiles","Predictive adoption model"]),'''
 ]:
     with col:
         st.markdown(f"""
