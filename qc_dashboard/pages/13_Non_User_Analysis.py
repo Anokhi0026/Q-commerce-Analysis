@@ -39,56 +39,58 @@ section("Analysis 1 · Demographic Profile of Non-Users")
 
 cols = ["Age_Group", "Gender", "Income", "Education"]
 
-# ── ROW 1 ─────────────────────────
+# Row 1
 c1, c2 = st.columns(2)
 
-for col, container in zip(cols[:2], [c1, c2]):
-    with container:
-        ct = non_users[col].value_counts(normalize=True) * 100
+with c1:
+    ct = non_users["Age_Group"].value_counts(normalize=True) * 100
+    fig = go.Figure(data=[go.Bar(
+        x=ct.index,
+        y=ct.values,
+        text=[f"{v:.1f}%" for v in ct.values],
+        textposition="outside"
+    )])
+    fig.update_layout(height=260, title="Age Group")
+    st.plotly_chart(fig, use_container_width=True)
 
-        fig = go.Figure(go.Bar(
-            x=ct.index,
-            y=ct.values,
-            text=[f"{v:.1f}%" for v in ct.values],
-            textposition="outside",
-            marker_color=INDIGO
-        ))
-
-        fig.update_layout(
-            **PLOTLY_LAYOUT,
-            height=260,
-            title=dict(text=col.replace("_"," "), font=dict(size=13))
-        )
-
-        fig.update_xaxes(tickangle=-20)
-
-        st.plotly_chart(fig, use_container_width=True)
+with c2:
+    ct = non_users["Gender"].value_counts(normalize=True) * 100
+    fig = go.Figure(data=[go.Bar(
+        x=ct.index,
+        y=ct.values,
+        text=[f"{v:.1f}%" for v in ct.values],
+        textposition="outside"
+    )])
+    fig.update_layout(height=260, title="Gender")
+    st.plotly_chart(fig, use_container_width=True)
 
 
-# ── ROW 2 ─────────────────────────
+# Row 2
 c3, c4 = st.columns(2)
 
-for col, container in zip(cols[2:], [c3, c4]):
-    with container:
-        ct = non_users[col].value_counts(normalize=True) * 100
+with c3:
+    ct = non_users["Income"].value_counts(normalize=True) * 100
+    fig = go.Figure(data=[go.Bar(
+        x=ct.index,
+        y=ct.values,
+        text=[f"{v:.1f}%" for v in ct.values],
+        textposition="outside"
+    )])
+    fig.update_layout(height=260, title="Income")
+    st.plotly_chart(fig, use_container_width=True)
 
-        fig = go.Figure(go.Bar(
-            x=ct.index,
-            y=ct.values,
-            text=[f"{v:.1f}%" for v in ct.values],
-            textposition="outside",
-            marker_color=INDIGO
-        ))
+with c4:
+    ct = non_users["Education"].value_counts(normalize=True) * 100
+    fig = go.Figure(data=[go.Bar(
+        x=ct.index,
+        y=ct.values,
+        text=[f"{v:.1f}%" for v in ct.values],
+        textposition="outside"
+    )])
+    fig.update_layout(height=260, title="Education")
+    st.plotly_chart(fig, use_container_width=True)
 
-        fig.update_layout(
-            **PLOTLY_LAYOUT,
-            height=260,
-            title=dict(text=col.replace("_"," "), font=dict(size=13))
-        )
-
-        fig.update_xaxes(tickangle=-20)
-
-        st.plotly_chart(fig, use_container_width=True)finding_card(
+finding_card(
     "👥 Non-Users Concentrated in Specific Segments",
     "Non-adoption is not random — certain demographic groups show higher resistance, indicating targeted intervention potential.",
     INDIGO
