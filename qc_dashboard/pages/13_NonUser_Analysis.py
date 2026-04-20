@@ -15,7 +15,8 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Non-User Barrier Analysis",
             "Why do 113 respondents not use Q-Commerce apps?",
             "Demographic profile, non-adoption reasons, barrier Likert analysis, "
