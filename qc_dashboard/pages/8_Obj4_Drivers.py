@@ -121,8 +121,8 @@ with st.expander("📊 Stacked Likert Response Distribution"):
                                   textposition="inside", insidetextanchor="middle"))
     fig_stk.update_layout(barmode="stack", **PLOTLY_LAYOUT, height=380,
                            xaxis=dict(title="% of Users",gridcolor="#F1F5F9"),
-                           legend=dict(orientation="h",y=-0.18),
                            title=dict(text="Stacked Likert Response Distribution",font=dict(size=12)))
+    fig_stk.update_layout(legend=dict(orientation="h",y=-0.18))
     st.plotly_chart(fig_stk, use_container_width=True)
 
 # ── ANALYSIS 3: EFA ───────────────────────────────────────────────────────────
@@ -201,7 +201,7 @@ with c1:
     fig_scree.add_hline(y=1.0, line_dash="dash", line_color=ROSE,
                          annotation_text="Kaiser criterion (EV=1)",
                          annotation_font=dict(size=9,color=ROSE))
-    fig_scree.add_vrect(x0=0.5, x1=n_factors+0.5, fillcolor=INDIGO+"12", line_width=0,
+    fig_scree.add_vrect(x0=0.5, x1=n_factors+0.5, fillcolor=rgba(79,70,229,0.07), line_width=0,
                          annotation_text=f"{n_factors} factors retained",
                          annotation_position="top left", annotation_font=dict(size=9,color=INDIGO))
     fig_scree.update_layout(**PLOTLY_LAYOUT, height=310, title=dict(text=f"Scree Plot — {n_factors} Factors Retained",font=dict(size=12)))
