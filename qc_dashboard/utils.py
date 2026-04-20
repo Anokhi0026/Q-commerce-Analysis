@@ -37,6 +37,14 @@ LIGHT    = "#F1F5F9"
 PALETTE  = [INDIGO, ROSE, EMERALD, AMBER, SKY, VIOLET, "#DB2777", "#EA580C"]
 C_SCALE  = [[0, "#EEF2FF"], [0.5, "#818CF8"], [1, "#3730A3"]]   # indigo gradient
 
+def hex_alpha(hex_color: str, alpha: float) -> str:
+    """Convert a 6-digit hex color + alpha (0–1) to an rgba() string.
+    Use this instead of appending 2-digit hex alpha (e.g. INDIGO+'99')
+    because Plotly does not accept 8-digit hex colors."""
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r},{g},{b},{alpha})"
+
 # xaxis/yaxis are NOT in PLOTLY_LAYOUT — define them explicitly per chart
 # to avoid "got multiple values for keyword argument" TypeError
 PLOTLY_LAYOUT = dict(
