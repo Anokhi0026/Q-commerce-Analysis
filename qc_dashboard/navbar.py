@@ -17,7 +17,7 @@ PAGES = {
     "Summary":            ("stars",     "pages/10_Summary.py"),
 }
 
-def navbar():
+    def navbar():
     st.markdown("""
     <style>
     
@@ -27,10 +27,19 @@ def navbar():
         font-family: 'Inter', sans-serif;
     }
     
-    /* HEADINGS */
-    h1 { font-size: 38px !important; }
-    h2 { font-size: 32px !important; }
-    h3 { font-size: 26px !important; }
+    /* 🔥 FIX HEADINGS (ADD THIS PART HERE) */
+    [data-testid="stMarkdownContainer"] h1 {
+        font-size: 42px !important;
+        font-weight: 800 !important;
+    }
+    
+    [data-testid="stMarkdownContainer"] h2 {
+        font-size: 34px !important;
+    }
+    
+    [data-testid="stMarkdownContainer"] h3 {
+        font-size: 28px !important;
+    }
     
     /* TEXT */
     p, label, span {
