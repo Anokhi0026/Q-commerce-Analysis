@@ -156,7 +156,8 @@ finding_card("🔴 Older Age Groups Dominate Non-Adoption",
 section("2 · Stated Reasons for Non-Adoption",
         "Multi-select question: respondents could select all reasons that apply (n=113)")
 
-reason_counts = non_u[REASONS].sum()
+non_u_anal2 = df_anal[df_anal["Adoption_Status"] == 0].copy()
+reason_counts = non_u_anal2[REASONS].sum()
 reason_pct    = (reason_counts / len(non_u) * 100).round(2)
 reason_df     = pd.DataFrame({"Label": REASON_LABELS,
                                "Count": reason_counts.values,
@@ -262,7 +263,7 @@ barrier_labels = ["Lack of Awareness","Prefer Local Stores","Trust Issues","App 
 
 chi2_results = []
 for var, label in zip(barrier_vars, barrier_labels):
-    ct = pd.crosstab(df_raw[var], df_raw["Adoption_Status"])
+    ct = pd.crosstab(df_anal[var], df_anal["Adoption_Status"])
     chi2_v, p_v, dof, _ = chi2_contingency(ct)
     n   = ct.values.sum()
     cv  = np.sqrt(chi2_v / (n * (min(ct.shape)-1)))
@@ -324,8 +325,9 @@ section("5 · Willingness to Try Q-Commerce (Non-Users)",
 
 will_col = "NonUser_Willing_Try"
 if will_col in non_u.columns:
-    will_cnt = non_u[will_col].value_counts()
-    will_pct = non_u[will_col].value_counts(normalize=True) * 100
+    non_u_anal_w = df_anal[df_anal["Adoption_Status"] == 0].copy()
+    will_cnt = non_u_anal_w[will_col].value_counts()
+    will_pct = non_u_anal_w[will_col].value_counts(normalize=True) * 100
 
     c1, c2 = st.columns([1, 1.3], gap="large")
     with c1:
@@ -344,8 +346,9 @@ if will_col in non_u.columns:
 
     with c2:
         # Chi-square: awareness vs willingness
-        if "R_Lack_Awareness" in non_u.columns:
-            ct_try = pd.crosstab(non_u[will_col], non_u["R_Lack_Awareness"])
+        if "R_Lack_Awareness" in df_anal.columns:
+            non_u_anal = df_anal[df_anal["Adoption_Status"] == 0].copy()
+            ct_try = pd.crosstab(non_u_anal[will_col], non_u_anal["R_Lack_Awareness"])
             chi2_try, p_try, _, _ = chi2_contingency(ct_try)
             p_str_try = "< 0.001" if p_try < 0.001 else f"= {p_try:.4f}"
             sig_try   = p_try < 0.05
