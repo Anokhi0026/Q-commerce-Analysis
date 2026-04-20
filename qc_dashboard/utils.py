@@ -143,34 +143,12 @@ def cronbach_alpha(df_in):
 
 # ── Sidebar (shared) ───────────────────────────────────────────────────────────
 def sidebar():
-    with st.sidebar:
-        st.markdown("""
-        <div style='padding:16px 0 8px; text-align:center;'>
-          <div style='font-size:1.5rem;'>⚡</div>
-          <div style='font-weight:700; font-size:1rem; color:#1E1E2E;'>Q-Commerce Vadodara</div>
-          <div style='font-size:0.72rem; color:#64748B; margin-top:2px;'>Research Dashboard</div>
-        </div>
-        """, unsafe_allow_html=True)
-        st.markdown("---")
-        st.markdown("<div style='font-size:0.7rem;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;'>Pages</div>", unsafe_allow_html=True)
-        st.page_link("app.py",                              label="🏠  Overview")
-        st.page_link("pages/1_Objectives.py",               label="🎯  Objectives")
-        st.page_link("pages/2_Sampling.py",                 label="📐  Sampling & Design")
-        st.page_link("pages/3_Questionnaire.py",            label="📋  Questionnaire")
-        st.page_link("pages/4_Demographics.py",             label="👥  Demographics")
-        st.page_link("pages/5_Obj1_Apps.py",                label="📱  Obj 1 — App Usage")
-        st.page_link("pages/6_Obj2_Adoption.py",            label="🔗  Obj 2 — Adoption")
-        st.page_link("pages/7_Obj3_Behavior.py",            label="📊  Obj 3 — Behavior")
-        st.page_link("pages/8_Obj4_Drivers.py",             label="🔍  Obj 4 — Drivers")
-        st.page_link("pages/9_Obj5_Predictive.py",          label="🤖  Obj 5 — Predictive")
-        st.page_link("pages/11_Cluster_Analysis.py",        label="🧩  Cluster Analysis")
-        st.page_link("pages/12_Correspondence_Analysis.py", label="📍  Correspondence Analysis")
-        st.page_link("pages/10_Summary.py",                 label="✨  Summary")
-        st.markdown("---")
-        st.markdown("""<div style='font-size:0.7rem;color:#94A3B8;line-height:1.7;'>
-        🎓 MSc Statistics<br>MS University of Baroda<br>📍 Vadodara, Gujarat<br>n = 341
-        </div>""", unsafe_allow_html=True)
-
+    st.markdown("""
+    <style>
+    section[data-testid="stSidebar"] { display: none; }
+    [data-testid="collapsedControl"] { display: none; }
+    </style>
+    """, unsafe_allow_html=True)
 # ── Section title helper ───────────────────────────────────────────────────────
 def section(label, sub=""):
     st.markdown(f"""
