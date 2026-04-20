@@ -19,49 +19,42 @@ PAGES = {
 
 def navbar():
     # ✅ GLOBAL FONT + SIZE (applies to ALL pages)
-    st.markdown(f"""
+    st.markdown("""
     <style>
     
-    /* GLOBAL */
     html, body, [class*="css"] {
         font-size: 20px !important;
         font-family: 'Inter', sans-serif;
     }
     
-    /* HEADINGS */
     h1 { font-size: 38px !important; }
     h2 { font-size: 32px !important; }
     h3 { font-size: 26px !important; }
     
-    /* TEXT */
     p, label, span {
         font-size: 22px !important;
     }
     
-    /* SIDEBAR */
     section[data-testid="stSidebar"] * {
         font-size: 18px !important;
     }
     
-    /* BUTTONS */
     button {
         font-size: 18px !important;
     }
     
-    /* DATAFRAME */
     [data-testid="stDataFrame"] {
         font-size: 16px !important;
     }
     
     </style>
     """, unsafe_allow_html=True)
-    
+
     # Detect current page from session state
     current = st.session_state.get("current_page", "app.py")
     page_paths = [v[1] for v in PAGES.values()]
     page_names = list(PAGES.keys())
     
-    # Find index of current page so it stays highlighted
     try:
         current_index = page_paths.index(current)
     except ValueError:
@@ -71,7 +64,7 @@ def navbar():
         menu_title=None,
         options=page_names,
         icons=[v[0] for v in PAGES.values()],
-        default_index=current_index,  # ← highlights the actual current page
+        default_index=current_index,
         orientation="horizontal",
         styles={
             "container": {
@@ -80,7 +73,7 @@ def navbar():
                 "border-bottom": "1px solid #E2E8F0",
             },
             "nav-link": {
-                "font-size": "12px",
+                "font-size": "16px",  # 👈 increased for visibility
                 "padding": "6px 10px",
                 "margin": "0px 1px",
                 "border-radius": "6px",
@@ -93,7 +86,6 @@ def navbar():
         }
     )
 
-    # Only navigate if user clicked a DIFFERENT page
     selected_path = PAGES[selected][1]
     if selected_path != current:
         st.switch_page(selected_path)
