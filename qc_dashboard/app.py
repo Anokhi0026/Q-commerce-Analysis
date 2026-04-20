@@ -1,9 +1,9 @@
 import streamlit as st
 import plotly.graph_objects as go
 from utils import *
-
+ 
 st.set_page_config("Q-Commerce Vadodara", "⚡", layout="wide", initial_sidebar_state="expanded")
-
+ 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -11,9 +11,9 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;}
 .stApp{background:#FAFAFA;}
 section[data-testid="stSidebar"]{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
-
+ 
 sidebar()
-
+ 
 # ── Hero ───────────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <div style='background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);
@@ -35,13 +35,13 @@ st.markdown(f"""
   </div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 # ── Load data ──────────────────────────────────────────────────────────────────
 df = load_raw()
 users = get_users()
 non_users_df = load_analysis()
 nu = non_users_df[non_users_df["Adoption_Status"] == 0]
-
+ 
 # ── KPI Row ────────────────────────────────────────────────────────────────────
 k1,k2,k3,k4,k5,k6 = st.columns(6)
 kpi(k1, "341",  "Total Respondents", "Vadodara, 2024–25")
@@ -50,12 +50,12 @@ kpi(k3, "113",  "Non-Users",         "33.1% non-adoption",  ROSE)
 kpi(k4, f"{(df['Aware_QC']=='Yes').sum()}", "QC Aware", "Heard of Q-Commerce", SKY)
 kpi(k5, "5",    "Objectives",        "Primary + Secondary", VIOLET)
 kpi(k6, "23",   "Statistical Tests", "Across all analyses", AMBER)
-
+ 
 st.markdown("<br>", unsafe_allow_html=True)
-
+ 
 # ── What is Q-Commerce ─────────────────────────────────────────────────────────
 left, right = st.columns([1.2, 1], gap="large")
-
+ 
 with left:
     section("Introduction", "What is Q-Commerce and why does it matter?")
     st.markdown("""
@@ -81,7 +81,7 @@ with left:
       </div>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     section("Why We Chose This Topic")
     st.markdown("""
     <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;'>
@@ -100,7 +100,7 @@ with left:
         ("🎯","Policy Relevance","Findings can guide platform expansion strategies"),
     ]]) + """
     </div>""", unsafe_allow_html=True)
-
+ 
 with right:
     section("Sample Composition")
     # Adoption donut
@@ -119,7 +119,7 @@ with right:
                           font=dict(size=15, color="#1E1E2E"), showarrow=False)]
     )
     st.plotly_chart(fig_donut, use_container_width=True)
-
+ 
     section("Apps Awareness vs Usage")
     apps    = ["Blinkit", "Zepto", "Swiggy Instamart"]
     aware   = [
@@ -134,7 +134,7 @@ with right:
     ]
     fig_app = go.Figure()
     fig_app.add_trace(go.Bar(name="Aware", x=apps, y=aware,
-                              marker_color=INDIGO+"99", text=aware, textposition="outside"))
+                              marker_color=hex_alpha(INDIGO, 0.4), text=aware, textposition="outside"))
     fig_app.add_trace(go.Bar(name="Primary Users", x=apps, y=usage,
                               marker_color=INDIGO, text=usage, textposition="outside"))
     fig_app.update_layout(**PLOTLY_LAYOUT, height=240, barmode="group",
@@ -142,7 +142,7 @@ with right:
     fig_app.update_xaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
     fig_app.update_yaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
     st.plotly_chart(fig_app, use_container_width=True)
-
+ 
     section("Team")
     for name, role in [
         ("Anokhi Desai","Team Member"), ("Ritika Sharma","Team Member"),
