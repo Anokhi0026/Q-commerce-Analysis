@@ -54,7 +54,7 @@ with c2:
 
     fig = go.Figure()
     fig.add_trace(go.Bar(name="Aware (heard of)", x=apps, y=aware_vals,
-                          marker_color=[c+"55" for c in [INDIGO,EMERALD,ROSE,AMBER]],
+                          marker_color=[hex_alpha(c, 0.33) for c in [INDIGO,EMERALD,ROSE,AMBER]],
                           text=aware_vals, textposition="outside"))
     fig.add_trace(go.Bar(name="Primary User", x=apps, y=usage_counts.values,
                           marker_color=[INDIGO,EMERALD,ROSE,AMBER],
