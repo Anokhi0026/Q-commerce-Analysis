@@ -7,9 +7,23 @@ import numpy as np
 import streamlit as st
 from scipy.stats import chi2_contingency, kruskal, spearmanr
 
-# ── Absolute path to data directory (works regardless of where streamlit is run from)
-_DATA_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "data")
-
+# ── Absolute path to data directory — tries multiple locations for Streamlit Cloud compatibility
+def _find_data_dir():
+    candidates = [
+        # Same folder as utils.py  →  works locally
+        _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "data"),
+        # CWD/data  →  works when Streamlit sets CWD to the app folder
+        _os.path.join(_os.getcwd(), "data"),
+        # One level up from utils.py  →  monorepo layouts
+        _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "data"),
+    ]
+    for path in candidates:
+        if _os.path.isdir(path):
+            return path
+    # Fall back to the first candidate so errors point to a meaningful path
+    return candidates[0]
+ 
+_DATA_DIR = _find_data_dir()
 # ── Colour palette (consistent across all pages) ───────────────────────────────
 INDIGO   = "#4F46E5"
 VIOLET   = "#7C3AED"
