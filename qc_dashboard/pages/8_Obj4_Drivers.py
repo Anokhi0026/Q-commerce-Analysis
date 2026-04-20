@@ -388,5 +388,5 @@ finding_card("🚧 Trust & Data Security + Lower Delivery Charges Score Highest"
              "Lack of Awareness (29.2%) is the #1 open-ended reason — not rejection, but non-exposure.", ROSE)
 finding_card("🎯 EFA: Multi-dimensional Adoption Structure",
              f"{n_factors} factors retained explaining {pct_var.sum():.1f}% of variance. "
-             "Convenience & lifestyle, price sensitivity, and quality/reliability are distinct drivers — "
+             "Convenience & lifestyle (along with product reliability) and price sensitivity are distinct drivers — "
              "platforms must address all dimensions simultaneously.", EMERALD)
