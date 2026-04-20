@@ -172,27 +172,7 @@ with c1:
     fig_pca.update_xaxes(title=f"PC1 ({var_e[0]:.1f}% variance)",gridcolor="#F1F5F9")
     fig_pca.update_yaxes(title=f"PC2 ({var_e[1]:.1f}% variance)",gridcolor="#F1F5F9")
     st.plotly_chart(fig_pca, use_container_width=True)
-"""
-with c2:
-    # Silhouette by cluster
-    fig_sil2 = go.Figure()
-    y_offset = 0
-    for c_id in range(3):
-        c_sil = np.sort(sil_samples[labels==c_id])[::-1]
-        fig_sil2.add_trace(go.Bar(
-            x=c_sil, y=list(range(y_offset, y_offset+len(c_sil))),
-            orientation="h", marker_color=CLUSTER_COLORS[c_id],
-            name=CLUSTER_NAMES[c_id], opacity=0.85, showlegend=True,
-            hovertemplate=f"Cluster {c_id}: sil=%{{x:.3f}}<extra></extra>"))
-        y_offset += len(c_sil)
-    fig_sil2.add_vline(x=final_sil, line_dash="dash", line_color=ROSE,
-                        annotation_text=f"Avg={final_sil:.3f}",
-                        annotation_font=dict(size=9,color=ROSE))
-    fig_sil2.update_layout(**PLOTLY_LAYOUT, height=380, showlegend=True, title=dict(text="Silhouette Plot (sorted by cluster)",font=dict(size=12)))
-    fig_sil2.update_xaxes(title="Silhouette Coefficient",gridcolor="#F1F5F9")
-    fig_sil2.update_yaxes(showticklabels=False)
-    st.plotly_chart(fig_sil2, use_container_width=True)
-"""
+
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Heatmap")
 
