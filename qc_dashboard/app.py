@@ -11,7 +11,6 @@ def set_bg(image_url):
             background-attachment: fixed;
         }}
         </style>
-        """,
         unsafe_allow_html=True
     )
 
