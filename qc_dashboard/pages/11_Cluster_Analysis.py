@@ -30,7 +30,7 @@ page_header(
 )
 
 CLUSTER_COLORS = [INDIGO, AMBER, EMERALD]
-CLUSTER_NAMES  = ["Neutral Adopters", "All-Round Enthusiasts", "Convenience Purists"]
+CLUSTER_NAMES  = [ "Convenience Purists","Neutral Adopters", "All-Round Enthusiasts"]
 
 k1, k2, k3, k4 = st.columns(4)
 kpi(k1, "228",       "Users Clustered",     "Complete-case analysis")
