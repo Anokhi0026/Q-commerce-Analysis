@@ -5,6 +5,7 @@ import numpy as np
 from utils import *
 
 st.set_page_config("Summary", "✨", layout="wide")
+st.
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 html,body,[class*='css']{font-family:'Inter',sans-serif;}
@@ -12,7 +13,8 @@ html,body,[class*='css']{font-family:'Inter',sans-serif;}
 section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8F0;}
 </style>""", unsafe_allow_html=True)
 
-sidebar()
+from navbar import navbar
+navbar()
 page_header("Research Summary", "Complete Findings & Strategic Conclusions",
             "A consolidated view of all analytical results — 5 objectives, cluster analysis, "
             "correspondence analysis — with strategic recommendations and study limitations.")
