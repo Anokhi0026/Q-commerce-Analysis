@@ -68,8 +68,7 @@ def prepare_cluster_data():
     cdf.columns = SHORT_13
     uf  = users.loc[cdf.index].copy().reset_index(drop=True)
     cdf = cdf.reset_index(drop=True)
-    scaler = StandardScaler()
-    X = scaler.fit_transform(cdf)
+    X = cdf.copy()
     return cdf, uf, X, SHORT_13, scaler
 
 cdf, users_full, X, SHORT_13, scaler = prepare_cluster_data()
@@ -167,10 +166,10 @@ def run_kmedoids(_X, _scaler, _cdf, _users_full):
     sil        = silhouette_score(_X, labels, metric="cityblock")
     sil_s      = silhouette_samples(_X, labels, metric="cityblock")
     # Medoid profiles in original scale
-    medoid_profiles = pd.DataFrame(
-        _scaler.inverse_transform(_X[medoid_indices]),
-        index=[f"Cluster {i}" for i in range(3)],
-        columns=SHORT_13
+    medoid_profiles.index = [f'Raw C{i}' for i in range(OPTIMAL_K)]
+    print('\nMedoid profiles (original scale):')
+    print(medoid_profiles.T.round(2).to_string())
+
     )
     cdf2 = _cdf.copy(); cdf2["Cluster"] = labels
     uf2  = _users_full.copy(); uf2["Cluster"] = labels
