@@ -67,11 +67,11 @@ with t1:
                                     textinfo="label+percent",
                                     hovertemplate="%{label}: %{value} users<extra></extra>"))
         fig_app.update_layout(**{k:v for k,v in PLOTLY_LAYOUT.items() if k not in["xaxis","yaxis"]},
-                               height=290, title=dict(text="(a) Primary App Used",font=dict(size=12)))
+                               height=290, title=dict(text="Primary App Used",font=dict(size=12)))
         st.plotly_chart(fig_app, use_container_width=True)
     with c2:
         st.plotly_chart(freq_bar(users["How long have you been using Q-Commerce apps?"],
-                                  TENURE_ORDER,"(b) Usage Tenure",[SKY,VIOLET,AMBER,EMERALD]), use_container_width=True)
+                                  TENURE_ORDER,"Usage Tenure",[SKY,VIOLET,AMBER,EMERALD]), use_container_width=True)
     reason_cnt = users["biggest reason you prefer Q-commerce apps"].value_counts()
     fig_r = go.Figure(go.Pie(labels=reason_cnt.index, values=reason_cnt.values, hole=0.45,
                               marker_colors=PALETTE[:len(reason_cnt)], textinfo="label+percent"))
@@ -86,7 +86,7 @@ with t2:
     c1,c2 = st.columns(2)
     with c1:
         st.plotly_chart(freq_bar(users["average order value"], ORDER_ORDER,
-                                  "(c) Average Order Value",[EMERALD,INDIGO,AMBER,ROSE]), use_container_width=True)
+                                  "Average Order Value",[EMERALD,INDIGO,AMBER,ROSE]), use_container_width=True)
     with c2:
         pay_cnt = users["preferred payment method?"].value_counts().reindex(PAY_ORDER).fillna(0)
         total_p = pay_cnt.sum()
@@ -106,7 +106,7 @@ with t3:
     c1,c2 = st.columns(2)
     with c1:
         st.plotly_chart(freq_bar(users["preferred delivery time"], TIME_ORDER,
-                                  "(d) Preferred Delivery Time",
+                                  "Preferred Delivery Time",
                                   [SKY,AMBER,INDIGO,VIOLET,"#0F172A"]), use_container_width=True)
     with c2:
         cat_cols = ["Col1","Col2","Col3","Col4","Col5"]
