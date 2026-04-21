@@ -179,7 +179,7 @@ def run_kmedoids(_X, _scaler, _cdf, _users_full):
 labels, medoid_indices, total_wd, final_sil, sil_samples, medoid_profiles, cdf2, users_c = \
     run_kmedoids(X, scaler, cdf, users_full)
 
-sizes = pd.Series(labels).value_counts().sort_index()
+sizes = pd.Series(labels).value_counts()
 
 c1, c2, c3, c4 = st.columns(4)
 kpi(c1, f"{final_sil:.4f}", "Silhouette Score", "Overall cluster quality (Cityblock)", INDIGO)
