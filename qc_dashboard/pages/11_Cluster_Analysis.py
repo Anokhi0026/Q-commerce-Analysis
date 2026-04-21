@@ -261,15 +261,12 @@ with c2:
 
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Heatmap")
-medoid_df = pd.DataFrame({
-        "Neutral Adopters (R#77)":       [3]*13,
-        "All-Round Enthusiasts (R#195)": [4]*13,
-        "Convenience Purists (R#36)":    [5,4,3,4,3,4,5,4,5,5,5,5,5],}, index=SHORT_13)
+
 profile = cdf2.groupby("Cluster")[SHORT_13].mean().round(3)
 profile.index = CLUSTER_NAMES
 
 fig_hm = go.Figure(go.Heatmap(
-    z=mediod_df.values, x=CLUSTER_NAMES, y=SHORT_13,
+    z=mediod_profiles.T.values, x=CLUSTER_NAMES, y=SHORT_13,
     colorscale=[[0, "#FEF2F2"], [0.3, "#FCA5A5"], [0.5, "#FCD34D"], [0.7, "#86EFAC"], [1, "#15803D"]],
     zmin=2.5, zmax=5.0,
     texttemplate="%{z:.2f}",
