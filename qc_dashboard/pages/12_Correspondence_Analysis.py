@@ -101,37 +101,8 @@ st.markdown("""
   </span>
 </div>""", unsafe_allow_html=True)
 
-# ── CA 1: Age Group × App Used ─────────────────────────────────────────────────
-section("CA 1 · Age Group × App Used")
-ct1 = pd.crosstab(users["Age_Group"], users["App_Used"])
-fig1, chi2_1, p1, dof1, pct1, rd1, cd1 = ca_biplot(
-    ct1, "Age_Group", "App_Used", "CA 1: Age Group × App Used", INDIGO, ROSE)
-
-c1,c2 = st.columns([1.5,1], gap="large")
-with c1:
-    st.plotly_chart(fig1, use_container_width=True)
-with c2:
-    st.markdown(f"""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:16px;height:100%;'>
-      <div style='font-weight:600;font-size:.85rem;color:#1E1E2E;margin-bottom:10px;'>χ² Pre-check</div>
-      <div style='font-size:.78rem;color:#475569;line-height:1.6;margin-bottom:12px;'>
-        χ²({dof1}) = {chi2_1:.2f}, p {"< 0.001" if p1<0.001 else f"= {p1:.4f}"}<br>
-        Association is significant → CA is appropriate ✓<br>
-        Dimensions explain {pct1.sum():.1f}% of total variance.
-      </div>
-      <div style='font-weight:600;font-size:.8rem;color:#1E1E2E;margin-bottom:6px;'>Interpretation</div>
-      <div style='font-size:.78rem;color:#475569;line-height:1.7;'>
-        Younger respondents (18–25) are positioned closer to Blinkit — 
-        strong association between this age group and Blinkit usage. 
-        The 26–33 group shows proximity to Zepto — reflecting Zepto's 
-        urban-speed positioning. Older respondents (42+) sit near the 
-        origin with weaker and less differentiated platform preferences, 
-        consistent with their lower overall Q-Commerce engagement.
-      </div>
-    </div>""", unsafe_allow_html=True)
-
 # ── CA 2: Age Group × Delivery Time ───────────────────────────────────────────
-section("CA 2 · Age Group × Delivery Time Preference")
+section("CA 1 · Age Group × Delivery Time Preference")
 ct2 = pd.crosstab(users["Age_Group"], users["Delivery_Time"])
 fig2, chi2_2, p2, dof2, pct2, rd2, cd2 = ca_biplot(
     ct2, "Age_Group", "Delivery_Time", "CA 2: Age Group × Delivery Time", INDIGO, AMBER)
@@ -159,7 +130,7 @@ with c2:
     </div>""", unsafe_allow_html=True)
 
 # ── CA 3: Age Group × Order Value ─────────────────────────────────────────────
-section("CA 3 · Age Group × Average Order Value")
+section("CA 2 · Age Group × Average Order Value")
 ct3 = pd.crosstab(users["Age_Group"], users["Order_Value"])
 fig3, chi2_3, p3, dof3, pct3, rd3, cd3 = ca_biplot(
     ct3, "Age_Group", "Order_Value", "CA 3: Age Group × Average Order Value", INDIGO, EMERALD)
@@ -188,7 +159,7 @@ with c2:
     </div>""", unsafe_allow_html=True)
 
 # ── CA 4: Occupation × Payment Method ─────────────────────────────────────────
-section("CA 4 · Occupation × Payment Method")
+section("CA 3 · Occupation × Payment Method")
 ct4 = pd.crosstab(users["Occupation"], users["Payment_Method"])
 fig4, chi2_4, p4, dof4, pct4, rd4, cd4 = ca_biplot(
     ct4, "Occupation", "Payment_Method", "CA 4: Occupation × Payment Method", VIOLET, ROSE)
@@ -217,7 +188,7 @@ with c2:
     </div>""", unsafe_allow_html=True)
 
 # ── CA 5: Occupation × Order Value ────────────────────────────────────────────
-section("CA 5 · Occupation × Average Order Value")
+section("CA 4 · Occupation × Average Order Value")
 ct5 = pd.crosstab(users["Occupation"], users["Order_Value"])
 fig5, chi2_5, p5, dof5, pct5, rd5, cd5 = ca_biplot(
     ct5, "Occupation", "Order_Value", "CA 5: Occupation × Average Order Value", VIOLET, EMERALD)
@@ -247,9 +218,6 @@ with c2:
 
 # ── Summary ────────────────────────────────────────────────────────────────────
 section("Key Findings — Correspondence Analysis")
-finding_card("📱 Blinkit → Young Users | Zepto → 26–33 | Swiggy → Older (CA 1)",
-             "Clear platform-age segmentation: Blinkit dominates 18–25, Zepto carves a niche in 26–33. "
-             "Older users (42+) near origin — weaker, less differentiated platform preferences.", INDIGO)
 finding_card("🌙 Night/Midnight → 18–25 | Evening → 26–40 | Morning → 40+ (CA 2)",
              "Delivery time preferences are age-stratified with high clarity. "
              "Platforms should optimise staffing and push notifications for age-specific peak windows.", AMBER)
