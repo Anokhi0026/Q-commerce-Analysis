@@ -100,6 +100,108 @@ kpi(c3,f"{sens_lr*100:.1f}%","Sensitivity","Adopters identified",VIOLET)
 kpi(c4,f"{spec_lr*100:.1f}%","Specificity","Non-adopters identified",AMBER)
 st.markdown("<br>",unsafe_allow_html=True)
 
+# ── LOGISTIC REGRESSION FORMULA ───────────────────────────────────────────────
+section("Logistic Regression Model — Formula & Structure",
+        "Mathematical specification, reference categories, and key coefficient interpretation")
+
+st.markdown(f"""
+<div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;margin-bottom:16px;'>
+
+  <div style='font-size:.72rem;font-weight:600;color:{INDIGO};text-transform:uppercase;
+              letter-spacing:.08em;margin-bottom:10px;'>General Model Form</div>
+  <div style='background:#F8FAFC;border-radius:10px;padding:14px;text-align:center;
+              font-family:monospace;font-size:.95rem;color:#1E1E2E;margin-bottom:18px;
+              border:1px solid #E2E8F0;line-height:2.2;'>
+    log<sub>e</sub> [ P(Adopt) / (1 − P(Adopt)) ] = β₀ + Σ βᵢXᵢ<br>
+    <span style='font-size:.78rem;color:#64748B;'>
+      where P(Adopt) = probability of Q-Commerce adoption
+    </span>
+  </div>
+
+  <div style='font-size:.72rem;font-weight:600;color:{VIOLET};text-transform:uppercase;
+              letter-spacing:.08em;margin-bottom:10px;'>Fitted Model — Full Specification</div>
+  <div style='background:#EEF2FF;border-radius:10px;padding:16px;font-family:monospace;
+              font-size:.8rem;color:#1E1E2E;margin-bottom:18px;border:1px solid #C7D2FE;
+              line-height:2.3;'>
+    <b>logit(P)</b> = β₀<br>
+    &nbsp;&nbsp;+ β₁ · C(Age_Group)[<b>26–33</b>] + β₂ · C(Age_Group)[<b>34–41</b>]
+              + β₃ · C(Age_Group)[<b>42–49</b>] + β₄ · C(Age_Group)[<b>50+</b>]<br>
+    &nbsp;&nbsp;+ β₅ · C(Education)[<b>School Level</b>] + β₆ · C(Education)[<b>Undergraduate</b>]
+              + β₇ · C(Education)[<b>Postgraduate</b>] + β₈ · C(Education)[<b>Professional Degree</b>]<br>
+    &nbsp;&nbsp;+ β₉ · C(Income)[<b>Below ₹20k</b>] + β₁₀ · C(Income)[<b>₹20k–₹40k</b>]
+              + β₁₁ · C(Income)[<b>₹40k–₹60k</b>] + β₁₂ · C(Income)[<b>₹60k–₹1L</b>]<br>
+    &nbsp;&nbsp;+ β₁₃ · C(Gender)[<b>Male</b>]<br>
+    &nbsp;&nbsp;+ β₁₄ · <b>Occ_Retired</b> + β₁₅ · <b>Occ_Self_Employed</b>
+              + β₁₆ · <b>Occ_Working_Professional</b>
+  </div>
+
+  <div style='font-size:.72rem;font-weight:600;color:{EMERALD};text-transform:uppercase;
+              letter-spacing:.08em;margin-bottom:8px;'>Reference Categories (Baseline — Absorbed into β₀)</div>
+  <div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;'>
+    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Age Group</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>18–25 (highest adoption group)</div>
+    </div>
+    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Education</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>No Formal Education (lowest adoption)</div>
+    </div>
+    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Income</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>Above ₹1,00,000</div>
+    </div>
+    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Gender</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>Female</div>
+    </div>
+    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Occupation</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>Student (dummy baseline)</div>
+    </div>
+    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Homemaker</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>Absorbed (not dummied separately)</div>
+    </div>
+  </div>
+
+  <div style='font-size:.72rem;font-weight:600;color:{ROSE};text-transform:uppercase;
+              letter-spacing:.08em;margin-bottom:8px;'>Key Coefficient Findings (from Notebook)</div>
+  <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;'>
+    <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Age 40+ → β ≈ −2.60 | OR ≈ 0.074 ***</div>
+      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>~13.5× LESS likely to adopt vs 18–25</div>
+    </div>
+    <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Postgraduate → β ≈ +2.22 | OR ≈ 9× **</div>
+      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>~9× MORE likely to adopt vs No Formal Edu</div>
+    </div>
+    <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Male Gender → OR ≈ 0.47 * (suppressor)</div>
+      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>Significant only in multivariate model</div>
+    </div>
+    <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
+      <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>McFadden R² = 0.2933 (Good fit)</div>
+      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>0.20–0.40 = good fit for social science data</div>
+    </div>
+  </div>
+
+  <div style='background:#F8FAFC;border-radius:10px;padding:12px 16px;border:1px solid #E2E8F0;'>
+    <div style='font-weight:600;font-size:.82rem;color:#1E1E2E;margin-bottom:6px;'>
+      Converting Log-Odds → Probability
+    </div>
+    <div style='font-family:monospace;font-size:.9rem;text-align:center;
+                color:{INDIGO};padding:6px;'>
+      P(Adopt) = 1 / ( 1 + e<sup>−logit(P)</sup> )
+    </div>
+    <div style='font-size:.73rem;color:#64748B;margin-top:6px;text-align:center;'>
+      e.g. logit = 2.0 → P = 1/(1+e⁻²) ≈ 0.88 → 88% probability of adoption
+    </div>
+  </div>
+
+</div>
+""", unsafe_allow_html=True)
+
+
 c1,c2 = st.columns([1.3,1], gap="large")
 with c1:
     plot_or = or_df.drop(index="Intercept").sort_values("OR")
@@ -175,12 +277,11 @@ def fit_decision_tree():
     sens_dt = tp2/(tp2+fn2); spec_dt = tn2/(tn2+fp2)
 
     imp = pd.Series(best_dt.feature_importances_,index=X_all.columns).sort_values(ascending=False)
-    feature_names = list(X_all.columns)
     return (grid_dt.best_params_, grid_dt.best_score_, acc_dt, auc_dt,
-            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt, best_dt, feature_names)
+            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt)
 
 with st.spinner("Running GridSearchCV for Decision Tree (84 combinations)…"):
-    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt, best_dt, dt_feature_names = fit_decision_tree()
+    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt = fit_decision_tree()
 
 c1,c2,c3,c4 = st.columns(4)
 kpi(c1,f"{dt_cv_auc:.4f}","CV AUC","5-fold cross-validation",VIOLET)
@@ -188,147 +289,6 @@ kpi(c2,f"{auc_dt:.4f}","Test AUC","Held-out test set",INDIGO)
 kpi(c3,f"{acc_dt*100:.1f}%","Test Accuracy","",EMERALD)
 kpi(c4,str(dt_params),"Best Parameters","GridSearchCV result",AMBER)
 st.markdown("<br>",unsafe_allow_html=True)
-
-section("Decision Tree Diagram — Interactive (Zoomable)",
-        "Each node shows: split condition, gini impurity, sample count, and predicted class. "
-        "Blue = Adopter nodes · Orange = Non-Adopter nodes. Zoom, pan, and hover for details.")
-
-def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]):
-    from sklearn.tree import _tree
-    tree_ = tree.tree_
-    node_count = tree_.node_count
-
-    # ── collect node info ──────────────────────────────────────────────────────
-    nodes = []
-    def recurse(node_id, depth, parent_x, parent_y, is_left, x_min, x_max):
-        x = (x_min + x_max) / 2
-        y = -depth
-
-        feat  = tree_.feature[node_id]
-        thr   = tree_.threshold[node_id]
-        gini  = tree_.impurity[node_id]
-        samp  = tree_.n_node_samples[node_id]
-        val   = tree_.value[node_id][0]
-        cls   = int(np.argmax(val))
-        is_leaf = (feat == _tree.TREE_UNDEFINED)
-
-        if is_leaf:
-            label = (f"<b>{class_names[cls]}</b><br>"
-                     f"gini={gini:.3f}<br>n={samp}<br>"
-                     f"[{int(val[0])}, {int(val[1])}]")
-        else:
-            fname = feature_names[feat]
-            label = (f"<b>{fname}</b><br>"
-                     f"≤ {thr:.3f}<br>"
-                     f"gini={gini:.3f}<br>n={samp}<br>"
-                     f"[{int(val[0])}, {int(val[1])}]")
-
-        color = "#4F46E5" if cls == 1 else "#F97316"
-        opacity = max(0.25, 1 - gini)
-
-        nodes.append(dict(
-            node_id=node_id, x=x, y=y,
-            label=label, color=color, opacity=opacity,
-            parent_x=parent_x, parent_y=parent_y,
-            is_leaf=is_leaf, depth=depth,
-            edge_label="True" if is_left else "False"
-        ))
-
-        if not is_leaf:
-            left  = tree_.children_left[node_id]
-            right = tree_.children_right[node_id]
-            mid   = (x_min + x_max) / 2
-            recurse(left,  depth+1, x, y, True,  x_min, mid)
-            recurse(right, depth+1, x, y, False, mid,   x_max)
-
-    recurse(0, 0, None, None, None, 0, 1)
-
-    # ── build figure ───────────────────────────────────────────────────────────
-    fig = go.Figure()
-
-    # Draw edges first
-    for n in nodes:
-        if n["parent_x"] is not None:
-            fig.add_trace(go.Scatter(
-                x=[n["parent_x"], n["x"]],
-                y=[n["parent_y"], n["y"]],
-                mode="lines",
-                line=dict(color="#CBD5E1", width=1.5),
-                hoverinfo="none",
-                showlegend=False
-            ))
-            # Edge label (True/False)
-            fig.add_annotation(
-                x=(n["parent_x"]+n["x"])/2,
-                y=(n["parent_y"]+n["y"])/2,
-                text=n["edge_label"],
-                showarrow=False,
-                font=dict(size=9, color="#64748B"),
-                bgcolor="rgba(255,255,255,0.7)",
-                borderpad=2
-            )
-
-    # Draw nodes
-    for n in nodes:
-        node_color = n["color"]
-        fig.add_trace(go.Scatter(
-            x=[n["x"]], y=[n["y"]],
-            mode="markers+text",
-            marker=dict(
-                size=28 if n["is_leaf"] else 34,
-                color=node_color,
-                opacity=n["opacity"],
-                line=dict(color="#fff", width=2),
-                symbol="square" if n["is_leaf"] else "square"
-            ),
-            text=[""],
-            hovertext=[n["label"]],
-            hovertemplate="%{hovertext}<extra></extra>",
-            showlegend=False
-        ))
-        # Node label as annotation for clean rendering
-        fig.add_annotation(
-            x=n["x"], y=n["y"],
-            text=n["label"],
-            showarrow=False,
-            font=dict(size=7.5, color="#fff"),
-            align="center",
-            bgcolor=node_color,
-            bordercolor="#fff",
-            borderwidth=1,
-            borderpad=3,
-            opacity=max(0.7, n["opacity"])
-        )
-
-    # Legend
-    for label, color in [("Adopter node", "#4F46E5"), ("Non-Adopter node", "#F97316")]:
-        fig.add_trace(go.Scatter(
-            x=[None], y=[None], mode="markers",
-            marker=dict(size=12, color=color, symbol="square"),
-            name=label, showlegend=True
-        ))
-
-    max_depth = max(n["depth"] for n in nodes)
-    fig.update_layout(
-        **{k:v for k,v in PLOTLY_LAYOUT.items() if k != "legend"},
-        height=220 + max_depth * 110,
-        title=dict(
-            text=(f"Tuned Decision Tree — "
-                  f"max_depth={dt_params.get('max_depth')} | "
-                  f"min_samples_split={dt_params.get('min_samples_split')} | "
-                  f"min_samples_leaf={dt_params.get('min_samples_leaf')}"),
-            font=dict(size=12)
-        ),
-        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
-        dragmode="pan",
-    )
-    return fig
-
-st.plotly_chart(build_plotly_tree(best_dt, dt_feature_names),
-                use_container_width=True, config={"scrollZoom": True}, key="fig_dt_tree")
-
 
 c1,c2 = st.columns(2, gap="large")
 with c1:
@@ -340,7 +300,7 @@ with c1:
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
     fig_imp.update_layout(**PLOTLY_LAYOUT, height=330, title=dict(text="Decision Tree Feature Importance (Tuned Model)",font=dict(size=12)))
     fig_imp.update_xaxes(title="Feature Importance (Gini)",gridcolor="#F1F5F9")
-    st.plotly_chart(fig_imp, use_container_width=True, key="fig_imp_dt")
+    st.plotly_chart(fig_imp, use_container_width=True)
 with c2:
     fig_roc2 = go.Figure()
     fig_roc2.add_trace(go.Scatter(x=fpr_dt,y=tpr_dt,mode="lines",
@@ -352,7 +312,7 @@ with c2:
     fig_roc2.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
     fig_roc2.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
     fig_roc2.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc2, use_container_width=True, key="fig_roc2")
+    st.plotly_chart(fig_roc2, use_container_width=True)
     st.markdown(f"**Best params:** {dt_params}")
     st.markdown(f"**Sensitivity:** {sens_dt*100:.1f}% | **Specificity:** {spec_dt*100:.1f}%")
 
@@ -397,144 +357,6 @@ kpi(c3,f"{acc_rf*100:.1f}%","Test Accuracy","",VIOLET)
 kpi(c4,str(rf_params.get("n_estimators",""))+" Trees","n_estimators","",AMBER)
 st.markdown("<br>",unsafe_allow_html=True)
 
-section("Decision Tree Diagram — Interactive (Zoomable)",
-        "Each node shows: split condition, gini impurity, sample count, and predicted class. "
-        "Blue = Adopter nodes · Orange = Non-Adopter nodes. Zoom, pan, and hover for details.")
-
-def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]):
-    from sklearn.tree import _tree
-    tree_ = tree.tree_
-    node_count = tree_.node_count
-
-    # ── collect node info ──────────────────────────────────────────────────────
-    nodes = []
-    def recurse(node_id, depth, parent_x, parent_y, is_left, x_min, x_max):
-        x = (x_min + x_max) / 2
-        y = -depth
-
-        feat  = tree_.feature[node_id]
-        thr   = tree_.threshold[node_id]
-        gini  = tree_.impurity[node_id]
-        samp  = tree_.n_node_samples[node_id]
-        val   = tree_.value[node_id][0]
-        cls   = int(np.argmax(val))
-        is_leaf = (feat == _tree.TREE_UNDEFINED)
-
-        if is_leaf:
-            label = (f"<b>{class_names[cls]}</b><br>"
-                     f"gini={gini:.3f}<br>n={samp}<br>"
-                     f"[{int(val[0])}, {int(val[1])}]")
-        else:
-            fname = feature_names[feat]
-            label = (f"<b>{fname}</b><br>"
-                     f"≤ {thr:.3f}<br>"
-                     f"gini={gini:.3f}<br>n={samp}<br>"
-                     f"[{int(val[0])}, {int(val[1])}]")
-
-        color = "#4F46E5" if cls == 1 else "#F97316"
-        opacity = max(0.25, 1 - gini)
-
-        nodes.append(dict(
-            node_id=node_id, x=x, y=y,
-            label=label, color=color, opacity=opacity,
-            parent_x=parent_x, parent_y=parent_y,
-            is_leaf=is_leaf, depth=depth,
-            edge_label="True" if is_left else "False"
-        ))
-
-        if not is_leaf:
-            left  = tree_.children_left[node_id]
-            right = tree_.children_right[node_id]
-            mid   = (x_min + x_max) / 2
-            recurse(left,  depth+1, x, y, True,  x_min, mid)
-            recurse(right, depth+1, x, y, False, mid,   x_max)
-
-    recurse(0, 0, None, None, None, 0, 1)
-
-    # ── build figure ───────────────────────────────────────────────────────────
-    fig = go.Figure()
-
-    # Draw edges first
-    for n in nodes:
-        if n["parent_x"] is not None:
-            fig.add_trace(go.Scatter(
-                x=[n["parent_x"], n["x"]],
-                y=[n["parent_y"], n["y"]],
-                mode="lines",
-                line=dict(color="#CBD5E1", width=1.5),
-                hoverinfo="none",
-                showlegend=False
-            ))
-            # Edge label (True/False)
-            fig.add_annotation(
-                x=(n["parent_x"]+n["x"])/2,
-                y=(n["parent_y"]+n["y"])/2,
-                text=n["edge_label"],
-                showarrow=False,
-                font=dict(size=9, color="#64748B"),
-                bgcolor="rgba(255,255,255,0.7)",
-                borderpad=2
-            )
-
-    # Draw nodes
-    for n in nodes:
-        node_color = n["color"]
-        fig.add_trace(go.Scatter(
-            x=[n["x"]], y=[n["y"]],
-            mode="markers+text",
-            marker=dict(
-                size=28 if n["is_leaf"] else 34,
-                color=node_color,
-                opacity=n["opacity"],
-                line=dict(color="#fff", width=2),
-                symbol="square" if n["is_leaf"] else "square"
-            ),
-            text=[""],
-            hovertext=[n["label"]],
-            hovertemplate="%{hovertext}<extra></extra>",
-            showlegend=False
-        ))
-        # Node label as annotation for clean rendering
-        fig.add_annotation(
-            x=n["x"], y=n["y"],
-            text=n["label"],
-            showarrow=False,
-            font=dict(size=7.5, color="#fff"),
-            align="center",
-            bgcolor=node_color,
-            bordercolor="#fff",
-            borderwidth=1,
-            borderpad=3,
-            opacity=max(0.7, n["opacity"])
-        )
-
-    # Legend
-    for label, color in [("Adopter node", "#4F46E5"), ("Non-Adopter node", "#F97316")]:
-        fig.add_trace(go.Scatter(
-            x=[None], y=[None], mode="markers",
-            marker=dict(size=12, color=color, symbol="square"),
-            name=label, showlegend=True
-        ))
-
-    max_depth = max(n["depth"] for n in nodes)
-    fig.update_layout(
-        **{k:v for k,v in PLOTLY_LAYOUT.items() if k != "legend"},
-        height=220 + max_depth * 110,
-        title=dict(
-            text=(f"Tuned Decision Tree — "
-                  f"max_depth={dt_params.get('max_depth')} | "
-                  f"min_samples_split={dt_params.get('min_samples_split')} | "
-                  f"min_samples_leaf={dt_params.get('min_samples_leaf')}"),
-            font=dict(size=12)
-        ),
-        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
-        dragmode="pan",
-    )
-    return fig
-
-
 c1,c2 = st.columns(2, gap="large")
 with c1:
     fig_imp2 = go.Figure(go.Bar(
@@ -545,7 +367,7 @@ with c1:
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
     fig_imp2.update_layout(**PLOTLY_LAYOUT, height=330, title=dict(text="Random Forest Feature Importance (Top 10)",font=dict(size=12)))
     fig_imp2.update_xaxes(title="Feature Importance (Mean Gini Decrease)",gridcolor="#F1F5F9")
-    st.plotly_chart(fig_imp2, use_container_width=True, key="fig_imp_rf")
+    st.plotly_chart(fig_imp2, use_container_width=True)
 with c2:
     fig_roc3 = go.Figure()
     fig_roc3.add_trace(go.Scatter(x=fpr_rf,y=tpr_rf,mode="lines",
@@ -557,7 +379,7 @@ with c2:
     fig_roc3.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Random Forest | AUC={auc_rf:.4f}",font=dict(size=12)))
     fig_roc3.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
     fig_roc3.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc3, use_container_width=True, key="fig_roc3")
+    st.plotly_chart(fig_roc3, use_container_width=True)
     st.markdown(f"**Best params:** {rf_params}")
     st.markdown(f"**Sensitivity:** {sens_rf*100:.1f}% | **Specificity:** {spec_rf*100:.1f}%")
 
@@ -578,7 +400,7 @@ for metric, vals, color in [("Accuracy",accs,INDIGO),("AUC",aucs,EMERALD),("Sens
 fig_cmp.update_layout(**PLOTLY_LAYOUT, barmode="group", height=340, title=dict(text="Model Performance Comparison",font=dict(size=12)))
 fig_cmp.update_xaxes(tickangle=-10)
 fig_cmp.update_yaxes(title="Score",range=[0.5,1.05],gridcolor="#F1F5F9")
-st.plotly_chart(fig_cmp, use_container_width=True, key="fig_cmp")
+st.plotly_chart(fig_cmp, use_container_width=True)
 
 # ROC comparison overlay
 fig_roc_all = go.Figure()
@@ -595,7 +417,7 @@ fig_roc_all.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
 fig_roc_all.update_layout(**PLOTLY_LAYOUT, height=320, title=dict(text="ROC Curve Comparison — All Three Models",font=dict(size=12)))
 fig_roc_all.update_xaxes(title="False Positive Rate",range=[0,1],gridcolor="#F1F5F9")
 fig_roc_all.update_yaxes(title="True Positive Rate",range=[0,1],gridcolor="#F1F5F9")
-st.plotly_chart(fig_roc_all, use_container_width=True, key="fig_roc_all")
+st.plotly_chart(fig_roc_all, use_container_width=True)
 
 # Summary table
 cmp_df = pd.DataFrame({
