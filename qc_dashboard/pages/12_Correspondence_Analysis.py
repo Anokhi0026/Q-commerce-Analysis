@@ -85,7 +85,7 @@ def ca_biplot(ct, row_var, col_var, title, row_color=INDIGO, col_color=ROSE):
     return fig, chi2_v, p, dof, pct_dim, row_df, col_df
 
 k1,k2,k3,k4 = st.columns(4)
-kpi(k1,"5","CA Biplots","5 variable pairs analysed")
+kpi(k1,"4","CA Biplots","5 variable pairs analysed")
 kpi(k2,"228","Adopters","CA restricted to users only",INDIGO)
 kpi(k3,"Chi² pre-check","Significance Test","All pairs significant",EMERALD)
 kpi(k4,"2D","Dimensions","Dim1+Dim2 % shown per plot",VIOLET)
@@ -101,11 +101,19 @@ st.markdown("""
   </span>
 </div>""", unsafe_allow_html=True)
 
+st.markdown("""
+<div style='background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 16px;margin-bottom:16px;'>
+  <b style='font-size:.83rem;color:#1D4ED8;'>H0:</b>
+  <span style='font-size:.8rem;color:#374151;'>
+  There is no association between the raw variable and the column variable; i.e., the two categorical variables are independent 
+  </span>
+</div>""", unsafe_allow_html=True)
+
 # ── CA 2: Age Group × Delivery Time ───────────────────────────────────────────
 section("CA 1 · Age Group × Delivery Time Preference")
 ct2 = pd.crosstab(users["Age_Group"], users["Delivery_Time"])
 fig2, chi2_2, p2, dof2, pct2, rd2, cd2 = ca_biplot(
-    ct2, "Age_Group", "Delivery_Time", "CA 2: Age Group × Delivery Time", INDIGO, AMBER)
+    ct2, "Age_Group", "Delivery_Time", "CA 1: Age Group × Delivery Time", INDIGO, AMBER)
 
 c1,c2 = st.columns([1.5,1], gap="large")
 with c1:
@@ -133,7 +141,7 @@ with c2:
 section("CA 2 · Age Group × Average Order Value")
 ct3 = pd.crosstab(users["Age_Group"], users["Order_Value"])
 fig3, chi2_3, p3, dof3, pct3, rd3, cd3 = ca_biplot(
-    ct3, "Age_Group", "Order_Value", "CA 3: Age Group × Average Order Value", INDIGO, EMERALD)
+    ct3, "Age_Group", "Order_Value", "CA 2: Age Group × Average Order Value", INDIGO, EMERALD)
 
 c1,c2 = st.columns([1.5,1], gap="large")
 with c1:
@@ -162,7 +170,7 @@ with c2:
 section("CA 3 · Occupation × Payment Method")
 ct4 = pd.crosstab(users["Occupation"], users["Payment_Method"])
 fig4, chi2_4, p4, dof4, pct4, rd4, cd4 = ca_biplot(
-    ct4, "Occupation", "Payment_Method", "CA 4: Occupation × Payment Method", VIOLET, ROSE)
+    ct4, "Occupation", "Payment_Method", "CA 3: Occupation × Payment Method", VIOLET, ROSE)
 
 c1,c2 = st.columns([1.5,1], gap="large")
 with c1:
@@ -191,7 +199,7 @@ with c2:
 section("CA 4 · Occupation × Average Order Value")
 ct5 = pd.crosstab(users["Occupation"], users["Order_Value"])
 fig5, chi2_5, p5, dof5, pct5, rd5, cd5 = ca_biplot(
-    ct5, "Occupation", "Order_Value", "CA 5: Occupation × Average Order Value", VIOLET, EMERALD)
+    ct5, "Occupation", "Order_Value", "CA 4: Occupation × Average Order Value", VIOLET, EMERALD)
 
 c1,c2 = st.columns([1.5,1], gap="large")
 with c1:
