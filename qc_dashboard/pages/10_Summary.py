@@ -116,7 +116,7 @@ with c1:
         text=[f"V={v:.3f}" for v in vs_[::-1]], textposition="outside"))
     for t,c in [(0.1,SLATE),(0.3,AMBER),(0.5,ROSE)]:
         fig.add_vline(x=t, line_dash="dot", line_color=c, opacity=0.5)
-    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 2: Effect Sizes",font=dict(size=12)))
     fig.update_xaxes(title="Cramér's V",range=[0,0.7],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
@@ -131,7 +131,7 @@ with c2:
         text=[f"{m:.2f}/5" for m in means], textposition="outside"))
     fig.add_hline(y=3.5, line_dash="dot", line_color=AMBER, opacity=0.7,
                   annotation_text="≥3.5 target", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 3: Satisfaction Scores",font=dict(size=12)))
     fig.update_yaxes(title="Mean Score",range=[0,5.2],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
@@ -143,7 +143,7 @@ with c3:
         text=[f"AUC={v:.3f}" for v in aucs_], textposition="outside"))
     fig.add_hline(y=0.5, line_dash="dash", line_color=SLATE, opacity=0.5,
                   annotation_text="Random classifier", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
+    fig.update_layout(**PLOTLY_LAYOUT, **PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
     fig.update_yaxes(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
@@ -183,7 +183,7 @@ for i,(title,text,color) in enumerate(recs):
 # ── Statistical Methods Used ───────────────────────────────────────────────────
 section("Complete List of Statistical Methods Used")
 
-# (name, description, H0 or None, formula or None)
+# (name, description, H0, formula)  — H0/formula = None means not shown
 methods = [
     ("Descriptive Analysis",
      "Frequency distributions, cross-tabs, multi-response analysis",
@@ -207,7 +207,7 @@ methods = [
     ("Dunn's Post-Hoc (Bonferroni)",
      "Pairwise comparisons after significant Kruskal-Wallis",
      "H₀: No difference between any specific pair of groups",
-     "z = (R̄ᵢ − R̄ⱼ) / SE  ;  p_adj = min(p · m, 1)"),
+     "z = (R̅ᵢ − R̅ⱼ) / SE  ;  p_adj = min(p · m, 1)"),
     ("Spearman Rank Correlation",
      "Satisfaction ↔ Continuity ↔ Recommendation",
      "H₀: No monotonic association between the two variables (ρ = 0)",
@@ -264,24 +264,31 @@ for col_idx, (col_w, subset) in enumerate([(c1, methods[:half]), (c2, methods[ha
     with col_w:
         for i, (name, desc, h0, formula) in enumerate(subset):
             num = i + 1 + half * col_idx
-            h0_html = f"""<div style='margin-top:4px;background:#EEF2FF;border-radius:5px;
-                          padding:3px 8px;font-size:.67rem;color:#4338CA;font-style:italic;'>{h0}</div>""" if h0 else ""
-            formula_html = f"""<div style='margin-top:3px;font-family:monospace;font-size:.67rem;
-                          color:{INDIGO};background:#F8FAFC;border-radius:5px;
-                          padding:3px 8px;border:1px solid #E2E8F0;'>{formula}</div>""" if formula else ""
-            col_w.markdown(f"""
-            <div style='display:flex;gap:10px;align-items:flex-start;padding:8px 0;
-                        border-bottom:1px solid #F1F5F9;'>
-              <div style='min-width:22px;height:22px;border-radius:50%;background:{INDIGO};color:#fff;
-                          font-size:.65rem;font-weight:700;display:flex;align-items:center;
-                          justify-content:center;flex-shrink:0;margin-top:1px;'>{num}</div>
-              <div style='flex:1;'>
-                <div style='font-size:.8rem;font-weight:600;color:#1E1E2E;'>{name}</div>
-                <div style='font-size:.73rem;color:#64748B;margin-top:1px;'>{desc}</div>
-                {h0_html}
-                {formula_html}
-              </div>
-            </div>""", unsafe_allow_html=True)
+            h0_html = (
+                "<div style='margin-top:4px;background:#EEF2FF;border-radius:5px;"
+                "padding:3px 8px;font-size:.67rem;color:#4338CA;font-style:italic;'>"
+                + h0 + "</div>"
+            ) if h0 else ""
+            formula_html = (
+                "<div style='margin-top:3px;font-family:monospace;font-size:.68rem;"
+                "color:" + INDIGO + ";background:#F8FAFC;border-radius:5px;"
+                "padding:4px 8px;border:1px solid #E2E8F0;'>"
+                + formula + "</div>"
+            ) if formula else ""
+            col_w.markdown(
+                "<div style='display:flex;gap:10px;align-items:flex-start;padding:8px 0;"
+                "border-bottom:1px solid #F1F5F9;'>"
+                "<div style='min-width:22px;height:22px;border-radius:50%;background:"
+                + INDIGO + ";color:#fff;font-size:.65rem;font-weight:700;display:flex;"
+                "align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;'>"
+                + str(num) + "</div>"
+                "<div style='flex:1;'>"
+                "<div style='font-size:.8rem;font-weight:600;color:#1E1E2E;'>" + name + "</div>"
+                "<div style='font-size:.73rem;color:#64748B;margin-top:1px;'>" + desc + "</div>"
+                + h0_html + formula_html +
+                "</div></div>",
+                unsafe_allow_html=True
+            )
 
 # ── Limitations ────────────────────────────────────────────────────────────────
 section("Limitations & Future Scope")
