@@ -85,7 +85,7 @@ def ca_biplot(ct, row_var, col_var, title, row_color=INDIGO, col_color=ROSE):
     return fig, chi2_v, p, dof, pct_dim, row_df, col_df
 
 k1,k2,k3,k4 = st.columns(4)
-kpi(k1,"4","CA Biplots","5 variable pairs analysed")
+kpi(k1,"4","CA Biplots","4 variable pairs analysed")
 kpi(k2,"228","Adopters","CA restricted to users only",INDIGO)
 kpi(k3,"Chi² pre-check","Significance Test","All pairs significant",EMERALD)
 kpi(k4,"2D","Dimensions","Dim1+Dim2 % shown per plot",VIOLET)
