@@ -136,7 +136,7 @@ with c2:
                       annotation_text="Selected K=3", annotation_font=dict(size=9, color=AMBER))
     fig_sil.add_hline(y=0.10, line_dash="dot", line_color=SLATE, opacity=0.6,
                       annotation_text="Min acceptable (0.10)", annotation_font=dict(size=9))
-    fig_sil.update_layout(**PLOTLY_LAYOUT, height=290,
+    fig_sil.update_layout(**PLOTLY_LAYOUT, height=390,
                            title=dict(text="(b) Silhouette Score vs K", font=dict(size=12)))
     fig_sil.update_xaxes(title="K", tickvals=K_RANGE, gridcolor="#F1F5F9")
     fig_sil.update_yaxes(title="Avg Silhouette Score", gridcolor="#F1F5F9")
@@ -150,8 +150,7 @@ st.markdown(f"""
   further drops from 10.3% (K=2→3) to only 4.1% (K=3→4).
   K=2 yields the highest silhouette (0.239) but collapses the solution into just two broad groups (engaged vs disengaged),
   which is too coarse for actionable consumer insights.
-  K=3 retains an acceptable silhouette (0.166), is validated by the Ward dendrogram, and produces three
-  meaningfully distinct and interpretable consumer personas. K≥4 shows diminishing distance gains and
+  K=3 retains an acceptable silhouette (0.166). K≥4 shows diminishing distance gains and
   deteriorating silhouette, confirming K=3 as the optimal choice.
   </span>
 </div>""", unsafe_allow_html=True)
