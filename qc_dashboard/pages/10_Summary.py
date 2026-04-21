@@ -147,31 +147,50 @@ with c3:
     fig.update_yaxes(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
-# ── Strategic Recommendations ──────────────────────────────────────────────────
-section("Strategic Recommendations")
-recs = [
-    ("🎯 Target 18–33 With High Education First",
-     "This demographic has the highest adoption probability across all models. "
-     "Platform growth should concentrate acquisition here before expanding to harder-to-reach segments.", INDIGO),
-    ("📣 Awareness Campaigns Are #1 Priority for Non-Users",
-     "29.2% of non-users simply haven't been exposed. Simple offline+digital campaigns in Vadodara's wards "
-     "(especially North and East) can convert this reachable non-adopter segment.", ROSE),
-    ("⏰ Optimise Operations for the 5–11 PM Window",
-     "63% of orders come in evening/night. Dark-store staffing, fleet availability, and push notifications "
-     "should all be concentrated in this window — especially for users aged 18–33.", EMERALD),
-    ("💳 'First UPI Order' Incentive for CoD Users",
-     "32% still use CoD. Graduated incentives (first UPI order discount, wallet cashback) can shift this "
-     "segment without losing them — occupation-targeted campaigns work best (homemakers, retired).", AMBER),
-    ("🏪 Simplify Onboarding for 40+ Users",
-     "The logistic model (OR≈0.074) and all three models agree: 40+ is the largest adoption gap. "
-     "Simplified UI, vernacular language support, and in-store demo kiosks address digital literacy barriers.", VIOLET),
-    ("🧩 Segment-Specific Marketing Using Cluster Profiles",
-     "Active Engagers → loyalty rewards. Passive Users → re-engagement + speed messaging. "
-     "Convenience Purists → reliability and emergency availability messaging. Don't treat all users identically.", SKY),
+# ── Key Consumer Insights ──────────────────────────────────────────────────────
+section("Key Consumer Insights")
+st.markdown("""
+<div style='background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;
+            padding:10px 16px;margin-bottom:16px;font-size:.8rem;color:#1D4ED8;'>
+  These insights describe <b>who consumers are, what drives their behaviour, and what barriers they face</b>
+  — derived directly from the statistical findings of this study.
+</div>""", unsafe_allow_html=True)
+
+insights = [
+    ("⏰ Convenience Is the Core Adoption Motive",
+     "Time-saving and lifestyle compatibility are the top-ranked reasons consumers adopt Q-Commerce "
+     "— ranked above discounts and product variety. Consumers primarily use it to avoid disrupting "
+     "their work or study schedule, not for price benefits.",
+     INDIGO),
+    ("🎓 Digital Literacy Shapes Adoption More Than Income",
+     "Education (V=0.407) predicts adoption more strongly than household income (V=0.246). "
+     "Consumers with higher education are more confident navigating apps and trusting digital payments "
+     "— suggesting literacy is a larger barrier than affordability for non-adopters.",
+     EMERALD),
+    ("🧓 Older Consumers Have Distinct and Real Barriers",
+     "Consumers aged 40+ are dramatically less likely to adopt (OR≈0.074). Their hesitation stems "
+     "from app navigation discomfort, data privacy concerns, and comfort with offline routines — "
+     "not from indifference to fast delivery as a concept.",
+     ROSE),
+    ("💳 CoD Preference Reflects Trust Deficit, Not Inertia",
+     "32.5% of Q-Commerce users still prefer Cash on Delivery. This is concentrated among homemakers "
+     "and retired respondents who report lower trust in digital payment systems — indicating a genuine "
+     "confidence gap rather than simple habit.",
+     AMBER),
+    ("🛒 Consumers Use Q-Commerce for Top-Ups, Not Bulk Shopping",
+     "72.4% of orders are below ₹400 and categories are dominated by groceries, snacks, and daily "
+     "essentials. Consumers position Q-Commerce as a supplement to planned shopping — fulfilling "
+     "immediate, small-basket needs when something runs out unexpectedly.",
+     VIOLET),
+    ("😐 A Large Segment Is Retained but Not Habitual",
+     "Cluster analysis identifies a 'Passive Users' segment with below-average attitude and satisfaction "
+     "scores. These consumers order occasionally and only under specific circumstances — they are "
+     "not dissatisfied enough to leave, but have not integrated Q-Commerce into their daily routine.",
+     SKY),
 ]
 
 c1,c2 = st.columns(2, gap="large")
-for i,(title,text,color) in enumerate(recs):
+for i,(title,text,color) in enumerate(insights):
     col = c1 if i%2==0 else c2
     col.markdown(f"""
     <div style='background:#fff;border:1px solid #E2E8F0;border-left:4px solid {color};
@@ -179,7 +198,6 @@ for i,(title,text,color) in enumerate(recs):
       <div style='font-weight:700;font-size:.85rem;color:#1E1E2E;margin-bottom:4px;'>{title}</div>
       <div style='font-size:.78rem;color:#475569;line-height:1.6;'>{text}</div>
     </div>""", unsafe_allow_html=True)
-
 # ── Statistical Methods Used ───────────────────────────────────────────────────
 section("Complete List of Statistical Methods Used")
 
@@ -290,36 +308,7 @@ for col_idx, (col_w, subset) in enumerate([(c1, methods[:half]), (c2, methods[ha
                 unsafe_allow_html=True
             )
 
-# ── Limitations ────────────────────────────────────────────────────────────────
-section("Limitations & Future Scope")
-lc1,lc2 = st.columns(2, gap="large")
-with lc1:
-    st.markdown(f"""
-    <div style='background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:18px;'>
-      <div style='font-weight:700;font-size:.88rem;color:#92400E;margin-bottom:10px;'>⚠️ Limitations</div>
-      {"".join(f'<div style="font-size:.78rem;color:#78350F;padding:3px 0;">• {l}</div>' for l in [
-        "Convenience sampling — may not represent all of Vadodara equally",
-        "Cross-sectional design — cannot track adoption dynamics over time",
-        "Non-user factor scores imputed with user-sample mean in Obj 5",
-        "CA requires `prince` library; implemented via NumPy SVD (same math)",
-        "Cluster labels (Active/Passive/Purists) are interpretive, not definitive",
-        "4 respondents excluded from Obj 5 due to missing Gender values",
-      ])}
-    </div>""", unsafe_allow_html=True)
-with lc2:
-    st.markdown(f"""
-    <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:18px;'>
-      <div style='font-weight:700;font-size:.88rem;color:#14532D;margin-bottom:10px;'>🔭 Future Scope</div>
-      {"".join(f'<div style="font-size:.78rem;color:#15803D;padding:3px 0;">• {l}</div>' for l in [
-        "Longitudinal study to track adoption over 12–18 months",
-        "Expand to other Tier-2 cities for cross-city comparison (Surat, Rajkot)",
-        "Add platform-side data: delivery time actuals, dark-store coverage maps",
-        "Deep qualitative interviews with Passive Users and non-adopters",
-        "Price elasticity modelling and willingness-to-pay analysis",
-        "Social network analysis of referral patterns among Active Engagers",
-      ])}
-    </div>""", unsafe_allow_html=True)
-
+#--------------------------------------
 st.markdown(f"""
 <div style='background:linear-gradient(135deg,#1E1E2E,#2D2D4E);border-radius:16px;
             padding:28px 32px;margin-top:24px;text-align:center;color:#fff;'>
