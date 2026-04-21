@@ -235,11 +235,12 @@ def fit_decision_tree():
     sens_dt = tp2/(tp2+fn2); spec_dt = tn2/(tn2+fp2)
 
     imp = pd.Series(best_dt.feature_importances_,index=X_all.columns).sort_values(ascending=False)
+    feature_names = list(X_all.columns)
     return (grid_dt.best_params_, grid_dt.best_score_, acc_dt, auc_dt,
-            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt)
+            sens_dt, spec_dt, fpr_dt, tpr_dt, imp, cm_dt, best_dt, feature_names)
 
 with st.spinner("Running GridSearchCV for Decision Tree (84 combinations)…"):
-    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt = fit_decision_tree()
+    dt_params, dt_cv_auc, acc_dt, auc_dt, sens_dt, spec_dt, fpr_dt, tpr_dt, dt_imp, cm_dt, best_dt, dt_feature_names = fit_decision_tree()
 
 c1,c2,c3,c4 = st.columns(4)
 kpi(c1,f"{dt_cv_auc:.4f}","CV AUC","5-fold cross-validation",VIOLET)
@@ -247,6 +248,147 @@ kpi(c2,f"{auc_dt:.4f}","Test AUC","Held-out test set",INDIGO)
 kpi(c3,f"{acc_dt*100:.1f}%","Test Accuracy","",EMERALD)
 kpi(c4,str(dt_params),"Best Parameters","GridSearchCV result",AMBER)
 st.markdown("<br>",unsafe_allow_html=True)
+
+section("Decision Tree Diagram — Interactive (Zoomable)",
+        "Each node shows: split condition, gini impurity, sample count, and predicted class. "
+        "Blue = Adopter nodes · Orange = Non-Adopter nodes. Zoom, pan, and hover for details.")
+
+def build_plotly_tree(tree, feature_names, class_names=["Non-Adopter","Adopter"]):
+    from sklearn.tree import _tree
+    tree_ = tree.tree_
+    node_count = tree_.node_count
+
+    # ── collect node info ──────────────────────────────────────────────────────
+    nodes = []
+    def recurse(node_id, depth, parent_x, parent_y, is_left, x_min, x_max):
+        x = (x_min + x_max) / 2
+        y = -depth
+
+        feat  = tree_.feature[node_id]
+        thr   = tree_.threshold[node_id]
+        gini  = tree_.impurity[node_id]
+        samp  = tree_.n_node_samples[node_id]
+        val   = tree_.value[node_id][0]
+        cls   = int(np.argmax(val))
+        is_leaf = (feat == _tree.TREE_UNDEFINED)
+
+        if is_leaf:
+            label = (f"<b>{class_names[cls]}</b><br>"
+                     f"gini={gini:.3f}<br>n={samp}<br>"
+                     f"[{int(val[0])}, {int(val[1])}]")
+        else:
+            fname = feature_names[feat]
+            label = (f"<b>{fname}</b><br>"
+                     f"≤ {thr:.3f}<br>"
+                     f"gini={gini:.3f}<br>n={samp}<br>"
+                     f"[{int(val[0])}, {int(val[1])}]")
+
+        color = "#4F46E5" if cls == 1 else "#F97316"
+        opacity = max(0.25, 1 - gini)
+
+        nodes.append(dict(
+            node_id=node_id, x=x, y=y,
+            label=label, color=color, opacity=opacity,
+            parent_x=parent_x, parent_y=parent_y,
+            is_leaf=is_leaf, depth=depth,
+            edge_label="True" if is_left else "False"
+        ))
+
+        if not is_leaf:
+            left  = tree_.children_left[node_id]
+            right = tree_.children_right[node_id]
+            mid   = (x_min + x_max) / 2
+            recurse(left,  depth+1, x, y, True,  x_min, mid)
+            recurse(right, depth+1, x, y, False, mid,   x_max)
+
+    recurse(0, 0, None, None, None, 0, 1)
+
+    # ── build figure ───────────────────────────────────────────────────────────
+    fig = go.Figure()
+
+    # Draw edges first
+    for n in nodes:
+        if n["parent_x"] is not None:
+            fig.add_trace(go.Scatter(
+                x=[n["parent_x"], n["x"]],
+                y=[n["parent_y"], n["y"]],
+                mode="lines",
+                line=dict(color="#CBD5E1", width=1.5),
+                hoverinfo="none",
+                showlegend=False
+            ))
+            # Edge label (True/False)
+            fig.add_annotation(
+                x=(n["parent_x"]+n["x"])/2,
+                y=(n["parent_y"]+n["y"])/2,
+                text=n["edge_label"],
+                showarrow=False,
+                font=dict(size=9, color="#64748B"),
+                bgcolor="rgba(255,255,255,0.7)",
+                borderpad=2
+            )
+
+    # Draw nodes
+    for n in nodes:
+        node_color = n["color"]
+        fig.add_trace(go.Scatter(
+            x=[n["x"]], y=[n["y"]],
+            mode="markers+text",
+            marker=dict(
+                size=28 if n["is_leaf"] else 34,
+                color=node_color,
+                opacity=n["opacity"],
+                line=dict(color="#fff", width=2),
+                symbol="square" if n["is_leaf"] else "square"
+            ),
+            text=[""],
+            hovertext=[n["label"]],
+            hovertemplate="%{hovertext}<extra></extra>",
+            showlegend=False
+        ))
+        # Node label as annotation for clean rendering
+        fig.add_annotation(
+            x=n["x"], y=n["y"],
+            text=n["label"],
+            showarrow=False,
+            font=dict(size=7.5, color="#fff"),
+            align="center",
+            bgcolor=node_color,
+            bordercolor="#fff",
+            borderwidth=1,
+            borderpad=3,
+            opacity=max(0.7, n["opacity"])
+        )
+
+    # Legend
+    for label, color in [("Adopter node", "#4F46E5"), ("Non-Adopter node", "#F97316")]:
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None], mode="markers",
+            marker=dict(size=12, color=color, symbol="square"),
+            name=label, showlegend=True
+        ))
+
+    max_depth = max(n["depth"] for n in nodes)
+    fig.update_layout(
+        **{k:v for k,v in PLOTLY_LAYOUT.items() if k != "legend"},
+        height=220 + max_depth * 110,
+        title=dict(
+            text=(f"Tuned Decision Tree — "
+                  f"max_depth={dt_params.get('max_depth')} | "
+                  f"min_samples_split={dt_params.get('min_samples_split')} | "
+                  f"min_samples_leaf={dt_params.get('min_samples_leaf')}"),
+            font=dict(size=12)
+        ),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
+        dragmode="pan",
+    )
+    return fig
+
+st.plotly_chart(build_plotly_tree(best_dt, dt_feature_names),
+                use_container_width=True, config={"scrollZoom": True}, key="fig_dt_tree")
+
 
 c1,c2 = st.columns(2, gap="large")
 with c1:
@@ -258,7 +400,7 @@ with c1:
         hovertemplate="%{y}: %{x:.4f}<extra></extra>"))
     fig_imp.update_layout(**PLOTLY_LAYOUT, height=330, title=dict(text="Decision Tree Feature Importance (Tuned Model)",font=dict(size=12)))
     fig_imp.update_xaxes(title="Feature Importance (Gini)",gridcolor="#F1F5F9")
-    st.plotly_chart(fig_imp, use_container_width=True)
+    st.plotly_chart(fig_imp, use_container_width=True, key="fig_imp_dt")
 with c2:
     fig_roc2 = go.Figure()
     fig_roc2.add_trace(go.Scatter(x=fpr_dt,y=tpr_dt,mode="lines",
@@ -270,9 +412,10 @@ with c2:
     fig_roc2.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text=f"ROC Curve — Decision Tree | AUC={auc_dt:.4f}",font=dict(size=12)))
     fig_roc2.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
     fig_roc2.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc2, use_container_width=True)
+    st.plotly_chart(fig_roc2, use_container_width=True, key="fig_roc2")
     st.markdown(f"**Best params:** {dt_params}")
     st.markdown(f"**Sensitivity:** {sens_dt*100:.1f}% | **Specificity:** {spec_dt*100:.1f}%")
+
 
 # ── SECTION 3: RANDOM FOREST ──────────────────────────────────────────────────
 section("Model 3 · Random Forest with GridSearchCV Hyperparameter Tuning",
