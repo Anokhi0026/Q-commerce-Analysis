@@ -327,66 +327,16 @@ for col_widget, (var, label, OR, lo, hi) in zip([or_left, or_right], or_data):
 
           <div style='font-size:.82rem;color:#475569;margin-bottom:14px;'>
             95% CI &nbsp;[<b>{lo:.3f}</b>, <b>{hi:.3f}</b>]
-            &nbsp;{"✅ Significant (CI excludes 1)" if sig_or else "❌ Not significant (CI includes 1)"}
+            &nbsp;{"✅ Significant" if sig_or else "❌ Not significant (CI includes 1)"}
           </div>
 
           <div style='background:#F8FAFC;border-radius:8px;padding:10px 14px;font-size:.79rem;
                       color:#475569;line-height:1.75;'>
             <b>Interpretation:</b><br>
             {"The " + label.split(" vs ")[0] + " group is <b>" + f"{OR:.1f}×</b> more likely to have adopted Q-Commerce than the " + label.split(" vs ")[1] + " group." if sig_or else "No significant difference in adoption odds between the two groups."}
-          </div>
-
-          <div style='margin-top:14px;'>
-            <div style='font-size:.72rem;color:#94A3B8;margin-bottom:4px;'>CI Width (precision indicator)</div>
-            <div style='background:#F1F5F9;border-radius:20px;height:6px;'>
-              <div style='width:{min(int(ci_width/10*100),100)}%;background:{or_color};
-                          border-radius:20px;height:6px;opacity:0.7;'></div>
-            </div>
-            <div style='font-size:.72rem;color:#94A3B8;margin-top:3px;'>Width = {ci_width:.3f}</div>
-          </div>
-        </div>""", unsafe_allow_html=True)
+          </div>""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-# Forest plot for both ORs
-fig_or = go.Figure()
-or_labels = [d[0] for d in or_data]
-or_vals   = [d[2] for d in or_data]
-or_lo     = [d[3] for d in or_data]
-or_hi     = [d[4] for d in or_data]
-or_colors = [EMERALD if lo > 1 else SLATE for lo in or_lo]
-
-fig_or.add_shape(type="line", x0=1, x1=1, y0=-0.5, y1=len(or_labels)-0.5,
-                 line=dict(color="#E2E8F0", width=2, dash="dot"))
-for i, (lbl, OR, lo, hi, color) in enumerate(zip(or_labels, or_vals, or_lo, or_hi, or_colors)):
-    fig_or.add_trace(go.Scatter(
-        x=[lo, hi], y=[i, i], mode="lines",
-        line=dict(color=color, width=3),
-        showlegend=False,
-        hovertemplate=f"{lbl}: 95% CI [{lo:.3f}, {hi:.3f}]<extra></extra>"
-    ))
-    fig_or.add_trace(go.Scatter(
-        x=[OR], y=[i], mode="markers",
-        marker=dict(color=color, size=14, symbol="diamond"),
-        showlegend=False,
-        hovertemplate=f"{lbl}: OR = {OR:.3f}<extra></extra>"
-    ))
-    fig_or.add_annotation(
-        x=hi + 0.3, y=i,
-        text=f"OR = {OR:.3f}  [{lo:.3f}, {hi:.3f}]",
-        showarrow=False, font=dict(size=10, color="#475569"), xanchor="left"
-    )
-
-fig_or.update_layout(
-    **PLOTLY_LAYOUT, height=220,
-    title=dict(text="Forest Plot — Odds Ratios with 95% Confidence Intervals", font=dict(size=13)),
-    xaxis=dict(title="Odds Ratio", range=[0, 14], gridcolor="#F1F5F9", zeroline=False),
-    yaxis=dict(tickvals=list(range(len(or_labels))), ticktext=or_labels, tickfont=dict(size=11))
-)
-st.plotly_chart(fig_or, use_container_width=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
 # ── Key Findings ───────────────────────────────────────────────────────────────
 section("Key Findings")
 
