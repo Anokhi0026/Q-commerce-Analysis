@@ -269,7 +269,7 @@ profile = cdf2.groupby("Cluster")[SHORT_13].mean().round(3)
 profile.index = CLUSTER_NAMES
 
 fig_hm = go.Figure(go.Heatmap(
-    z=mediod_df.T.values, x=CLUSTER_NAMES, y=SHORT_13,
+    z=mediod_df.values, x=CLUSTER_NAMES, y=SHORT_13,
     colorscale=[[0, "#FEF2F2"], [0.3, "#FCA5A5"], [0.5, "#FCD34D"], [0.7, "#86EFAC"], [1, "#15803D"]],
     zmin=2.5, zmax=5.0,
     texttemplate="%{z:.2f}",
