@@ -202,39 +202,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-c1,c2 = st.columns([1.3,1], gap="large")
-with c1:
-    plot_or = or_df.drop(index="Intercept").sort_values("OR")
-    colors_or = [INDIGO if s!="" else SLATE for s in plot_or["Sig"]]
-    fig_f = go.Figure()
-    ypos = list(range(len(plot_or)))
-    fig_f.add_trace(go.Scatter(x=plot_or["OR"], y=ypos, mode="markers",
-                                marker=dict(color=colors_or,size=9,symbol="square"),
-                                hovertemplate="%{text}: OR=%{x:.3f}<extra></extra>",
-                                text=plot_or.index.tolist()))
-    for i,(_, row) in enumerate(plot_or.iterrows()):
-        fig_f.add_trace(go.Scatter(x=[row["OR CI Lo"],row["OR CI Hi"]],y=[i,i],
-                                    mode="lines",line=dict(color=colors_or[i],width=2),showlegend=False))
-    fig_f.add_vline(x=1.0,line_dash="dash",line_color="#94A3B8",
-                    annotation_text="OR=1",annotation_font=dict(size=9))
-    fig_f.update_layout(**PLOTLY_LAYOUT, height=500, showlegend=False, title=dict(text="Forest Plot — Blue=Significant | Gray=Not Significant",font=dict(size=11)))
-    fig_f.update_xaxes(title="Odds Ratio (OR) with 95% Wald CI",gridcolor="#F1F5F9")
-    fig_f.update_yaxes(tickvals=ypos,ticktext=plot_or.index.tolist(),gridcolor="#F1F5F9")
-    st.plotly_chart(fig_f, use_container_width=True, key="fig_f")
-
-with c2:
-    fig_roc = go.Figure()
-    fig_roc.add_trace(go.Scatter(x=fpr_lr,y=tpr_lr,mode="lines",
-                                  line=dict(color=INDIGO,width=3),
-                                  name=f"Logistic Regression (AUC={auc_lr:.3f})",
-                                  fill="tozeroy",fillcolor="rgba(79,70,229,0.08)"))
-    fig_roc.add_trace(go.Scatter(x=[0,1],y=[0,1],mode="lines",
-                                  line=dict(color="#94A3B8",dash="dash"),name="Random (AUC=0.5)"))
-    fig_roc.update_layout(**PLOTLY_LAYOUT, height=280, title=dict(text=f"ROC Curve — AUC={auc_lr:.4f}",font=dict(size=12)))
-    fig_roc.update_xaxes(title="FPR",range=[0,1],gridcolor="#F1F5F9")
-    fig_roc.update_yaxes(title="TPR",range=[0,1],gridcolor="#F1F5F9")
-    st.plotly_chart(fig_roc, use_container_width=True, key="fig_roc")
-
     # Model summary stats
     nag  = (1-np.exp(-2*(lr_model.llf-lr_model.llnull)/len(df_m))) / (1-np.exp(2*lr_model.llnull/len(df_m)))
     st.markdown(f"""
