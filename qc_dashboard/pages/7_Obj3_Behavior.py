@@ -76,7 +76,7 @@ with t1:
     fig_r = go.Figure(go.Pie(labels=reason_cnt.index, values=reason_cnt.values, hole=0.45,
                               marker_colors=PALETTE[:len(reason_cnt)], textinfo="label+percent"))
     fig_r.update_layout(**{k:v for k,v in PLOTLY_LAYOUT.items() if k not in["xaxis","yaxis"]},
-                         height=270, title=dict(text="(f) Biggest Reason for Using Q-Commerce",font=dict(size=12)))
+                         height=270, title=dict(text="Biggest Reason for Using Q-Commerce",font=dict(size=12)))
     st.plotly_chart(fig_r, use_container_width=True)
     finding_card("🏆 Blinkit Dominates (62.3%) & 43% are Long-Term Users",
                  "Near-oligopolistic market structure. 43% have used Q-Commerce for over a year — "
@@ -95,7 +95,7 @@ with t2:
             marker_color=[INDIGO,AMBER,EMERALD,VIOLET],
             text=[f"{int(v)} ({v/total_p*100:.1f}%)" for v in pay_cnt.values[::-1]],
             textposition="outside"))
-        fig_pay.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text="(e) Payment Method",font=dict(size=12)))
+        fig_pay.update_layout(**PLOTLY_LAYOUT, height=290, title=dict(text="Payment Method",font=dict(size=12)))
         fig_pay.update_xaxes(title="Count",gridcolor="#F1F5F9")
         st.plotly_chart(fig_pay, use_container_width=True)
     finding_card("💳 UPI (54%) Leads, CoD (32.5%) Persists",
