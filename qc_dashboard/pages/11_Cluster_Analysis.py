@@ -39,19 +39,7 @@ kpi(k3, "3",         "Clusters (K=3)",      "Elbow + Silhouette validated",  EME
 kpi(k4, "K-Medoids", "Algorithm (PAM)",     "Cityblock distance · real medoids", VIOLET)
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── METHOD NOTE ───────────────────────────────────────────────────────────────
-st.markdown(f"""
-<div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:14px 18px;margin-bottom:8px;'>
-  <b style='font-size:.85rem;color:#15803D;'>Why K-Medoids instead of K-Means?</b>
-  <span style='font-size:.82rem;color:#374151;'>
-  Unlike K-Means, which computes abstract arithmetic centroids that may not correspond to any real respondent,
-  <b>K-Medoids (PAM — Partitioning Around Medoids)</b> selects <i>actual data points</i> as cluster representatives.
-  This means every cluster is described by a real survey respondent, making profiles directly interpretable.
-  PAM also uses <b>Cityblock (Manhattan) distance</b>, which is more suitable for discrete Likert-scale data
-  and more robust to outliers than the squared Euclidean distance used by K-Means.
-  </span>
-</div>""", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
+
 
 # ── DATA PREP ──────────────────────────────────────────────────────────────────
 @st.cache_data
