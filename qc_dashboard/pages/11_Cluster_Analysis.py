@@ -119,7 +119,7 @@ with c1:
     ))
     fig_elbow.add_vline(x=3, line_dash="dash", line_color=ROSE, opacity=0.8,
                         annotation_text="Recommended K=3", annotation_font=dict(size=9, color=ROSE))
-    fig_elbow.update_layout(**PLOTLY_LAYOUT, height=290,
+    fig_elbow.update_layout(**PLOTLY_LAYOUT, height=390,
                              title=dict(text="(a) Elbow Method — Total Within-Distance vs K", font=dict(size=12)))
     fig_elbow.update_xaxes(title="Number of Clusters (K)", tickvals=K_RANGE, gridcolor="#F1F5F9")
     fig_elbow.update_yaxes(title="Total Within-Cluster Distance (Cityblock)", gridcolor="#F1F5F9")
