@@ -202,15 +202,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-    # Model summary stats
-    nag  = (1-np.exp(-2*(lr_model.llf-lr_model.llnull)/len(df_m))) / (1-np.exp(2*lr_model.llnull/len(df_m)))
-    st.markdown(f"""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:14px;'>
-      {"".join(f'<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #F8FAFC;font-size:.75rem;"><span style="color:#64748B;">{k}</span><span style="font-weight:600;">{v}</span></div>'
-      for k,v in [("McFadden R²",f"{lr_model.prsquared:.4f}"),("Nagelkerke R²",f"{nag:.4f}"),
-                  ("Log-Likelihood",f"{lr_model.llf:.2f}"),("AIC",f"{lr_model.aic:.2f}"),
-                  ("BIC",f"{lr_model.bic:.2f}"),("LLR p-value",f"{lr_model.llr_pvalue:.2e}")])}
-    </div>""", unsafe_allow_html=True)
 
 with st.expander("📋 Full Odds Ratio Table"):
     st.dataframe(or_df, use_container_width=True)
