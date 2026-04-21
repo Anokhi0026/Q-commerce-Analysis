@@ -264,7 +264,7 @@ section("Step 4 · Cluster Profiling — Attitude & Satisfaction Heatmap")
 medoid_df = pd.DataFrame({
         "Neutral Adopters (R#77)":       [3]*13,
         "All-Round Enthusiasts (R#195)": [4]*13,
-        "Convenience Purists (R#36)":    [5,4,3,4,3,4,5,4,5,5,5,5,5],
+        "Convenience Purists (R#36)":    [5,4,3,4,3,4,5,4,5,5,5,5,5],}, index=SHORT_13)
 profile = cdf2.groupby("Cluster")[SHORT_13].mean().round(3)
 profile.index = CLUSTER_NAMES
 
