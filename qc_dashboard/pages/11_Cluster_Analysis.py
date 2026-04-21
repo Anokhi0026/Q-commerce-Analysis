@@ -243,8 +243,8 @@ with c1:
 with c2:
     st.markdown(f"""
     <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px;margin-top:8px;'>
-      <div style='font-size:.82rem;color:#475569;font-weight:600;margin-bottom:10px;'>PCA Interpretation</div>
-      <div style='font-size:.78rem;color:#374151;line-height:1.8;'>
+      <div style='font-size:.52rem;color:#475569;font-weight:600;margin-bottom:10px;'>PCA Interpretation</div>
+      <div style='font-size:.48rem;color:#374151;line-height:1.8;'>
         <b>PC1 (34.5%)</b> captures the primary axis of <i>overall engagement intensity</i> — 
         users scoring high on PC1 are broadly satisfied, convenience-driven, and loyal.
         This axis cleanly separates <b>Neutral Adopters</b> (left) from 
