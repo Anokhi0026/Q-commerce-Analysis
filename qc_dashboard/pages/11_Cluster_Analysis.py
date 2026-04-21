@@ -243,8 +243,8 @@ with c1:
 with c2:
     st.markdown(f"""
     <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px;margin-top:8px;'>
-      <div style='font-size:.52rem;color:#475569;font-weight:600;margin-bottom:10px;'>PCA Interpretation</div>
-      <div style='font-size:.48rem;color:#374151;line-height:1.8;'>
+      <div style='font-size:.82rem;color:#475569;font-weight:600;margin-bottom:10px;'>PCA Interpretation</div>
+      <div style='font-size:.78rem;color:#374151;line-height:1.8;'>
         <b>PC1 (34.5%)</b> captures the primary axis of <i>overall engagement intensity</i> — 
         users scoring high on PC1 are broadly satisfied, convenience-driven, and loyal.
         This axis cleanly separates <b>Neutral Adopters</b> (left) from 
@@ -261,12 +261,15 @@ with c2:
 
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Heatmap")
-
+medoid_df = pd.DataFrame({
+        "Neutral Adopters (R#77)":       [3]*13,
+        "All-Round Enthusiasts (R#195)": [4]*13,
+        "Convenience Purists (R#36)":    [5,4,3,4,3,4,5,4,5,5,5,5,5],
 profile = cdf2.groupby("Cluster")[SHORT_13].mean().round(3)
 profile.index = CLUSTER_NAMES
 
 fig_hm = go.Figure(go.Heatmap(
-    z=profile.T.values, x=CLUSTER_NAMES, y=SHORT_13,
+    z=mediod_df.T.values, x=CLUSTER_NAMES, y=SHORT_13,
     colorscale=[[0, "#FEF2F2"], [0.3, "#FCA5A5"], [0.5, "#FCD34D"], [0.7, "#86EFAC"], [1, "#15803D"]],
     zmin=2.5, zmax=5.0,
     texttemplate="%{z:.2f}",
