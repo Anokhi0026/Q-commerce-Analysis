@@ -183,9 +183,9 @@ sizes = pd.Series(labels).value_counts()
 
 c1, c2, c3, c4 = st.columns(4)
 kpi(c1, f"{final_sil:.4f}", "Silhouette Score", "Overall cluster quality (Cityblock)", INDIGO)
-kpi(c2, f"{sizes.get(0, 0)}", "Cluster 0", "Neutral Adopters",       INDIGO)
-kpi(c3, f"{sizes.get(1, 0)}", "Cluster 1", "All-Round Enthusiasts",  AMBER)
-kpi(c4, f"{sizes.get(2, 0)}", "Cluster 2", "Convenience Purists",    EMERALD)
+kpi(c2, f"{sizes.get(0, 0)}", "Cluster 0", "Convenience Purists",  INDIGO)
+kpi(c3, f"{sizes.get(1, 0)}", "Cluster 1", "Neutral Adopters",  AMBER)
+kpi(c4, f"{sizes.get(2, 0)}", "Cluster 2", "All-Round Enthusiasts", EMERALD)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # Medoid respondent highlight
