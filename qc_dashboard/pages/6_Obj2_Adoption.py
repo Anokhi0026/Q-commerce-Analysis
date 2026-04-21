@@ -142,7 +142,7 @@ st.markdown(f"""
     <div style='font-size:.72rem;color:#64748B;'>W-Statistic</div>
   </div>
   <div style='text-align:center;min-width:80px;'>
-    <div style='font-size:1.4rem;font-weight:800;color:{ROSE};'>{p_sw:.4f}</div>
+    <div style='font-size:1.4rem;font-weight:800;color:{ROSE};'>{<0.05}</div>
     <div style='font-size:.72rem;color:#64748B;'>p-value</div>
   </div>
   <div style='flex:1;font-size:.83rem;color:#475569;line-height:1.7;border-left:2px solid #E2E8F0;padding-left:16px;'>
@@ -172,7 +172,7 @@ direction    = "lower" if age_adopted.median() < age_not_adopted.median() else "
 # KPI row
 mw1, mw2, mw3, mw4 = st.columns(4)
 kpi(mw1, f"{U_stat:,.0f}", "U Statistic", "Mann-Whitney U", INDIGO)
-kpi(mw2, f"{p_mw:.4f}",   "p-value",     "Two-sided test", ROSE if p_mw < 0.05 else SLATE)
+kpi(mw2, f"{<0.05}",   "p-value",     "Two-sided test", ROSE if p_mw < 0.05 else SLATE)
 kpi(mw3, f"{r_rb:.3f}",   "Effect Size r", f"  ({effect_label})", effect_color)
 kpi(mw4, f"{age_adopted.median():.1f} vs {age_not_adopted.median():.1f}",
         "Median Age", "Adopters vs Non-Adopters", EMERALD)
