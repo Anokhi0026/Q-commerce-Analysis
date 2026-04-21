@@ -142,12 +142,12 @@ st.markdown(f"""
     <div style='font-size:.72rem;color:#64748B;'>W-Statistic</div>
   </div>
   <div style='text-align:center;min-width:80px;'>
-    <div style='font-size:1.4rem;font-weight:800;color:{ROSE};'>{p_sw:.4f}</div>
+    <div style='font-size:1.4rem;font-weight:800;color:{ROSE};'>{<0.05}</div>
     <div style='font-size:.72rem;color:#64748B;'>p-value</div>
   </div>
   <div style='flex:1;font-size:.83rem;color:#475569;line-height:1.7;border-left:2px solid #E2E8F0;padding-left:16px;'>
     <b>Result:</b> Age does NOT follow a normal distribution (p < 0.05).<br>
-    This justifies using <b>chi-square on grouped Age_Group</b> rather than parametric t-tests,
+    That is why <b>chi-square on grouped Age_Group</b> rather than parametric t-tests,
     and non-parametric tests (Kruskal-Wallis, Mann-Whitney) in subsequent objectives.
   </div>
 </div>""", unsafe_allow_html=True)
@@ -172,8 +172,8 @@ direction    = "lower" if age_adopted.median() < age_not_adopted.median() else "
 # KPI row
 mw1, mw2, mw3, mw4 = st.columns(4)
 kpi(mw1, f"{U_stat:,.0f}", "U Statistic", "Mann-Whitney U", INDIGO)
-kpi(mw2, f"{p_mw:.4f}",   "p-value",     "Two-sided test", ROSE if p_mw < 0.05 else SLATE)
-kpi(mw3, f"{r_rb:.3f}",   "Effect Size r", f"Rank-biserial ({effect_label})", effect_color)
+kpi(mw2, f"{p_mw < 0.05}",   "p-value",     "Two-sided test", ROSE if p_mw < 0.05 else SLATE)
+kpi(mw3, f"{r_rb:.3f}",   "Effect Size r", f"({effect_label})", effect_color)
 kpi(mw4, f"{age_adopted.median():.1f} vs {age_not_adopted.median():.1f}",
         "Median Age", "Adopters vs Non-Adopters", EMERALD)
 
@@ -202,7 +202,7 @@ with mw_left:
         {direction_note}
       </div>
       <div style='margin-top:14px;padding-top:12px;border-top:1px solid #F1F5F9;'>
-        <div style='font-size:.76rem;color:#64748B;font-weight:600;margin-bottom:6px;'>RANK-BISERIAL r — EFFECT SIZE GUIDE</div>
+        <div style='font-size:.76rem;color:#64748B;font-weight:600;margin-bottom:6px;'> r — EFFECT SIZE GUIDE</div>
         {''.join([
           f"<div style='display:flex;justify-content:space-between;font-size:.75rem;padding:2px 0;"
           f"color:{'#1E1E2E' if lbl == effect_label else '#94A3B8'};font-weight:{'700' if lbl == effect_label else '400'};'>"
@@ -337,55 +337,11 @@ for col_widget, (var, label, OR, lo, hi) in zip([or_left, or_right], or_data):
           </div>
 
           <div style='margin-top:14px;'>
-            <div style='font-size:.72rem;color:#94A3B8;margin-bottom:4px;'>CI Width (precision indicator)</div>
-            <div style='background:#F1F5F9;border-radius:20px;height:6px;'>
-              <div style='width:{min(int(ci_width/10*100),100)}%;background:{or_color};
-                          border-radius:20px;height:6px;opacity:0.7;'></div>
-            </div>
-            <div style='font-size:.72rem;color:#94A3B8;margin-top:3px;'>Width = {ci_width:.3f}</div>
-          </div>
-        </div>""", unsafe_allow_html=True)
+                    </div>""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Forest plot for both ORs
-fig_or = go.Figure()
-or_labels = [d[0] for d in or_data]
-or_vals   = [d[2] for d in or_data]
-or_lo     = [d[3] for d in or_data]
-or_hi     = [d[4] for d in or_data]
-or_colors = [EMERALD if lo > 1 else SLATE for lo in or_lo]
 
-fig_or.add_shape(type="line", x0=1, x1=1, y0=-0.5, y1=len(or_labels)-0.5,
-                 line=dict(color="#E2E8F0", width=2, dash="dot"))
-for i, (lbl, OR, lo, hi, color) in enumerate(zip(or_labels, or_vals, or_lo, or_hi, or_colors)):
-    fig_or.add_trace(go.Scatter(
-        x=[lo, hi], y=[i, i], mode="lines",
-        line=dict(color=color, width=3),
-        showlegend=False,
-        hovertemplate=f"{lbl}: 95% CI [{lo:.3f}, {hi:.3f}]<extra></extra>"
-    ))
-    fig_or.add_trace(go.Scatter(
-        x=[OR], y=[i], mode="markers",
-        marker=dict(color=color, size=14, symbol="diamond"),
-        showlegend=False,
-        hovertemplate=f"{lbl}: OR = {OR:.3f}<extra></extra>"
-    ))
-    fig_or.add_annotation(
-        x=hi + 0.3, y=i,
-        text=f"OR = {OR:.3f}  [{lo:.3f}, {hi:.3f}]",
-        showarrow=False, font=dict(size=10, color="#475569"), xanchor="left"
-    )
-
-fig_or.update_layout(
-    **PLOTLY_LAYOUT, height=220,
-    title=dict(text="Forest Plot — Odds Ratios with 95% Confidence Intervals", font=dict(size=13)),
-    xaxis=dict(title="Odds Ratio", range=[0, 14], gridcolor="#F1F5F9", zeroline=False),
-    yaxis=dict(tickvals=list(range(len(or_labels))), ticktext=or_labels, tickfont=dict(size=11))
-)
-st.plotly_chart(fig_or, use_container_width=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Key Findings ───────────────────────────────────────────────────────────────
 section("Key Findings")
@@ -398,7 +354,7 @@ for title, text, color in [
     ("⚪ Gender is Irrelevant to Adoption",
      "χ² = 0.457, p = 0.79 — gender has no statistically significant impact. This challenges common assumptions about gendered digital adoption.", SLATE),
     ("📊 Mann-Whitney U: Age Distributions Differ Significantly by Adoption",
-     f"U = {U_stat:,.0f}, p = {p_mw:.4f}, rank-biserial r = {r_rb:.3f} ({effect_label} effect). Since Age is non-normally distributed (Shapiro-Wilk p < 0.05), Mann-Whitney U confirms that adopters are significantly {direction} in age than non-adopters — validating the chi-square finding on grouped Age_Group using a continuous non-parametric test.", EMERALD),
+     f"U = {U_stat:,.0f}, p = {p_mw:.4f}, r = {r_rb:.3f} ({effect_label} effect). Since Age is non-normally distributed (Shapiro-Wilk p < 0.05), Mann-Whitney U confirms that adopters are significantly {direction} in age than non-adopters — validating the chi-square finding on grouped Age_Group using a continuous non-parametric test.", EMERALD),
     ("🎯 Odds Ratio: Young Adults are ~5.8× More Likely to Adopt",
      f"Young group (18–33) vs Older (34+): OR = {OR_age:.3f}, 95% CI [{lo_age:.3f}, {hi_age:.3f}]. The entire confidence interval lies above 1, confirming the effect is statistically robust. Young adults have nearly 6× the odds of adoption compared to older respondents.", INDIGO),
     ("🎓 Higher Education Doubles Adoption Odds by ~5.9×",
