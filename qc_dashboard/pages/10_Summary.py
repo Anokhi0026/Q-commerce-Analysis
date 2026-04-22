@@ -64,9 +64,12 @@ all_findings = [
         ("Lack of Awareness = #1 non-adoption barrier (29.2%)","Not rejection — non-exposure. Reachable via targeted campaigns"),
     ]),
     (VIOLET,"🤖","Objective 5","Predictive Models",[
-        ("Logistic Regression: AUC=0.847, Accuracy=80.1%","Age_40+ (OR≈0.074, p<0.001) and Education (OR≈9×) are dominant"),
-        ("Gender suppressor effect detected","Multivariate model reveals gender effect masked in bivariate chi-square"),
-        ("RF CV AUC highest; all 3 models converge on same findings","Age + Education dominate; Income/Occupation lose significance when controlled"),
+        ("All 3 models trained on the same 70% train set; evaluated on the same 30% test set (n=102)",
+         "Fair, apples-to-apples comparison — no model has seen test data during training or tuning"),
+        ("LR: Age_40+ (OR≈0.074, p<0.001) and Postgraduate (OR≈9×, p<0.01) are dominant predictors",
+         "Formula: Age Group + Education + Gender only. Income & Occupation not significant after controlling for age/education"),
+        ("Gender suppressor effect; RF achieves highest CV AUC; all 3 models converge",
+         "Male gender significant only in multivariate model (OR≈0.47, p<0.05) — masked in bivariate chi-square"),
     ]),
     (SKY,"🧩","Cluster Analysis","3 Consumer Segments (K-Medoids PAM)",[
         ("Neutral Adopters (n=67, 29.4%) — Medoid R#77","Mid-range scores on all 13 variables (means ≈ 3.0); lowest satisfaction (3.25), continuity (3.06), recommend (2.99). Churn risk. Top driver: Discounts. Target with re-engagement and small-basket incentives."),
@@ -138,15 +141,30 @@ with c2:
     st.plotly_chart(fig, use_container_width=True)
 
 with c3:
-    models  = ["Logistic\nRegression","Decision\nTree","Random\nForest"]
-    aucs_   = [0.847, 0.823, 0.820]
-    fig     = go.Figure(go.Bar(
-        x=models, y=aucs_, marker_color=[INDIGO,VIOLET,EMERALD],
-        text=[f"AUC={v:.3f}" for v in aucs_], textposition="outside"))
-    fig.add_hline(y=0.5, line_dash="dash", line_color=SLATE, opacity=0.5,
-                  annotation_text="Random classifier", annotation_font=dict(size=9))
-    fig.update_layout(**PLOTLY_LAYOUT, height=240, title=dict(text="Obj 5: Model AUC Comparison",font=dict(size=12)))
-    fig.update_yaxes(title="AUC",range=[0.4,0.95],gridcolor="#F1F5F9")
+    # AUC values now reflect all models evaluated on the same 30% held-out test set
+    models_  = ["Logistic\nRegression","Decision\nTree","Random\nForest"]
+    aucs_    = st.session_state.get("obj5_aucs", [None, None, None])
+    # Fall back to placeholder bars if Obj5 hasn't been run yet this session
+    if any(v is None for v in aucs_):
+        fig = go.Figure()
+        fig.add_annotation(
+            text="Run Objective 5 page first<br>to populate live AUC values",
+            xref="paper", yref="paper", x=0.5, y=0.5,
+            showarrow=False, font=dict(size=11, color="#64748B"),
+            align="center"
+        )
+        fig.update_layout(**PLOTLY_LAYOUT, height=240,
+                          title=dict(text="Obj 5: Model AUC Comparison (Test Set)", font=dict(size=12)))
+    else:
+        fig = go.Figure(go.Bar(
+            x=models_, y=aucs_,
+            marker_color=[INDIGO, VIOLET, EMERALD],
+            text=[f"AUC={v:.3f}" for v in aucs_], textposition="outside"))
+        fig.add_hline(y=0.5, line_dash="dash", line_color=SLATE, opacity=0.5,
+                      annotation_text="Random classifier", annotation_font=dict(size=9))
+        fig.update_layout(**PLOTLY_LAYOUT, height=240,
+                          title=dict(text="Obj 5: Model AUC Comparison (Test Set)", font=dict(size=12)))
+        fig.update_yaxes(title="AUC", range=[0.4, 0.95], gridcolor="#F1F5F9")
     st.plotly_chart(fig, use_container_width=True)
 
 # ── Key Consumer Insights ──────────────────────────────────────────────────────
@@ -170,8 +188,8 @@ insights = [
      "— suggesting literacy is a larger barrier than affordability for non-adopters.",
      EMERALD),
     ("🧓 Older Consumers Have Distinct and Real Barriers",
-     "Consumers aged 40+ are dramatically less likely to adopt (OR≈0.074). Their hesitation stems "
-     "from app navigation discomfort, data privacy concerns, and comfort with offline routines — "
+     "Consumers aged 40+ are dramatically less likely to adopt (OR≈0.074, p<0.001). Their hesitation "
+     "stems from app navigation discomfort, data privacy concerns, and comfort with offline routines — "
      "not from indifference to fast delivery as a concept.",
      ROSE),
     ("💳 CoD Preference Reflects Trust Deficit, Not Inertia",
@@ -263,19 +281,20 @@ methods = [
      "H₀: Row and column categories are independent (no association)",
      "χ²_ij = (pᵢⱼ − rᵢcⱼ)² / rᵢcⱼ  ;  SVD on standardised residuals"),
     ("Binary Logistic Regression",
-     "Wald tests, ORs, 95% Wald CIs, Nagelkerke R²",
+     "Fitted on 70% training set; evaluated on 30% test set. Wald tests, ORs, 95% CIs, McFadden R². "
+     "Formula: Age Group + Education + Gender (Income/Occupation excluded — not significant after controlling).",
      "H₀: Each predictor has no effect on adoption probability (β = 0)",
      "log[P/(1−P)] = β₀ + Σβᵢxᵢ  ;  P = 1/(1+e^−z)"),
     ("Decision Tree + GridSearchCV",
-     "84 combinations, 5-fold CV, AUC scoring",
+     "84 combinations, 5-fold CV on training set, AUC scoring; evaluated on same held-out test set",
      None,
      "Gini = 1 − Σpₖ²  ;  Split: arg min Gini(left) + Gini(right)"),
     ("Random Forest + GridSearchCV",
-     "36 combinations, 5-fold CV, feature importance",
+     "36 combinations, 5-fold CV on training set, feature importance; evaluated on same held-out test set",
      None,
      "ŷ = majority_vote{ T₁(x), T₂(x), ..., Tₙ(x) }"),
     ("ROC / AUC",
-     "Model discrimination ability",
+     "Model discrimination ability — all three models compared on the same 30% held-out test set",
      "H₀: Model has no discriminatory power (AUC = 0.5)",
      "AUC = ∫₀¹ TPR(FPR) d(FPR)"),
 ]
