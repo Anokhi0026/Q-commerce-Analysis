@@ -45,7 +45,7 @@ PALETTE  = [
 ]
  
 # Teal → deep ocean gradient for heatmaps / sequential scales
-C_SCALE  = [[0, "#F0FDFA"], [0.5, "#2DD4BF"], [1, "#0F766E"]
+C_SCALE  = [[0, "#F0FDFA"], [0.5, "#2DD4BF"], [1, "#0F766E"]]
 
 def hex_alpha(hex_color: str, alpha: float) -> str:
     """Convert a 6-digit hex color + alpha (0–1) to an rgba() string.
