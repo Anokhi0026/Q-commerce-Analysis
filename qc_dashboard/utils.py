@@ -22,7 +22,8 @@ def _find_data_dir():
             return path
     # Fall back to the first candidate so errors point to a meaningful path
     return candidates[0]
- 
+_DATA_DIR = _find_data_dir()
+
 # ── Ocean / Teal Colour Palette ────────────────────────────────────────────────
 INDIGO   = "#0D9488"   # Teal-600  (was Indigo-600)   — primary accent
 VIOLET   = "#0E7490"   # Cyan-700  (was Violet-600)   — secondary accent
