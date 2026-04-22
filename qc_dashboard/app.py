@@ -60,9 +60,11 @@ st.markdown(f"""
     <div style='display:flex;flex-direction:column;gap:6px;'>
       <div style='font-size:0.65rem;font-weight:700;text-transform:uppercase;
                   letter-spacing:.12em;opacity:.6;margin-bottom:2px;'>Mentor</div>
-      <span style='background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.55);
-                   border-radius:20px;padding:4px 14px;font-size:.78rem;font-weight:600;
-                   letter-spacing:.02em;'>Prof. Vipul Kalamkar</span>
+      <div style='width:fit-content;'>
+        <span style='background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.55);
+                     border-radius:20px;padding:4px 14px;font-size:.78rem;font-weight:600;
+                     letter-spacing:.02em;white-space:nowrap;'>Prof. Vipul Kalamkar</span>
+      </div>
     </div>
   </div>
 </div>
