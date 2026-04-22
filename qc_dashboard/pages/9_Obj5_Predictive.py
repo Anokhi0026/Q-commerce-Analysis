@@ -271,12 +271,11 @@ with c2:
         **PLOTLY_LAYOUT,
         height=380,
         title=dict(text="Forest Plot — Odds Ratios with 95% CI<br><sup>Blue = Significant (p<0.05) | Grey = Not Significant</sup>",
-                   font=dict(size=12))))
-       
-    fig_forest.update_xaxes(dict(title="Odds Ratio (log scale)", type="log", gridcolor="#F1F5F9"))
-    fig_forest.updte_yaxes(dict(autorange="reversed"))
-    fig_forest.update_layout(legend=dict(orientation="h", y=-0.15, x=0.5, xanchor="center", font=dict(size=9)))
-    
+                   font=dict(size=12)),
+        xaxis=dict(title="Odds Ratio (log scale)", type="log", gridcolor="#F1F5F9"),
+        yaxis=dict(autorange="reversed"),
+        legend=dict(orientation="h", y=-0.15, x=0.5, xanchor="center", font=dict(size=9))
+    )
     st.plotly_chart(fig_forest, use_container_width=True, key="fig_forest_lr")
 
 # ── ROC CURVE (LR) ────────────────────────────────────────────────────────────
