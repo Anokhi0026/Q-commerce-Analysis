@@ -79,7 +79,7 @@ def ca_biplot(ct, row_var, col_var, title, row_color=INDIGO, col_color=ROSE):
     fig.update_layout(**PLOTLY_LAYOUT, height=430, title=dict(text=f"{title}<br><sup>χ²({dof})={chi2_v:.2f}, p {p_str} | "
                                        f"Dim1+Dim2 = {pct_dim.sum():.1f}% variance explained</sup>",
                                   font=dict(size=12)))
-    fig.update_layout(legend=dict(x=0.01,y=0.99))
+    
     fig.update_xaxes(title=f"Dimension 1 ({pct_dim[0]:.1f}%)",gridcolor="#F1F5F9",zeroline=False)
     fig.update_yaxes(title=f"Dimension 2 ({pct_dim[1]:.1f}%)",gridcolor="#F1F5F9",zeroline=False)
     return fig, chi2_v, p, dof, pct_dim, row_df, col_df
