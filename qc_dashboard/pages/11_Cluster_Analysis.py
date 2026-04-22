@@ -27,7 +27,7 @@ page_header(
     "making profiles more robust to outliers and directly interpretable on Likert-scale data."
 )
 
-CLUSTER_COLORS = [INDIGO, AMBER, EMERALD]
+CLUSTER_COLORS = ['#8B0000','#023020','#000080']
 CLUSTER_NAMES  = ["Neutral Adopters", "All-Round Enthusiast", "Convenience Purists"]
 
 k1, k2, k3, k4 = st.columns(4)
