@@ -23,19 +23,29 @@ def _find_data_dir():
     # Fall back to the first candidate so errors point to a meaningful path
     return candidates[0]
  
-_DATA_DIR = _find_data_dir()
-# ── Colour palette (consistent across all pages) ───────────────────────────────
-INDIGO   = "#4F46E5"
-VIOLET   = "#7C3AED"
-ROSE     = "#E11D48"
-AMBER    = "#D97706"
-EMERALD  = "#059669"
-SKY      = "#0284C7"
-SLATE    = "#475569"
-LIGHT    = "#F1F5F9"
-
-PALETTE  = [INDIGO, ROSE, EMERALD, AMBER, SKY, VIOLET, "#DB2777", "#EA580C"]
-C_SCALE  = [[0, "#EEF2FF"], [0.5, "#818CF8"], [1, "#3730A3"]]   # indigo gradient
+# ── Ocean / Teal Colour Palette ────────────────────────────────────────────────
+INDIGO   = "#0D9488"   # Teal-600  (was Indigo-600)   — primary accent
+VIOLET   = "#0E7490"   # Cyan-700  (was Violet-600)   — secondary accent
+ROSE     = "#0F766E"   # Teal-700  (was Rose-600)     — tertiary accent
+AMBER    = "#0891B2"   # Cyan-600  (was Amber-600)    — highlight
+EMERALD  = "#22D3EE"   # Cyan-400  (was Emerald-600)  — light accent
+SKY      = "#14B8A6"   # Teal-400  (was Sky-600)      — soft teal
+SLATE    = "#334E68"   # Ocean slate                  — neutral text/icon
+LIGHT    = "#F0FDFA"   # Teal-50   (was Slate-100)    — page background tint
+ 
+PALETTE  = [
+    "#0D9488",  # Teal-600
+    "#0891B2",  # Cyan-600
+    "#14B8A6",  # Teal-400
+    "#22D3EE",  # Cyan-400
+    "#0E7490",  # Cyan-700
+    "#0F766E",  # Teal-700
+    "#67E8F9",  # Cyan-300
+    "#2DD4BF",  # Teal-300
+]
+ 
+# Teal → deep ocean gradient for heatmaps / sequential scales
+C_SCALE  = [[0, "#F0FDFA"], [0.5, "#2DD4BF"], [1, "#0F766E"]
 
 def hex_alpha(hex_color: str, alpha: float) -> str:
     """Convert a 6-digit hex color + alpha (0–1) to an rgba() string.
