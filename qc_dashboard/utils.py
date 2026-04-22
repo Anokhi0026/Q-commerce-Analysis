@@ -24,18 +24,30 @@ def _find_data_dir():
     return candidates[0]
  
 _DATA_DIR = _find_data_dir()
-# ── Colour palette (consistent across all pages) ───────────────────────────────
-INDIGO   = "#4F46E5"
-VIOLET   = "#7C3AED"
-ROSE     = "#E11D48"
-AMBER    = "#D97706"
-EMERALD  = "#059669"
-SKY      = "#0284C7"
-SLATE    = "#475569"
-LIGHT    = "#F1F5F9"
 
-PALETTE  = [INDIGO, ROSE, EMERALD, AMBER, SKY, VIOLET, "#DB2777", "#EA580C"]
-C_SCALE  = [[0, "#EEF2FF"], [0.5, "#818CF8"], [1, "#3730A3"]]   # indigo gradient
+# ── Ocean / Teal Colour Palette ────────────────────────────────────────────────
+INDIGO   = "#0D9488"   # Teal-600  (was Indigo-600)   — primary accent
+VIOLET   = "#0E7490"   # Cyan-700  (was Violet-600)   — secondary accent
+ROSE     = "#0F766E"   # Teal-700  (was Rose-600)     — tertiary accent
+AMBER    = "#0891B2"   # Cyan-600  (was Amber-600)    — highlight
+EMERALD  = "#22D3EE"   # Cyan-400  (was Emerald-600)  — light accent
+SKY      = "#14B8A6"   # Teal-400  (was Sky-600)      — soft teal
+SLATE    = "#334E68"   # Ocean slate                  — neutral text/icon
+LIGHT    = "#F0FDFA"   # Teal-50   (was Slate-100)    — page background tint
+
+PALETTE  = [
+    "#0D9488",  # Teal-600
+    "#0891B2",  # Cyan-600
+    "#14B8A6",  # Teal-400
+    "#22D3EE",  # Cyan-400
+    "#0E7490",  # Cyan-700
+    "#0F766E",  # Teal-700
+    "#67E8F9",  # Cyan-300
+    "#2DD4BF",  # Teal-300
+]
+
+# Teal → deep ocean gradient for heatmaps / sequential scales
+C_SCALE  = [[0, "#F0FDFA"], [0.5, "#2DD4BF"], [1, "#0F766E"]]
 
 def hex_alpha(hex_color: str, alpha: float) -> str:
     """Convert a 6-digit hex color + alpha (0–1) to an rgba() string.
@@ -50,13 +62,13 @@ def hex_alpha(hex_color: str, alpha: float) -> str:
 PLOTLY_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Inter, sans-serif", color="#374151", size=12),
+    font=dict(family="Inter, sans-serif", color="#134E4A", size=12),
     margin=dict(t=50, b=30, l=20, r=20),
     legend=dict(bgcolor="rgba(0,0,0,0)", borderwidth=0),
 )
 
 # Standard axis defaults — use with fig.update_xaxes / fig.update_yaxes
-AXIS_STYLE = dict(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
+AXIS_STYLE = dict(showgrid=True, gridcolor="#CCFBF1", zeroline=False)
 
 # ── Likert / variable constants ────────────────────────────────────────────────
 LIKERT_MAP = {"Strongly Disagree":1,"Disagree":2,"Neutral":3,"Agree":4,"Strongly Agree":5}
@@ -149,13 +161,14 @@ def sidebar():
     [data-testid="collapsedControl"] { display: none; }
     </style>
     """, unsafe_allow_html=True)
+
 # ── Section title helper ───────────────────────────────────────────────────────
 def section(label, sub=""):
     st.markdown(f"""
     <div style='margin:28px 0 6px;'>
       <div style='font-size:0.68rem;font-weight:600;color:{INDIGO};text-transform:uppercase;
                   letter-spacing:.1em;margin-bottom:4px;'>{label}</div>
-      {'<div style="font-size:0.85rem;color:#64748B;">'+sub+'</div>' if sub else ''}
+      {'<div style="font-size:0.85rem;color:#0F766E;">'+sub+'</div>' if sub else ''}
     </div>""", unsafe_allow_html=True)
 
 def page_header(tag, title, sub=""):
@@ -163,29 +176,29 @@ def page_header(tag, title, sub=""):
     <div style='padding:8px 0 20px;'>
       <div style='font-size:0.72rem;font-weight:600;color:{INDIGO};text-transform:uppercase;
                   letter-spacing:.12em;margin-bottom:6px;'>{tag}</div>
-      <h1 style='font-size:2rem;font-weight:800;color:#1E1E2E;margin:0 0 8px;
+      <h1 style='font-size:2rem;font-weight:800;color:#134E4A;margin:0 0 8px;
                  line-height:1.2;'>{title}</h1>
-      {'<p style="color:#64748B;max-width:680px;line-height:1.7;font-size:0.95rem;margin:0;">'+sub+'</p>' if sub else ''}
+      {'<p style="color:#0F766E;max-width:680px;line-height:1.7;font-size:0.95rem;margin:0;">'+sub+'</p>' if sub else ''}
     </div>""", unsafe_allow_html=True)
 
 def kpi(col, value, label, sub="", color=INDIGO):
     col.markdown(f"""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:14px;
-                padding:20px 16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);'>
+    <div style='background:#F0FDFA;border:1px solid #99F6E4;border-radius:14px;
+                padding:20px 16px;text-align:center;box-shadow:0 1px 3px rgba(13,148,136,.08);'>
       <div style='font-size:1.9rem;font-weight:800;color:{color};font-family:monospace;
                   line-height:1;'>{value}</div>
       <div style='font-size:0.72rem;text-transform:uppercase;letter-spacing:.08em;
-                  color:#64748B;margin-top:6px;'>{label}</div>
+                  color:#0F766E;margin-top:6px;'>{label}</div>
       {'<div style="font-size:0.75rem;color:'+color+';margin-top:3px;">'+sub+'</div>' if sub else ''}
     </div>""", unsafe_allow_html=True)
 
 def finding_card(title, text, color=INDIGO):
     st.markdown(f"""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-left:4px solid {color};
+    <div style='background:#F0FDFA;border:1px solid #99F6E4;border-left:4px solid {color};
                 border-radius:0 12px 12px 0;padding:14px 18px;margin:8px 0;
-                box-shadow:0 1px 2px rgba(0,0,0,.03);'>
-      <div style='font-weight:600;font-size:0.9rem;color:#1E1E2E;margin-bottom:4px;'>{title}</div>
-      <div style='font-size:0.83rem;color:#475569;line-height:1.6;'>{text}</div>
+                box-shadow:0 1px 2px rgba(13,148,136,.06);'>
+      <div style='font-weight:600;font-size:0.9rem;color:#134E4A;margin-bottom:4px;'>{title}</div>
+      <div style='font-size:0.83rem;color:#0F766E;line-height:1.6;'>{text}</div>
     </div>""", unsafe_allow_html=True)
 
 def sig_badge(p):
