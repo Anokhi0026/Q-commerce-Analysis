@@ -17,6 +17,19 @@ from navbar import navbar
 navbar()
  
 # ── Hero ───────────────────────────────────────────────────────────────────────
+# Build pill HTML outside the f-string to avoid rendering issues
+info_pills = "".join(
+    f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);'
+    f'border-radius:20px;padding:4px 14px;font-size:.8rem;">{t}</span>'
+    for t in ['n = 341 respondents', 'Vadodara, Gujarat', 'MSc Statistics 2024–26']
+)
+
+team_pills = "".join(
+    f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);'
+    f'border-radius:20px;padding:4px 12px;font-size:.78rem;">{t}</span>'
+    for t in ['Anokhi Desai', 'Ritika Sharma', 'Sanjana Kumari', 'Vedant Ghaisas']
+)
+
 st.markdown(f"""
 <div style='background:linear-gradient(135deg,#0D9488 0%,#0E7490 60%,#0F766E 100%);
             border-radius:20px;padding:48px 40px;margin-bottom:28px;color:#fff;'>
@@ -31,37 +44,23 @@ st.markdown(f"""
     A comprehensive statistical study examining quick-commerce adoption behaviour,
     usage patterns, key drivers, and predictive models across 341 consumers in Vadodara, Gujarat.
   </p>
-
   <div style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;'>
-
     <div style='display:flex;gap:10px;flex-wrap:wrap;align-items:center;'>
-      {''.join(f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;">{t}</span>'
-      for t in ['n = 341 respondents','Vadodara, Gujarat','MSc Statistics 2024–26'])}
+      {info_pills}
     </div>
-
-    
     <div style='width:1px;background:rgba(255,255,255,.3);align-self:stretch;margin:0 4px;'></div>
-
-    <!-- Team members -->
     <div style='display:flex;flex-direction:column;gap:6px;'>
       <div style='font-size:0.65rem;font-weight:700;text-transform:uppercase;
                   letter-spacing:.12em;opacity:.6;margin-bottom:2px;'>Team</div>
-      <div style='display:flex;gap:8px;flex-wrap:wrap;'>
-        {''.join(f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 12px;font-size:.78rem;">{t}</span>'
-        for t in ['Anokhi Desai','Ritika Sharma','Sanjana Kumari','Vedant Ghaisas'])}
-      </div>
+      <div style='display:flex;gap:8px;flex-wrap:wrap;'>{team_pills}</div>
     </div>
-
     <div style='display:flex;flex-direction:column;gap:6px;'>
       <div style='font-size:0.65rem;font-weight:700;text-transform:uppercase;
                   letter-spacing:.12em;opacity:.6;margin-bottom:2px;'>Mentor</div>
       <span style='background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.55);
                    border-radius:20px;padding:4px 14px;font-size:.78rem;font-weight:600;
-                   letter-spacing:.02em;'>
-        Prof. Vipul Kalamkar
-      </span>
+                   letter-spacing:.02em;'>Prof. Vipul Kalamkar</span>
     </div>
-
   </div>
 </div>
 """, unsafe_allow_html=True)
