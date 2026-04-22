@@ -22,23 +22,23 @@ st.markdown(f"""
 section("Secondary Objectives", "Five targeted objectives derived from the primary research question")
 
 objs = [
-    ("Obj 1","Identify Most-Used Apps",
+    ("1","Identify Most-Used Apps",
      "Identify the most used Q-Commerce applications in Vadodara and assess their relative market share.",
      "Descriptive Analysis · Bar Charts · Market Share",
      INDIGO),
-    ("Obj 2","Demographic Adoption Patterns",
+    ("2","Demographic Adoption Patterns",
      "Understand consumer adoption patterns based on demographics — age, gender, income, education, and occupation.",
      "Chi-Square Test · Cramér's V · Stacked Bar Charts",
      ROSE),
-    ("Obj 3","Usage Behavior Analysis",
+    ("3","Usage Behavior Analysis",
      "Examine usage behavior patterns including order frequency, average spend, preferred delivery times, payment methods, and product categories.",
      "Kruskal-Wallis · Spearman Correlation · Descriptive Stats",
      EMERALD),
-    ("Obj 4","Key Drivers of Adoption",
+    ("4","Key Drivers of Adoption",
      "Investigate the key drivers of app adoption — convenience, pricing, product variety, usability, and promotions — and identify barriers for non-users.",
      "Cronbach's Alpha · EFA · Factor Analysis · Mann-Whitney U",
      AMBER),
-    ("Obj 5","Predictive Models",
+    ("5","Predictive Models",
      "Develop predictive models for adoption likelihood based on socio-demographic and lifestyle variables.",
      "Binary Logistic Regression · ROC/AUC · statsmodels · Hosmer-Lemeshow",
      VIOLET),
@@ -52,6 +52,9 @@ for tag, title, desc, methods, color in objs:
       <div style='min-width:48px;height:48px;border-radius:12px;background:{color}15;
                   display:flex;align-items:center;justify-content:center;font-size:1.4rem;'>
         {tag}
+      </div>
+      <div style='font-weight:600; font-size:0.95rem; color:#1E1E2E;'>
+       {text}
       </div>
       <div style='flex:1;'>
         <div style='display:flex;align-items:center;gap:8px;margin-bottom:4px;'>
