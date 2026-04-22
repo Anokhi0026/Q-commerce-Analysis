@@ -280,7 +280,7 @@ CLUSTER_MEANS = pd.DataFrame({
 }, index=SHORT_13)
 
 tab_hm, tab_bar = st.tabs([
-    "(a) Heatmap — Cluster Mean Profiles",
+    "(a) Heatmap — Cluster Medoid Profiles",
     "(b) Side-by-Side Bar Comparison"
 ])
 
@@ -299,7 +299,7 @@ with tab_hm:
     fig_hm.update_layout(
         **{k: v for k, v in PLOTLY_LAYOUT.items() if k not in ["xaxis","yaxis"]},
         height=420,
-        title=dict(text="Figure 5a — Cluster Mean Profiles Heatmap — Green=High, Red=Low", font=dict(size=12))
+        title=dict(text="Figure 5a — Cluster Medoid Profiles Heatmap — Green=High, Red=Low", font=dict(size=12))
     )
     st.plotly_chart(fig_hm, use_container_width=True)
 
@@ -307,7 +307,7 @@ with tab_bar:
     fig_bar = go.Figure()
     for c_id, cname in enumerate(CLUSTER_NAMES):
         fig_bar.add_trace(go.Bar(
-            name=cname, x=SHORT_13, y=MEDOID_PROFILES[cname].values,
+            name=cname, x=SHORT_13, y=CLUSTER_MEANS[cname].values,
             marker_color=CLUSTER_COLORS[c_id], opacity=0.9,
             hovertemplate=f"{cname}: %{{y:.3f}}<extra></extra>"
         ))
