@@ -342,7 +342,7 @@ with c2:
         **{k:v for k,v in PLOTLY_LAYOUT.items() if k not in["xaxis","yaxis"]},
         height=320,
         title=dict(text=f"PAF + Varimax Rotated Loading Matrix | {cum_var[-1]:.1f}% common variance "
-                   "<br><sup>Loadings |≥ 0.40| are primary (marked *)</sup>",
+                   "<br><sup>Loadings |≥ 0.40| are primary </sup>",
                    font=dict(size=11))
     )
     st.plotly_chart(fig_load, use_container_width=True)
