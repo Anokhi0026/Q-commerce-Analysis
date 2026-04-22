@@ -293,7 +293,7 @@ with tab_hm:
         zmin=2.5, zmax=5.0,
         texttemplate="%{z:.3f}",
         textfont=dict(size=10),
-        colorbar=dict(title="Mean Score (1–5)"),
+        colorbar=dict(title="Medoid Score (1–5)"),
         hovertemplate="%{y} | %{x}: %{z:.3f}<extra></extra>"
     ))
     fig_hm.update_layout(
