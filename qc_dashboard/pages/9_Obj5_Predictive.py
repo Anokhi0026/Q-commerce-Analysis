@@ -133,8 +133,8 @@ st.markdown(f"""
               font-size:.8rem;color:#1E1E2E;margin-bottom:18px;border:1px solid #C7D2FE;
               line-height:2.3;'>
     <b>logit(P)</b> = β₀<br>
-    &nbsp;&nbsp;+ β₁ · C(Age_Group)[<b>26–33</b>] + β₂ · C(Age_Group)[<b>34–41</b>]
-              + β₃ · C(Age_Group)[<b>42–49</b>] + β₄ · C(Age_Group)[<b>50+</b>]<br>
+    &nbsp;&nbsp;+ β₁ · C(Age_Group)[<b>26-33</b>] + β₂ · C(Age_Group)[<b>34-41</b>]
+              + β₃ · C(Age_Group)[<b>42-49</b>] + β₄ · C(Age_Group)[<b>50 or above</b>]<br>
     &nbsp;&nbsp;+ β₅ · C(Education)[<b>School Level</b>] + β₆ · C(Education)[<b>Undergraduate</b>]
               + β₇ · C(Education)[<b>Postgraduate</b>] + β₈ · C(Education)[<b>Professional Degree</b>]<br>
     &nbsp;&nbsp;+ β₉ · C(Gender)[<b>Male</b>]
@@ -145,7 +145,7 @@ st.markdown(f"""
   <div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;'>
     <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
       <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Age Group</div>
-      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>18–22 (highest adoption group)</div>
+      <div style='font-size:.73rem;color:#374151;margin-top:2px;'>18-25 (highest adoption group)</div>
     </div>
     <div style='background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:9px 12px;'>
       <div style='font-weight:700;font-size:.78rem;color:{EMERALD};'>Education</div>
@@ -173,7 +173,7 @@ st.markdown(f"""
   <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;'>
     <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
       <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Age 40+ → β ≈ −2.60 | OR ≈ 0.074 ***</div>
-      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>~13.5× LESS likely to adopt vs 18–25 reference group</div>
+      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>~13.5× LESS likely to adopt vs 18-25 reference group</div>
     </div>
     <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
       <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Postgraduate → β ≈ +2.22 | OR ≈ 9× **</div>
@@ -508,6 +508,9 @@ def fit_random_forest():
 
 with st.spinner("Running GridSearchCV for Random Forest (36 combinations)…"):
     rf_params, rf_cv_auc, acc_rf, auc_rf, sens_rf, spec_rf, fpr_rf, tpr_rf, rf_imp = fit_random_forest()
+
+# ── Persist test-set AUCs to session state so Summary page can read live values
+st.session_state["obj5_aucs"] = [auc_lr, auc_dt, auc_rf]
 
 c1,c2,c3,c4 = st.columns(4)
 kpi(c1,f"{rf_cv_auc:.4f}","CV AUC","Best among 3 models",EMERALD)
