@@ -14,7 +14,7 @@ st.markdown("""
 /* GLOBAL FONT */
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
-    font-size: 16px;   /* 🔥 increase this (try 16–18px) */
+    font-size: 16.0px;   /* 🔥 increase this (try 16–18px) */
 }
 
 /* MAIN APP BACKGROUND */
