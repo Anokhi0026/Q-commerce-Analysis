@@ -123,15 +123,15 @@ with left:
                 border-bottom:1px solid #F1F5F9;'>
       <span style='font-size:1.1rem;'>{icon}</span>
       <div>
-        <div style='font-weight:600;font-size:0.85rem;color:#1E1E2E;'>{title}</div>
+        <div style='font-weight:600;font-size:0.95rem;color:#1E1E2E;'>{title}</div>
         <div style='font-size:0.78rem;color:#64748B;margin-top:2px;'>{desc}</div>
       </div>
     </div>"""
     for icon,title,desc in [
-        ("📈","Explosive Market Growth","India's Q-Commerce sector growing at 40–50% CAGR"),
-        ("🏙️","Vadodara — An Underexplored Market","Tier-2 city dynamics differ from metros"),
-        ("🔬","Statistical Gap","Limited academic work on consumer adoption in Tier-2 cities"),
-        ("🎯","Policy Relevance","Findings can guide platform expansion strategies"),
+        ("1","Explosive Market Growth","India's Q-Commerce sector growing at 40–50% CAGR"),
+        ("2","Vadodara — An Underexplored Market","Tier-2 city dynamics differ from metros"),
+        ("3","Statistical Gap","Limited academic work on consumer adoption in Tier-2 cities"),
+        ("4","Policy Relevance","Findings can guide platform expansion strategies"),
     ]]) + """
     </div>""", unsafe_allow_html=True)
  
@@ -177,23 +177,4 @@ with right:
     fig_app.update_yaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
     st.plotly_chart(fig_app, use_container_width=True)
  
-    section("Team")
-    for name, role in [
-        ("Anokhi Desai","Team Member"), ("Ritika Sharma","Team Member"),
-        ("Sanjana Kumari","Team Member"), ("Vedant Ghaisas","Team Member"),
-        ("Prof. Vipul Kalamkar","Mentor"),
-    ]:
-        color = VIOLET if "Prof" in role else INDIGO
-        st.markdown(f"""
-        <div style='background:#F8FAFC;border-radius:8px;padding:8px 12px;
-                    margin-bottom:4px;display:flex;align-items:center;gap:10px;'>
-          <div style='width:28px;height:28px;border-radius:50%;background:{color};
-                      display:flex;align-items:center;justify-content:center;
-                      color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0;'>
-            {name[0]}
-          </div>
-          <div>
-            <div style='font-size:.82rem;font-weight:600;color:#1E1E2E;'>{name}</div>
-            <div style='font-size:.72rem;color:#64748B;'>{role}</div>
-          </div>
-        </div>""", unsafe_allow_html=True)
+  
