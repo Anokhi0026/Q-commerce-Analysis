@@ -21,7 +21,7 @@ navbar()
 info_pills = "".join(
     f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);'
     f'border-radius:20px;padding:4px 14px;font-size:.8rem;">{t}</span>'
-    for t in ['n = 341 respondents', 'Vadodara, Gujarat', 'MSc Statistics 2024–26']
+    for t in ['MSc Statistics 2024–26']
 )
 
 team_pills = "".join(
