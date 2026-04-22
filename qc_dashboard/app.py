@@ -27,7 +27,7 @@ info_pills = "".join(
 team_pills = "".join(
     f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);'
     f'border-radius:20px;padding:4px 12px;font-size:.78rem;">{t}</span>'
-    for t in ['Anokhi Desai', 'Ritika Sharma', 'Sanjana Kumari', 'Vedant Ghaisas']
+    for t in ['Anokhi Desai','Sanjana Kumari', 'Vedant Ghaisas','Ritika Sharma']
 )
 
 st.markdown(f"""
@@ -128,10 +128,10 @@ with left:
       </div>
     </div>"""
     for icon,title,desc in [
-        ("1","Explosive Market Growth","India's Q-Commerce sector growing at 40–50% CAGR"),
-        ("2","Vadodara — An Underexplored Market","Tier-2 city dynamics differ from metros"),
-        ("3","Statistical Gap","Limited academic work on consumer adoption in Tier-2 cities"),
-        ("4","Policy Relevance","Findings can guide platform expansion strategies"),
+        ("1.","Explosive Market Growth","India's Q-Commerce sector growing at 40–50% CAGR"),
+        ("2.","Vadodara — An Underexplored Market","Tier-2 city dynamics differ from metros"),
+        ("3.","Statistical Gap","Limited academic work on consumer adoption in Tier-2 cities"),
+        ("4.","Policy Relevance","Findings can guide platform expansion strategies"),
     ]]) + """
     </div>""", unsafe_allow_html=True)
  
@@ -148,7 +148,7 @@ with right:
     ))
     fig_donut.update_layout(
         **{k:v for k,v in PLOTLY_LAYOUT.items() if k not in ["xaxis","yaxis"]},
-        height=250, showlegend=False,
+        height=350, showlegend=False,
         annotations=[dict(text="<b>66.9%</b><br>Adoption", x=0.5, y=0.5,
                           font=dict(size=15, color="#1E1E2E"), showarrow=False)]
     )
@@ -171,7 +171,7 @@ with right:
                               marker_color=hex_alpha(INDIGO, 0.4), text=aware, textposition="outside"))
     fig_app.add_trace(go.Bar(name="Primary Users", x=apps, y=usage,
                               marker_color=INDIGO, text=usage, textposition="outside"))
-    fig_app.update_layout(**PLOTLY_LAYOUT, height=240, barmode="group",
+    fig_app.update_layout(**PLOTLY_LAYOUT, height=340, barmode="group",
                            title=dict(text="Awareness vs. Active Usage", font=dict(size=13)))
     fig_app.update_xaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
     fig_app.update_yaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
