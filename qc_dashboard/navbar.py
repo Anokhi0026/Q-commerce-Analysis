@@ -1,7 +1,6 @@
 from streamlit_option_menu import option_menu
 import streamlit as st
 import os
-
 # ── Page registry ──────────────────────────────────────────────────────────────
 # Keys   = display name in navbar
 # Values = (icon, path relative to THIS file's directory)
@@ -21,26 +20,21 @@ PAGES = {
     "Non-User Analysis":  ("slash-circle", "pages/13_NonUser_Analysis.py"),
     "Summary":            ("stars",        "pages/10_Summary.py"),
 }
-
 # ── Resolve the app root directory once ───────────────────────────────────────
 # navbar.py sits in the same folder as app.py, so __file__'s parent IS the root
 _ROOT = os.path.dirname(os.path.abspath(__file__))
-
 def _abs(rel_path: str) -> str:
     """Convert a relative page path to the absolute path st.switch_page needs."""
     return os.path.join(_ROOT, rel_path)
-
 def navbar():
     # ── Detect current page from session state ─────────────────────────────────
     current_rel = st.session_state.get("current_page", "app.py")
     page_rels   = [v[1] for v in PAGES.values()]
     page_names  = list(PAGES.keys())
-
     try:
         current_index = page_rels.index(current_rel)
     except ValueError:
         current_index = 0
-
     # ── Render horizontal menu ─────────────────────────────────────────────────
     selected = option_menu(
         menu_title=None,
@@ -51,8 +45,8 @@ def navbar():
         styles={
             "container": {
                 "padding": "0px 0px 8px 0px",
-                "background-color": "#FAFAFA",
-                "border-bottom": "1px solid #E2E8F0",
+                "background-color": "#F0FDFA",
+                "border-bottom": "1px solid #99F6E4",
             },
             "nav-link": {
                 "font-size": "12px",
@@ -61,13 +55,12 @@ def navbar():
                 "border-radius": "6px",
             },
             "nav-link-selected": {
-                "background-color": "#4F46E5",
+                "background-color": "#0D9488",
                 "color": "white",
                 "font-weight": "600",
             },
         }
     )
-
     # ── Navigate only when user clicks a different page ────────────────────────
     selected_rel = PAGES[selected][1]
     if selected_rel != current_rel:
