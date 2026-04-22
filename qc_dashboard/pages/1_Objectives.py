@@ -61,13 +61,13 @@ for tag, title, desc, methods, color in objs:
                        letter-spacing:.1em;background:{color}15;padding:2px 8px;border-radius:20px;'>
         </div>
         <p style='color:#475569;font-size:.85rem;line-height:1.6;margin:0 0 8px;'>{desc}</p>
-        <div style='font-size:.75rem;color:{color};font-weight:500;'> '•' {methods}</div>
+        <div style='font-size:.75rem;color:{color};font-weight:500;'> • {methods}</div>
       </div>
     </div>""", unsafe_allow_html=True)
 
 section("Research Framework")
 c1, c2 = st.columns(2)
-for col, title, items in [
+for icon, title, items in [
     (c1,  "Data Collection", ["Primary data via Google Forms","341 respondents","Vadodara residents aged 18+","Multi-stage sampling"]),
     (c2, "Analytical Methods", ["Descriptive statistics","Inferential tests (χ², KW)","Factor & cluster analysis","Logistic regression"]),
 ]:
