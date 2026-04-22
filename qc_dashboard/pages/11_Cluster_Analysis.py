@@ -234,7 +234,7 @@ X_pca     = pca.fit_transform(X_arr)
 var_e     = pca.explained_variance_ratio_ * 100   # PC1=34.54, PC2=14.35 — exact notebook output
 medoids_pca = X_pca[medoid_indices]
 
-c1, c2 = st.columns([1.4, 1], gap="large")
+c1 = st.columns([1.4, 1], gap="large")
 with c1:
     fig_pca = go.Figure()
     for c_id in range(3):
