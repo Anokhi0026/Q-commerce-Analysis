@@ -2,9 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
-from scipy.stats import kruskal
 from scipy.spatial.distance import cdist
-from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score, silhouette_samples
 from sklearn.decomposition import PCA
 from utils import *
@@ -67,7 +65,7 @@ st.markdown("""
   </div>
 </div>""", unsafe_allow_html=True)
 
-# ── DATA PREP ──────────────────────────────────────────────────────────────────
+# ── DATA PREP — X = cluster_df.copy() (no standardization, exact as notebook) ─
 @st.cache_data
 def prepare_cluster_data():
     users = get_users()
@@ -95,20 +93,27 @@ def prepare_cluster_data():
     ]
     for col in LIKERT_COLS_C:
         users[col] = users[col].map(LIKERT_MAP)
-    cdf = users[LIKERT_COLS_C + SAT_COLS].copy().dropna()
-    cdf.columns = SHORT_13
-    uf  = users.loc[cdf.index].copy().reset_index(drop=True)
-    cdf = cdf.reset_index(drop=True)
-    X = cdf.copy()
-    return cdf, uf, X, SHORT_13, scaler
+    cluster_df = users[LIKERT_COLS_C + SAT_COLS].copy().dropna()
+    cluster_df.columns = SHORT_13
+    users_full = users.loc[cluster_df.index].copy().reset_index(drop=True)
+    cluster_df = cluster_df.reset_index(drop=True)
+    # ── X = cluster_df.copy() — raw 1-5 Likert values, NO standardization ──
+    X = cluster_df.copy()
+    return cluster_df, users_full, X, SHORT_13
 
-cdf, users_full, X, SHORT_13, scaler = prepare_cluster_data()
+cdf, users_full, X, SHORT_13 = prepare_cluster_data()
 
 # ── PAM IMPLEMENTATION (exact match to notebook cell 4) ───────────────────────
 def pam_kmedoids(X, k, n_init=10, max_iter=300, random_state=42):
+    """
+    Partitioning Around Medoids (PAM).
+    X           : array-like (n_samples, n_features)
+    Returns     : labels, medoid_indices, total_within_distance
+    """
     rng = np.random.default_rng(random_state)
-    n   = X.shape[0]
-    D   = cdist(X, X, metric="cityblock")
+    X_arr = np.array(X)
+    n     = X_arr.shape[0]
+    D     = cdist(X_arr, X_arr, metric="cityblock")
     best_labels, best_medoids, best_inertia = None, None, np.inf
     for _ in range(n_init):
         medoids = rng.choice(n, size=k, replace=False)
@@ -137,7 +142,7 @@ section(
     "Two complementary methods: Elbow (Total Within-Cluster Distance) and Silhouette Score (Cityblock)"
 )
 
-# Pre-computed from notebook (n_init=10, random_state=42) — exact notebook output
+# Pre-computed from notebook (n_init=10, random_state=42, X = cluster_df.copy())
 K_RANGE    = list(range(2, 9))
 twd_values = [1673.0, 1500.0, 1438.0, 1410.0, 1388.0, 1346.0, 1330.0]
 sil_values = [0.2390,  0.1655, 0.1112, 0.0727, 0.0907, 0.0876, 0.0903]
@@ -184,10 +189,10 @@ with c2:
 
 with st.expander("📋 K Selection Summary Table"):
     k_sum = pd.DataFrame({
-        "K": K_RANGE,
-        "Total Within-Distance": twd_values,
-        "Silhouette Score": sil_values,
-        "Distance Drop (%)": drop_pct,
+        "K":                      K_RANGE,
+        "Total Within-Distance":  twd_values,
+        "Silhouette Score":       sil_values,
+        "Distance Drop (%)":      drop_pct,
     })
     st.dataframe(k_sum.set_index("K"), use_container_width=True)
 
@@ -210,11 +215,12 @@ section("Step 2 · Final K-Medoids Model (PAM, K=3, 50 Initialisations, Citybloc
 
 @st.cache_data
 def run_kmedoids(_X, _cdf, _users_full):
-    labels, medoid_idx, total_wd = pam_kmedoids(_X, k=3, n_init=50, random_state=42)
-    sil   = silhouette_score(_X, labels, metric="cityblock")
-    sil_s = silhouette_samples(_X, labels, metric="cityblock")
-    cdf2  = _cdf.copy();        cdf2["Cluster"] = labels
-    uf2   = _users_full.copy(); uf2["Cluster"]  = labels
+    X_arr  = np.array(_X)
+    labels, medoid_idx, total_wd = pam_kmedoids(X_arr, k=3, n_init=50, random_state=42)
+    sil    = silhouette_score(X_arr, labels, metric="cityblock")
+    sil_s  = silhouette_samples(X_arr, labels, metric="cityblock")
+    cdf2   = _cdf.copy();        cdf2["Cluster"] = labels
+    uf2    = _users_full.copy(); uf2["Cluster"]  = labels
     return labels, medoid_idx, total_wd, sil, sil_s, cdf2, uf2
 
 labels, medoid_indices, total_wd, final_sil, sil_samples, cdf2, users_c = \
@@ -222,7 +228,6 @@ labels, medoid_indices, total_wd, final_sil, sil_samples, cdf2, users_c = \
 
 sizes = pd.Series(labels).value_counts().sort_index()
 
-# KPIs — exact from notebook output
 c1, c2, c3, c4 = st.columns(4)
 kpi(c1, f"{final_sil:.4f}", "Silhouette Score",  "Cityblock · K=3 overall quality",  INDIGO)
 kpi(c2, f"{sizes.get(0,0)}", "Cluster 0",         "Neutral Adopters · 29.4%",         INDIGO)
@@ -256,16 +261,17 @@ st.markdown(f"""
 with st.expander("📋 Medoid Respondent Profiles — Original 1–5 Scale (Actual Survey Respondents)"):
     st.dataframe(MEDOID_PROFILES, use_container_width=True)
     st.caption(
-        "Each column is a real survey respondent. "
+        "Each column is a real survey respondent — not an abstract centroid. "
         "R#77 = Neutral Adopters medoid · R#195 = All-Round Enthusiast medoid · R#36 = Convenience Purists medoid."
     )
 
 # ── STEP 3: PCA SCATTER ───────────────────────────────────────────────────────
 section("Step 3 · PCA Scatter — Cluster Separation in 2D")
 
-pca   = PCA(n_components=2, random_state=42)
-X_pca = pca.fit_transform(X)
-var_e = pca.explained_variance_ratio_ * 100   # PC1=34.54, PC2=14.35 — exact notebook output
+X_arr     = np.array(X)
+pca       = PCA(n_components=2, random_state=42)
+X_pca     = pca.fit_transform(X_arr)
+var_e     = pca.explained_variance_ratio_ * 100   # PC1=34.54, PC2=14.35 — exact notebook output
 medoids_pca = X_pca[medoid_indices]
 
 c1, c2 = st.columns([1.4, 1], gap="large")
@@ -352,10 +358,7 @@ with tab_hm:
     fig_hm.update_layout(
         **{k: v for k, v in PLOTLY_LAYOUT.items() if k not in ["xaxis","yaxis"]},
         height=420,
-        title=dict(
-            text="Figure 5a — Cluster Mean Profiles Heatmap — Green=High, Red=Low",
-            font=dict(size=12)
-        )
+        title=dict(text="Figure 5a — Cluster Mean Profiles Heatmap — Green=High, Red=Low", font=dict(size=12))
     )
     st.plotly_chart(fig_hm, use_container_width=True)
 
@@ -377,53 +380,53 @@ with tab_bar:
     fig_bar.update_yaxes(title="Mean Score (1–5)", gridcolor="#F1F5F9", range=[1, 5.5])
     st.plotly_chart(fig_bar, use_container_width=True)
 
-# Segment profile cards — from notebook final interpretation cell
+# Segment profile cards
 cluster_card_data = [
     (
         "Neutral Adopters",
         "n=67 · 29.4% · Medoid R#77",
-        "Top driver: Discounts (3.28) · Lowest: Ease of Use (3.03) / Recommend (2.99)",
-        (f"Consistently tepid scores across all 13 variables — means tightly clustered between 2.99 and 3.28, "
-         f"all hovering near 'Neutral' (3). Their medoid (R#77) answered exactly 3 on every single item, "
-         f"making this segment the textbook fence-sitter. Lowest satisfaction (3.25), continuity (3.06), "
-         f"and recommendation scores (2.99) across all clusters, indicating marginal platform commitment "
-         f"and significant churn risk. The majority place orders below ₹200 (61.2%) and 41.8% still use "
-         f"Cash-on-Delivery — reflecting limited platform trust. Usage tenure skews shorter (26.9% under 3 months). "
-         f"Emergency Needs (25.4%) ranks highly as a motivation, consistent with reactive, non-habitual usage. "
-         f"<b>Business action:</b> Re-engagement campaigns leveraging their top driver (Discounts), "
-         f"small-basket promotions, and trust-building onboarding to convert fence-sitters into regulars.")
+        "Top driver: Discounts (3.28) · Lowest: Recommend (2.99)",
+        ("Consistently tepid scores across all 13 variables — means tightly clustered between 2.99 and 3.28, "
+         "all hovering near 'Neutral' (3). Their medoid (R#77) answered exactly 3 on every single item, "
+         "making this segment the textbook fence-sitter. Lowest satisfaction (3.25), continuity (3.06), "
+         "and recommendation scores (2.99) across all clusters, indicating marginal platform commitment "
+         "and significant churn risk. The majority place orders below ₹200 (61.2%) and 41.8% still use "
+         "Cash-on-Delivery — reflecting limited platform trust. Usage tenure skews shorter (26.9% under 3 months). "
+         "Emergency Needs (25.4%) ranks highly as a motivation, consistent with reactive, non-habitual usage. "
+         "<b>Business action:</b> Re-engagement campaigns leveraging their top driver (Discounts), "
+         "small-basket promotions, and trust-building onboarding to convert fence-sitters into regulars.")
     ),
     (
         "All-Round Enthusiast",
         "n=114 · 50.0% · Medoid R#195",
         "Top driver: Time Saving (4.01) · Lowest: Product Variety (3.83)",
-        (f"The largest segment (50%) — broadly and uniformly engaged across all 13 dimensions. "
-         f"Mean scores range from 3.81 to 4.01, firmly in 'Agree' territory. "
-         f"Their medoid (R#195) answered 4 on all 13 variables — balanced across convenience and value, "
-         f"engaged for multiple reasons simultaneously. Strong mid-range order values (44.7% at ₹200–₹400), "
-         f"highest wallet payment share (9.6%), and majority UPI (50.9%) reflect digitally comfortable users. "
-         f"Highest share of 1+ year tenure after Purists (41.2%). Primary motivations are spread across "
-         f"Convenience (26.5%), Fast Delivery (21.2%), and Emergency Needs (18.6%) — "
-         f"engaged on multiple fronts rather than a single driver. "
-         f"<b>Business action:</b> Loyalty subscriptions (Blinkit Plus, Zepto Pass) and bundled promotions "
-         f"are the optimal lever — this segment is broadly satisfied and needs reasons to deepen engagement.")
+        ("The largest segment (50%) — broadly and uniformly engaged across all 13 dimensions. "
+         "Mean scores range from 3.81 to 4.01, firmly in 'Agree' territory. "
+         "Their medoid (R#195) answered 4 on all 13 variables — balanced across convenience and value, "
+         "engaged for multiple reasons simultaneously. Strong mid-range order values (44.7% at ₹200–₹400), "
+         "highest wallet payment share (9.6%), and majority UPI (50.9%) reflect digitally comfortable users. "
+         "Highest share of 1+ year tenure after Purists (41.2%). Primary motivations are spread across "
+         "Convenience (26.5%), Fast Delivery (21.2%), and Emergency Needs (18.6%) — "
+         "engaged on multiple fronts rather than a single driver. "
+         "<b>Business action:</b> Loyalty subscriptions (Blinkit Plus, Zepto Pass) and bundled promotions "
+         "are the optimal lever — this segment is broadly satisfied and needs reasons to deepen engagement.")
     ),
     (
         "Convenience Purists",
         "n=47 · 20.6% · Medoid R#36",
         "Top driver: Time Saving (4.79) · Lowest: Promo Offers (3.04)",
-        (f"The smallest but most distinctive segment, defined by a sharp internal contrast. "
-         f"Extremely high on Time Saving (4.79), Lifestyle Fit (4.70), Continuity (4.77), Recommend (4.75) — "
-         f"yet markedly low on Discounts (3.26) and Promo Offers (3.04). "
-         f"Their medoid (R#36) answered 5 on all convenience and satisfaction items but only 3 on "
-         f"Discounts and Promo Offers — a pure convenience-seeker completely indifferent to price incentives. "
-         f"Highest UPI adoption (72.3%) and lowest COD (14.9%) across all segments. "
-         f"Most loyal by tenure: 63.8% using for more than a year. Top motivations are Convenience (40.4%) "
-         f"and Product Availability (14.9%), with near-zero Better Offers (2.1%). "
-         f"Highest satisfaction (4.55), continuity (4.77), and referral score (4.74/5) of all clusters — "
-         f"the highest long-term customer value segment. "
-         f"<b>Business action:</b> Premium tiers, speed guarantees, and quality assurance — NOT discounts. "
-         f"High referral propensity makes them ideal referral programme targets.")
+        ("The smallest but most distinctive segment, defined by a sharp internal contrast. "
+         "Extremely high on Time Saving (4.79), Lifestyle Fit (4.70), Continuity (4.77), Recommend (4.75) — "
+         "yet markedly low on Discounts (3.26) and Promo Offers (3.04). "
+         "Their medoid (R#36) answered 5 on all convenience and satisfaction items but only 3 on "
+         "Discounts and Promo Offers — a pure convenience-seeker completely indifferent to price incentives. "
+         "Highest UPI adoption (72.3%) and lowest COD (14.9%) across all segments. "
+         "Most loyal by tenure: 63.8% using for more than a year. Top motivations are Convenience (40.4%) "
+         "and Product Availability (14.9%), with near-zero Better Offers (2.1%). "
+         "Highest satisfaction (4.55), continuity (4.77), and referral score (4.74/5) of all clusters — "
+         "the highest long-term customer value segment. "
+         "<b>Business action:</b> Premium tiers, speed guarantees, and quality assurance — NOT discounts. "
+         "High referral propensity makes them ideal referral programme targets.")
     ),
 ]
 
@@ -521,7 +524,7 @@ with btab1:
       (61.2% below ₹200) and have a dispersed delivery time preference — no strong habitual pattern —
       consistent with reactive, need-driven usage. <b>All-Round Enthusiasts</b> and
       <b>Convenience Purists</b> both peak at ₹200–₹400 (44.7% each), but Purists have a significantly
-      larger share of higher-value orders (₹400–₹600: 23.4%; ₹600+: 17.0%) reflecting willingness to pay
+      larger share of higher-value orders (₹400–₹600: 23.4%; ₹600+: 17.0%), reflecting willingness to pay
       for speed and quality. Convenience Purists show the strongest evening delivery preference (51.1%),
       consistent with busy, time-poor lifestyles where evening is the primary shopping window.
       </span>
@@ -713,20 +716,15 @@ with st.expander("📋 Full Kruskal-Wallis Results Table"):
 
 # Dunn post-hoc — exact from notebook cell 20 output
 with st.expander("📋 Dunn Post-Hoc Tests (Bonferroni correction) — Key Variables"):
-    st.markdown("""
-    **Time Saving** — Medians: C0=3.0, C1=4.0, C2=5.0 (all pairs differ)
-    """)
+    st.markdown("**Time Saving** — Medians: C0=3.0, C1=4.0, C2=5.0 (all three pairs differ)")
     st.dataframe(pd.DataFrame([
-        ("Neutral Adopters vs All-Round Enthusiast",     -5.895, 0.0,    0.0,    "Yes ✓"),
-        ("Neutral Adopters vs Convenience Purists",      -9.221, 0.0,    0.0,    "Yes ✓"),
-        ("All-Round Enthusiast vs Convenience Purists",  -4.887, 0.0,    0.0,    "Yes ✓"),
+        ("Neutral Adopters vs All-Round Enthusiast",    -5.895, 0.0,    0.0,    "Yes ✓"),
+        ("Neutral Adopters vs Convenience Purists",     -9.221, 0.0,    0.0,    "Yes ✓"),
+        ("All-Round Enthusiast vs Convenience Purists", -4.887, 0.0,    0.0,    "Yes ✓"),
     ], columns=["Comparison","z","p (raw)","p (Bonferroni)","Significant?"]).set_index("Comparison"),
         use_container_width=True)
 
-    st.markdown("""
-    **Discounts** — Medians: C0=3.0, C1=4.0, C2=3.0
-    *(Neutral Adopters and Convenience Purists are NOT different from each other — both indifferent to promotions)*
-    """)
+    st.markdown("**Discounts** — Medians: C0=3.0, C1=4.0, C2=3.0 — *Neutral Adopters ≡ Convenience Purists (p=1.000)*")
     st.dataframe(pd.DataFrame([
         ("Neutral Adopters vs All-Round Enthusiast",    -4.313, 0.0000, 0.0000, "Yes ✓"),
         ("Neutral Adopters vs Convenience Purists",     -0.049, 0.9607, 1.0000, "No ✗"),
@@ -734,10 +732,7 @@ with st.expander("📋 Dunn Post-Hoc Tests (Bonferroni correction) — Key Varia
     ], columns=["Comparison","z","p (raw)","p (Bonferroni)","Significant?"]).set_index("Comparison"),
         use_container_width=True)
 
-    st.markdown("""
-    **Promo Offers** — Medians: C0=3.0, C1=4.0, C2=3.0
-    *(Same pattern as Discounts — Neutral Adopters and Convenience Purists both score ~3, but for different reasons)*
-    """)
+    st.markdown("**Promo Offers** — Medians: C0=3.0, C1=4.0, C2=3.0 — *Same pattern as Discounts*")
     st.dataframe(pd.DataFrame([
         ("Neutral Adopters vs All-Round Enthusiast",    -4.878, 0.0000, 0.0000, "Yes ✓"),
         ("Neutral Adopters vs Convenience Purists",      0.068, 0.9455, 1.0000, "No ✗"),
@@ -751,11 +746,11 @@ with st.expander("📋 Dunn Post-Hoc Tests (Bonferroni correction) — Key Varia
       <b>Key Dunn insight on Discounts & Promo Offers:</b>
       Neutral Adopters and Convenience Purists are statistically indistinguishable on both promotional
       variables (p=1.000 after Bonferroni correction), yet they are completely different clusters on
-      all other variables. This confirms that their shared indifference to promotions arises from
-      entirely different causes: <b>Neutral Adopters</b> are disengaged and uncommitted, while
-      <b>Convenience Purists</b> are already deeply committed and have no need for price incentives.
-      This nuance — detectable only via K-Medoids clustering + post-hoc testing — has direct
-      practical implications: discounting will not convert Purists, but may help re-engage Neutrals.
+      all other variables. Their shared indifference to promotions arises from entirely different causes:
+      <b>Neutral Adopters</b> are disengaged and uncommitted, while <b>Convenience Purists</b> are
+      already deeply committed and have no need for price incentives.
+      This nuance — detectable only via K-Medoids clustering + post-hoc testing — has a direct
+      practical implication: discounting will not convert Purists, but may help re-engage Neutrals.
     </div>""", unsafe_allow_html=True)
 
 finding_card(
