@@ -44,7 +44,10 @@ st.markdown(f"""
     A comprehensive statistical study examining quick-commerce adoption behaviour,
     usage patterns, key drivers, and predictive models across 341 consumers in Vadodara, Gujarat.
   </p>
-  <div style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;'>
+    <div style='width:1px;background:rgba(255,255,255,.3);align-self:stretch;margin:0 4px;'></div>
+    <div style='display:flex;flex-direction:column;gap:6px;'>
+      <div style='font-size:0.65rem;font-weight:700;text-transform:uppercase;
+                  letter-spacing:.12em;opacity:.6;margin-bottom:2px;'>Team</div>
     <div style='display:flex;gap:10px;flex-wrap:wrap;align-items:center;'>
       {info_pills}
     </div>
