@@ -31,9 +31,13 @@ st.markdown(f"""
     A comprehensive statistical study examining quick-commerce adoption behaviour,
     usage patterns, key drivers, and predictive models across 341 consumers in Vadodara, Gujarat.
   </p>
-  <div style='display:flex;gap:12px;flex-wrap:wrap;'>
+  <div style='display:flex;gap:12px;flex-wrap:wrap;align-items:center;'>
     {''.join(f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;">{t}</span>'
-    for t in ['n = 341 respondents','Vadodara, Gujarat','MSc Statistics 2024–26'])}
+    for t in ['Anokhi Desai','Ritika Sharma','Sanjana Kumari','Vedant Ghaisas'])}
+    <span style="background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);
+                 border-radius:20px;padding:4px 14px;font-size:.8rem;font-weight:600;">
+      🎓 Prof. Vipul Kalamkar
+    </span>
   </div>
 </div>
 """, unsafe_allow_html=True)
