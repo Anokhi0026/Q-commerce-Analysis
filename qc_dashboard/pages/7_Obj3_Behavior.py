@@ -227,7 +227,7 @@ for col_w, sc, sl in zip([c1,c2,c3], sat_vars_list, sat_lbls):
     fig  = go.Figure(go.Bar(x=cnt.index, y=cnt.values, marker_color=INDIGO, text=cnt.values, textposition="outside"))
     fig.add_vline(x=data.mean(), line_dash="dash", line_color=ROSE, opacity=0.8,
                   annotation_text=f"μ={data.mean():.2f}", annotation_font=dict(size=9,color=ROSE))
-    fig.update_layout(**PLOTLY_LAYOUT, height=430,
+    fig.update_layout(**PLOTLY_LAYOUT, height=330,
                        title=dict(text=f"{sl}\n(μ={data.mean():.2f}, SD={data.std():.2f})",font=dict(size=10)))
     fig.update_xaxes(tickvals=[1,2,3,4,5],gridcolor="#F1F5F9")
     fig.update_yaxes(gridcolor="#F1F5F9")
