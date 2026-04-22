@@ -27,7 +27,7 @@ page_header(
     "making profiles more robust to outliers and directly interpretable on Likert-scale data."
 )
 
-CLUSTER_COLORS = ['#8B0000','#023020','#000080']
+CLUSTER_COLORS = [INDIGO,EMERALD,SKY]
 CLUSTER_NAMES  = ["Neutral Adopters", "All-Round Enthusiast", "Convenience Purists"]
 
 k1, k2, k3, k4 = st.columns(4)
@@ -241,7 +241,7 @@ for c_id in range(3):
     fig_pca.add_trace(go.Scatter(
         x=X_pca[mask, 0], y=X_pca[mask, 1], mode="markers",
         name=f"{CLUSTER_NAMES[c_id]} (n={mask.sum()})",
-        marker=dict(color=CLUSTER_COLORS[c_id], size=7, opacity=0.65,
+        marker=dict(color=['#8B0000','#023020','#000080'], size=7, opacity=0.65,
                     line=dict(color="#fff", width=0.4)),
         hovertemplate=f"{CLUSTER_NAMES[c_id]}: PC1=%{{x:.2f}}, PC2=%{{y:.2f}}<extra></extra>"
     ))
