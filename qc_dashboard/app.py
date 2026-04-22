@@ -34,13 +34,12 @@ st.markdown(f"""
 
   <div style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;'>
 
-    <!-- Info pills -->
     <div style='display:flex;gap:10px;flex-wrap:wrap;align-items:center;'>
       {''.join(f'<span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;">{t}</span>'
       for t in ['n = 341 respondents','Vadodara, Gujarat','MSc Statistics 2024–26'])}
     </div>
 
-    <!-- Divider -->
+    
     <div style='width:1px;background:rgba(255,255,255,.3);align-self:stretch;margin:0 4px;'></div>
 
     <!-- Team members -->
@@ -53,7 +52,6 @@ st.markdown(f"""
       </div>
     </div>
 
-    <!-- Mentor -->
     <div style='display:flex;flex-direction:column;gap:6px;'>
       <div style='font-size:0.65rem;font-weight:700;text-transform:uppercase;
                   letter-spacing:.12em;opacity:.6;margin-bottom:2px;'>Mentor</div>
