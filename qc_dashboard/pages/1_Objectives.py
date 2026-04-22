@@ -68,8 +68,8 @@ for tag, title, desc, methods, color in objs:
 section("Research Framework")
 c1, c2 = st.columns(2)
 for col, item, title, items in [
-    (c1, ●,  "Data Collection", ["Primary data via Google Forms","341 respondents","Vadodara residents aged 18+","Multi-stage sampling"]),
-    (c2, ●,  "Analytical Methods", ["Descriptive statistics","Inferential tests (χ², KW)","Factor & cluster analysis","Logistic regression"]),
+    (c1, '●',  "Data Collection", ["Primary data via Google Forms","341 respondents","Vadodara residents aged 18+","Multi-stage sampling"]),
+    (c2, '●',  "Analytical Methods", ["Descriptive statistics","Inferential tests (χ², KW)","Factor & cluster analysis","Logistic regression"]),
 ]:
     with col:
         st.markdown(f"""
