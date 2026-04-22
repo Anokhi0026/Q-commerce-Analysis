@@ -68,10 +68,10 @@ all_findings = [
         ("Gender suppressor effect detected","Multivariate model reveals gender effect masked in bivariate chi-square"),
         ("RF CV AUC highest; all 3 models converge on same findings","Age + Education dominate; Income/Occupation lose significance when controlled"),
     ]),
-    (SKY,"🧩","Cluster Analysis","3 Consumer Segments",[
-        ("Active Engagers — highest attitudes, most satisfied","Power users, primary revenue base; target for loyalty programs"),
-        ("Passive Users — below average on all items","At-risk of churn; re-engagement campaigns with convenience messaging"),
-        ("Convenience Purists — time-saving and urgent needs driven","Emergency top-up users; respond to speed and reliability messaging"),
+    (SKY,"🧩","Cluster Analysis","3 Consumer Segments (K-Medoids PAM)",[
+        ("Neutral Adopters (n=67, 29.4%) — Medoid R#77","Mid-range scores on all 13 variables (means ≈ 3.0); lowest satisfaction (3.25), continuity (3.06), recommend (2.99). Churn risk. Top driver: Discounts. Target with re-engagement and small-basket incentives."),
+        ("All-Round Enthusiasts (n=114, 50.0%) — Medoid R#195","Uniformly high scores across all dimensions (means ≈ 4.0); top driver: Time Saving. Largest and most balanced segment. Target with loyalty subscriptions and basket-growth promotions."),
+        ("Convenience Purists (n=47, 20.6%) — Medoid R#36","Highest scores on convenience & satisfaction (Time Saving 4.79, Continuity 4.77, Recommend 4.74); indifferent to Discounts/Promo (≈3.0). Most loyal (63.8% using 1+ yrs). Target with premium tiers — NOT discounts."),
     ]),
     ("#DB2777","📍","Correspondence Analysis","Categorical Associations",[
         ("CA1: Blinkit↔Young (18–25), Zepto↔26–33 segment","Clear platform-age segmentation; Blinkit dominates youth"),
@@ -184,10 +184,11 @@ insights = [
      "essentials. Consumers position Q-Commerce as a supplement to planned shopping — fulfilling "
      "immediate, small-basket needs when something runs out unexpectedly.",
      VIOLET),
-    ("😐 A Large Segment Is Retained but Not Habitual",
-     "Cluster analysis identifies a 'Passive Users' segment with below-average attitude and satisfaction "
-     "scores. These consumers order occasionally and only under specific circumstances — they are "
-     "not dissatisfied enough to leave, but have not integrated Q-Commerce into their daily routine.",
+    ("😐 A Large Segment Is Retained but Not Deeply Engaged",
+     "K-Medoids cluster analysis identifies a 'Neutral Adopters' segment (29.4%, n=67) with consistently "
+     "mid-range attitude and satisfaction scores (all means ≈ 3.0). These consumers order occasionally, "
+     "driven primarily by Discounts and Emergency Needs — they have not integrated Q-Commerce into "
+     "their daily routine and represent the highest churn risk.",
      SKY),
 ]
 
@@ -200,6 +201,7 @@ for i,(title,text,color) in enumerate(insights):
       <div style='font-weight:700;font-size:.85rem;color:#1E1E2E;margin-bottom:4px;'>{title}</div>
       <div style='font-size:.78rem;color:#475569;line-height:1.6;'>{text}</div>
     </div>""", unsafe_allow_html=True)
+
 # ── Statistical Methods Used ───────────────────────────────────────────────────
 section("Complete List of Statistical Methods Used")
 
@@ -221,11 +223,11 @@ methods = [
      None,
      "V = √( χ² / n · min(r−1, c−1) )"),
     ("Kruskal-Wallis H Test",
-     "Non-parametric ANOVA for satisfaction × demographics, barrier × age",
+     "Non-parametric ANOVA for satisfaction × demographics, barrier × age; also validates K-Medoids clusters (13/13 significant)",
      "H₀: All groups have the same population distribution (equal medians)",
      "H = [12 / n(n+1)] · Σ(Rᵢ² / nᵢ) − 3(n+1)"),
     ("Dunn's Post-Hoc (Bonferroni)",
-     "Pairwise comparisons after significant Kruskal-Wallis",
+     "Pairwise comparisons after significant Kruskal-Wallis; used for cluster validation",
      "H₀: No difference between any specific pair of groups",
      "z = (R̅ᵢ − R̅ⱼ) / SE  ;  p_adj = min(p · m, 1)"),
     ("Spearman Rank Correlation",
@@ -248,12 +250,12 @@ methods = [
      "Users vs non-users; barrier gender differences",
      "H₀: The two groups come from the same population distribution",
      "U = n₁n₂ + n₁(n₁+1)/2 − R₁"),
-    ("K-Means Clustering + Elbow + Silhouette",
-     "Consumer segmentation (K=3)",
+    ("K-Medoids Clustering (PAM) + Elbow + Silhouette",
+     "Consumer segmentation (K=3); Cityblock distance; medoids are real respondents R#77, R#195, R#36",
      None,
-     "WCSS = Σₖ Σᵢ∈Cₖ ||xᵢ − μₖ||²"),
+     "TWD = Σₖ Σᵢ∈Cₖ d(xᵢ, mₖ)  ;  mₖ = arg min Σᵢ∈Cₖ d(xᵢ, xⱼ)"),
     ("PCA Scatter Plot",
-     "Cluster visualisation in 2D",
+     "Cluster visualisation in 2D (PC1=34.54%, PC2=14.35%, Total=48.89%)",
      None,
      "Z = XW  (W = eigenvectors of covariance matrix)"),
     ("Correspondence Analysis (5 biplots)",
