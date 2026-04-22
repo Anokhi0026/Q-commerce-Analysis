@@ -309,7 +309,7 @@ with c2:
         x=["Predicted Non-Adopter","Predicted Adopter"],
         y=["Actual Non-Adopter","Actual Adopter"],
         text=[[f"TN={TN_lr}", f"FP={FP_lr}"], [f"FN={FN_lr}", f"TP={TP_lr}"]],
-        texttemplate="%{text}", textfont=dict(size=14, color="white"),
+        texttemplate="%{text}", textfont=dict(size=14, color="black"),
         colorscale=[[0,"#EEF2FF"],[1,INDIGO]], showscale=False
     ))
     fig_cm.update_layout(**PLOTLY_LAYOUT, height=290,
