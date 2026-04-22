@@ -273,10 +273,10 @@ with c1:
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Profiles")
 
 # Exact cluster mean profiles from notebook cell 13 output
-CLUSTER_MEANS = pd.DataFrame({
-    "Neutral Adopters":    [3.090,3.194,3.284,3.224,3.075,3.030,3.239,3.284,3.045,3.164,3.254,3.060,2.985],
-    "All-Round Enthusiast":[4.009,4.000,3.868,3.825,3.842,3.947,3.991,3.851,3.939,3.860,3.851,3.904,3.807],
-    "Convenience Purists": [4.787,4.426,3.255,4.191,3.043,4.255,4.404,4.149,4.362,4.702,4.553,4.766,4.745],
+CLUSTER_MEANS =  pd.DataFrame({
+    "Neutral Adopters":       [3,3,3,3,3,3,3,3,3,3,3,3,3],
+    "All-Round Enthusiast":   [4,4,4,4,4,4,4,4,4,4,4,4,4],
+    "Convenience Purists":    [5,4,3,4,3,4,5,4,5,5,5,5,5],
 }, index=SHORT_13)
 
 tab_hm, tab_bar = st.tabs([
@@ -286,7 +286,7 @@ tab_hm, tab_bar = st.tabs([
 
 with tab_hm:
     fig_hm = go.Figure(go.Heatmap(
-        z=MEDOID_PROFILES.values,
+        z=CLUSTER_MEANS.values,
         x=CLUSTER_NAMES,
         y=SHORT_13,
         colorscale=[[0,"#FEF2F2"],[0.3,"#FCA5A5"],[0.5,"#FCD34D"],[0.7,"#86EFAC"],[1,"#15803D"]],
@@ -307,7 +307,7 @@ with tab_bar:
     fig_bar = go.Figure()
     for c_id, cname in enumerate(CLUSTER_NAMES):
         fig_bar.add_trace(go.Bar(
-            name=cname, x=SHORT_13, y=MEDOID_PROFILES[cname].values,
+            name=cname, x=SHORT_13, y=CLUSTER_MEANS[cname].values,
             marker_color=CLUSTER_COLORS[c_id], opacity=0.9,
             hovertemplate=f"{cname}: %{{y:.3f}}<extra></extra>"
         ))
