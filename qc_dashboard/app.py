@@ -133,7 +133,7 @@ with left:
         ("4.","Policy Relevance","Findings can guide platform expansion strategies"),
     ]]) + """
     </div>""", unsafe_allow_html=True)
-""" 
+
 with right:
     section("Sample Composition")
     # Adoption donut
@@ -177,4 +177,4 @@ with right:
     st.plotly_chart(fig_app, use_container_width=True)
  
   
-"""
+
