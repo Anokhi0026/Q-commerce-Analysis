@@ -225,7 +225,7 @@ with st.expander("📋 Medoid Respondent Profiles — Original 1–5 Scale (Actu
         "R#77 = Neutral Adopters medoid · R#195 = All-Round Enthusiast medoid · R#36 = Convenience Purists medoid."
     )
 
-# ── STEP 3: PCA SCATTER ───────────────────────────────────────────────────────
+
 # ── STEP 3: PCA SCATTER ───────────────────────────────────────────────────────
 section("Step 3 · PCA Scatter — Cluster Separation in 2D")
 
