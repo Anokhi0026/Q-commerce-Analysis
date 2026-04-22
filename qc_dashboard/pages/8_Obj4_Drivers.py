@@ -226,7 +226,7 @@ def run_paf_efa(_ld):
             else:
                         print(f'  PAF reached max iterations ({max_iter}) without full convergence.')
 
-        return L, h2, iteration + 1
+        return L, h2
 
     # ── Varimax rotation ──────────────────────────────────────────────────────
     def varimax_rotate(L, max_iter=1000, tol=1e-8):
