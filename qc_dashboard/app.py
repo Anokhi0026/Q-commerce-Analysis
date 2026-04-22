@@ -87,94 +87,46 @@ kpi(k5, "5",    "Objectives",        "Primary + Secondary", VIOLET)
 st.markdown("<br>", unsafe_allow_html=True)
  
 # ── What is Q-Commerce ─────────────────────────────────────────────────────────
-left, right = st.columns([1.2, 1], gap="large")
- 
-with left:
-    section("Introduction", "What is Q-Commerce and why does it matter?")
-    st.markdown("""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
-      <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
-        <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
-        groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
-        <i>dark stores</i> and AI-driven logistics. Unlike traditional e-commerce, Q-Commerce
-        prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
-      </p>
-      <div style='margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
-    """ + "".join([f"""        <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
-          <div style='font-size:1.2rem;'>{icon}</div>
-          <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
-          <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
-        </div>"""
-        for icon,title,desc in [
-            ("🏪","Dark Stores","Micro-fulfilment centres in urban neighbourhoods"),
-            ("⚡","10–30 Min Delivery","Speed as the core value proposition"),
-            ("🤖","AI-Driven Logistics","Real-time routing & inventory optimisation"),
-            ("📱","App-First","Entirely mobile-driven ordering experience"),
-        ]]) + """
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
- 
-    section("Why We Chose This Topic")
-    st.markdown("""
-    <div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;'>
-    """ + "".join([f"""    <div style='display:flex;align-items:flex-start;gap:12px;padding:8px 0;
-                border-bottom:1px solid #F1F5F9;'>
-      <span style='font-size:1.1rem;'>{icon}</span>
-      <div>
-        <div style='font-weight:600;font-size:0.95rem;color:#1E1E2E;'>{title}</div>
-        <div style='font-size:0.78rem;color:#64748B;margin-top:2px;'>{desc}</div>
-      </div>
+section("Introduction", "What is Q-Commerce and why does it matter?")
+st.markdown("""
+<div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;'>
+ <p style='color:#374151;line-height:1.8;font-size:0.92rem;margin:0;'>
+    <b>Q-Commerce (Quick Commerce)</b> is an ultra-fast e-commerce model that delivers
+    groceries and daily essentials within <b>10–30 minutes</b>, powered by hyperlocal
+    <i>dark stores</i> and AI-driven logistics. Unlike traditional e-commerce, Q-Commerce
+    prioritises speed over selection, stocking only high-demand, high-turnover SKUs.
+  </p>
+  <div style='margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
+""" + "".join([f"""        <div style='background:#F8FAFC;border-radius:10px;padding:12px 14px;'>
+      <div style='font-size:1.2rem;'>{icon}</div>
+      <div style='font-weight:600;font-size:0.82rem;color:#1E1E2E;margin:4px 0 2px;'>{title}</div>
+      <div style='font-size:0.75rem;color:#64748B;'>{desc}</div>
     </div>"""
     for icon,title,desc in [
-        ("1.","Explosive Market Growth","India's Q-Commerce sector growing at 40–50% CAGR"),
-        ("2.","Vadodara — An Underexplored Market","Tier-2 city dynamics differ from metros"),
-        ("3.","Statistical Gap","Limited academic work on consumer adoption in Tier-2 cities"),
-        ("4.","Policy Relevance","Findings can guide platform expansion strategies"),
+        ("🏪","Dark Stores","Micro-fulfilment centres in urban neighbourhoods"),
+        ("⚡","10–30 Min Delivery","Speed as the core value proposition"),
+        ("🤖","AI-Driven Logistics","Real-time routing & inventory optimisation"),
+        ("📱","App-First","Entirely mobile-driven ordering experience"),
     ]]) + """
-    </div>""", unsafe_allow_html=True)
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-with right:
-    section("Sample Composition")
-    # Adoption donut
-    fig_donut = go.Figure(go.Pie(
-        labels=["Q-Commerce Users","Non-Users"],
-        values=[228, 113], hole=0.65,
-        marker_colors=[INDIGO, "#E2E8F0"],
-        textinfo="label+percent",
-        textfont=dict(size=12),
-        hovertemplate="%{label}: %{value}<extra></extra>"
-    ))
-    fig_donut.update_layout(
-        **{k:v for k,v in PLOTLY_LAYOUT.items() if k not in ["xaxis","yaxis"]},
-        height=350, showlegend=False,
-        annotations=[dict(text="<b>66.9%</b><br>Adoption", x=0.5, y=0.5,
-                          font=dict(size=15, color="#1E1E2E"), showarrow=False)]
-    )
-    st.plotly_chart(fig_donut, use_container_width=True)
- 
-    section("Apps Awareness vs Usage")
-    apps    = ["Blinkit", "Zepto", "Swiggy Instamart"]
-    aware   = [
-        (df["App_usex1"] == "Blinkit").sum() + (df["App_usex2"] == " Blinkit").sum(),
-        (df["App_usex2"] == " Zepto").sum() + (df["App_usex1"] == "Zepto").sum(),
-        (df["App_usex3"] == " Swiggy Instamart").sum(),
-    ]
-    usage   = [
-        (users["App_Used"] == "Blinkit").sum(),
-        (users["App_Used"] == "Zepto").sum(),
-        (users["App_Used"] == "Swiggy Instamart").sum(),
-    ]
-    fig_app = go.Figure()
-    fig_app.add_trace(go.Bar(name="Aware", x=apps, y=aware,
-                              marker_color=hex_alpha(INDIGO, 0.4), text=aware, textposition="outside"))
-    fig_app.add_trace(go.Bar(name="Primary Users", x=apps, y=usage,
-                              marker_color=INDIGO, text=usage, textposition="outside"))
-    fig_app.update_layout(**PLOTLY_LAYOUT, height=340, barmode="group",
-                           title=dict(text="Awareness vs. Active Usage", font=dict(size=13)))
-    fig_app.update_xaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
-    fig_app.update_yaxes(showgrid=True, gridcolor="#F1F5F9", zeroline=False)
-    st.plotly_chart(fig_app, use_container_width=True)
- 
-  
-
+section("Why We Chose This Topic")
+st.markdown("""
+<div style='background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;'>
+""" + "".join([f"""    <div style='display:flex;align-items:flex-start;gap:12px;padding:8px 0;
+            border-bottom:1px solid #F1F5F9;'>
+  <span style='font-size:1.1rem;'>{icon}</span>
+  <div>
+    <div style='font-weight:600;font-size:0.95rem;color:#1E1E2E;'>{title}</div>
+   <div style='font-size:0.78rem;color:#64748B;margin-top:2px;'>{desc}</div>
+  </div>
+</div>"""
+for icon,title,desc in [
+    ("1.","Explosive Market Growth","India's Q-Commerce sector growing at 40–50% CAGR"),
+    ("2.","Vadodara — An Underexplored Market","Tier-2 city dynamics differ from metros"),
+    ("3.","Statistical Gap","Limited academic work on consumer adoption in Tier-2 cities"),
+    ("4.","Policy Relevance","Findings can guide platform expansion strategies"),
+]]) + """
+</div>""", unsafe_allow_html=True)
