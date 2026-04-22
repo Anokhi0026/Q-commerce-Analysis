@@ -312,9 +312,9 @@ with c1:
                         annotation_position="top left", annotation_font=dict(size=9, color=INDIGO))
     fig_scree.update_layout(
         **PLOTLY_LAYOUT, height=320,
-        title=dict(text=f"Scree Plot + Parallel Analysis — {N_FACTORS} Factors Retained", font=dict(size=12)),
-        legend=dict(orientation="h", y=-0.2)
+        title=dict(text=f"Scree Plot + Parallel Analysis — {N_FACTORS} Factors Retained", font=dict(size=12))
     )
+    fig_scree.update_layout(legend=dict(orientation="h", y=-0.2))
     fig_scree.update_xaxes(title="Factor Number", tickvals=x_vals, gridcolor="#F1F5F9")
     fig_scree.update_yaxes(title="Eigenvalue", gridcolor="#F1F5F9")
     st.plotly_chart(fig_scree, use_container_width=True)
