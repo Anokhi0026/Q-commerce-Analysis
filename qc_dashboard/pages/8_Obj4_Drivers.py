@@ -209,7 +209,7 @@ def run_paf_efa(_ld):
         R_l   = np.corrcoef(X.T)
         R_inv = np.linalg.inv(R_l)
         h2    = np.clip(1 - 1/np.diag(R_inv), 0.005, 0.999)
-        for _ in range(max_iter):
+        for iteration in range(max_iter):
             h2_prev = h2.copy()
             R_red   = R_l.copy()
             np.fill_diagonal(R_red, h2)
