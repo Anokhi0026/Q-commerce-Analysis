@@ -234,7 +234,6 @@ for i, pay in enumerate(PAY_ORDER):
 
 fig_po.update_layout(
     **{k: v for k, v in PLOTLY_LAYOUT.items() if k not in ["xaxis", "yaxis"]},
-    barmode="stack",
     height=380,
     title=dict(text="Payment Method × Occupation (% within Occupation)", font=dict(size=12)))
 fig_po.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.35, xanchor="center", x=0.5,
