@@ -226,47 +226,47 @@ with st.expander("📋 Medoid Respondent Profiles — Original 1–5 Scale (Actu
     )
 
 # ── STEP 3: PCA SCATTER ───────────────────────────────────────────────────────
+# ── STEP 3: PCA SCATTER ───────────────────────────────────────────────────────
 section("Step 3 · PCA Scatter — Cluster Separation in 2D")
 
-X_arr     = np.array(X)
-pca       = PCA(n_components=2, random_state=42)
-X_pca     = pca.fit_transform(X_arr)
-var_e     = pca.explained_variance_ratio_ * 100   # PC1=34.54, PC2=14.35 — exact notebook output
+X_arr       = np.array(X)
+pca         = PCA(n_components=2, random_state=42)
+X_pca       = pca.fit_transform(X_arr)
+var_e       = pca.explained_variance_ratio_ * 100
 medoids_pca = X_pca[medoid_indices]
 
 fig_pca = go.Figure()
 for c_id in range(3):
-      mask = labels == c_id
-      fig_pca.add_trace(go.Scatter(
-          x=X_pca[mask, 0], y=X_pca[mask, 1], mode="markers",
-       name=f"{CLUSTER_NAMES[c_id]} (n={mask.sum()})",
-       marker=dict(color=CLUSTER_COLORS[c_id], size=7, opacity=0.65,
-                line=dict(color="#fff", width=0.4)),
-       hovertemplate=f"{CLUSTER_NAMES[c_id]}: PC1=%{{x:.2f}}, PC2=%{{y:.2f}}<extra></extra>"
-   ))
-   fig_pca.add_trace(go.Scatter(
-       x=[medoids_pca[c_id, 0]], y=[medoids_pca[c_id, 1]],
-       mode="markers+text", showlegend=False,
-       text=[f"C{c_id} medoid (R#{MEDOID_IDX[c_id]})"],
-       textposition="top right",
-       textfont=dict(size=9, color=CLUSTER_COLORS[c_id]),
-       marker=dict(color=CLUSTER_COLORS[c_id], size=16, symbol="diamond",
-               line=dict(color="#000", width=1.5)),
-       hovertemplate=f"Medoid R#{MEDOID_IDX[c_id]} · Cluster {c_id}<extra></extra>"
- ))
+    mask = labels == c_id
+    fig_pca.add_trace(go.Scatter(
+        x=X_pca[mask, 0], y=X_pca[mask, 1], mode="markers",
+        name=f"{CLUSTER_NAMES[c_id]} (n={mask.sum()})",
+        marker=dict(color=CLUSTER_COLORS[c_id], size=7, opacity=0.65,
+                    line=dict(color="#fff", width=0.4)),
+        hovertemplate=f"{CLUSTER_NAMES[c_id]}: PC1=%{{x:.2f}}, PC2=%{{y:.2f}}<extra></extra>"
+    ))
+    fig_pca.add_trace(go.Scatter(
+        x=[medoids_pca[c_id, 0]], y=[medoids_pca[c_id, 1]],
+        mode="markers+text", showlegend=False,
+        text=[f"C{c_id} medoid (R#{MEDOID_IDX[c_id]})"],
+        textposition="top right",
+        textfont=dict(size=9, color=CLUSTER_COLORS[c_id]),
+        marker=dict(color=CLUSTER_COLORS[c_id], size=16, symbol="diamond",
+                    line=dict(color="#000", width=1.5)),
+        hovertemplate=f"Medoid R#{MEDOID_IDX[c_id]} · Cluster {c_id}<extra></extra>"
+    ))
 fig_pca.update_layout(
-      **PLOTLY_LAYOUT, height=400,
-       title=dict(
-       text=(f"Figure 3 — Cluster Visualisation in PCA Space (K-Medoids)<br>"
-       f"<sup>PC1=34.54% + PC2=14.35% = 48.89% total variance explained · "
-       f"◆ = Actual Medoid Respondent</sup>"),
-       font=dict(size=12)
+    **PLOTLY_LAYOUT, height=400,
+    title=dict(
+        text=(f"Figure 3 — Cluster Visualisation in PCA Space (K-Medoids)<br>"
+              f"<sup>PC1=34.54% + PC2=14.35% = 48.89% total variance explained · "
+              f"◆ = Actual Medoid Respondent</sup>"),
+        font=dict(size=12)
     )
 )
 fig_pca.update_xaxes(title="PC1 (34.5% variance explained)", gridcolor="#F1F5F9")
 fig_pca.update_yaxes(title="PC2 (14.4% variance explained)", gridcolor="#F1F5F9")
 st.plotly_chart(fig_pca, use_container_width=True)
-
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Profiles")
 
