@@ -18,7 +18,7 @@ navbar()
  
 # ── Hero ───────────────────────────────────────────────────────────────────────
 st.markdown(f"""
-<div style='background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);
+<div style='background:linear-gradient(135deg,#0D9488 0%,#0E7490 60%,#0F766E 100%);
             border-radius:20px;padding:48px 40px;margin-bottom:28px;color:#fff;'>
   <div style='font-size:0.75rem;font-weight:600;text-transform:uppercase;
               letter-spacing:.15em;opacity:.8;margin-bottom:10px;'>
