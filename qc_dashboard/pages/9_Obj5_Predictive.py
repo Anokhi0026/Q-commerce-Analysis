@@ -21,6 +21,10 @@ section[data-testid='stSidebar']{background:#FFFFFF;border-right:1px solid #E2E8
 
 from navbar import navbar
 navbar()
+
+# Helper: PLOTLY_LAYOUT without 'legend' key — avoids duplicate-keyword TypeError
+# when a chart needs to override the legend separately.
+PL = {k: v for k, v in PLOTLY_LAYOUT.items() if k != "legend"}
 page_header("Objective 5", "Predictive Models for Q-Commerce Adoption",
             "Three complementary models — Logistic Regression (statsmodels), Decision Tree (GridSearchCV tuned), "
             "and Random Forest (GridSearchCV tuned) — all trained on the same 70% training set and evaluated on "
@@ -268,7 +272,7 @@ with c2:
             name=label, showlegend=True
         ))
     fig_forest.update_layout(
-        **PLOTLY_LAYOUT,
+        **PL,
         height=380,
         title=dict(text="Forest Plot — Odds Ratios with 95% CI<br><sup>Blue = Significant (p<0.05) | Grey = Not Significant</sup>",
                    font=dict(size=12)),
