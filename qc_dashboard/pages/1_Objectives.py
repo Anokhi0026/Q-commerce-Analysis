@@ -61,7 +61,7 @@ for tag, title, desc, methods, color in objs:
                        letter-spacing:.1em;background:{color}15;padding:2px 8px;border-radius:20px;'>
         </div>
         <p style='color:#475569;font-size:.85rem;line-height:1.6;margin:0 0 8px;'>{desc}</p>
-        <div style='font-size:.75rem;color:{color};font-weight:500;'> • {methods}</div>
+        <div style='font-size:.75rem;color:{color};font-weight:500;'> '•' {methods}</div>
       </div>
     </div>""", unsafe_allow_html=True)
 
