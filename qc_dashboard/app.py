@@ -7,11 +7,47 @@ st.set_page_config("Q-Commerce Vadodara", "⚡", layout="wide", initial_sidebar_
 st.session_state["current_page"] = "app.py"
 st.markdown("""
 <style>
+st.markdown("""
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-html,body,[class*="css"]{font-family:'Inter',sans-serif;}
-.stApp{background:#FAFAFA;}
-section[data-testid="stSidebar"]{background:#FFFFFF;border-right:1px solid #E2E8F0;}
-</style>""", unsafe_allow_html=True)
+
+/* GLOBAL FONT */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;   /* 🔥 increase this (try 16–18px) */
+}
+
+/* MAIN APP BACKGROUND */
+.stApp {
+    background: #FAFAFA;
+}
+
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background: #FFFFFF;
+    border-right: 1px solid #E2E8F0;
+}
+
+/* HEADINGS */
+h1 { font-size: 2.2rem !important; }
+h2 { font-size: 1.8rem !important; }
+h3 { font-size: 1.5rem !important; }
+
+/* TEXT ELEMENTS */
+p, div, span {
+    font-size: 1rem;   /* 🔥 control normal text */
+}
+
+/* KPI / METRIC TEXT (important for your dashboard) */
+[data-testid="stMetricValue"] {
+    font-size: 1.8rem !important;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 0.9rem !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
  
 from navbar import navbar
 navbar()
