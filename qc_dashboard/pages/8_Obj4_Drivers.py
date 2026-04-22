@@ -250,10 +250,10 @@ def run_paf_efa(_ld):
     L_unrot, h2_paf = paf_extract(X_std, N_FACTORS)
     L_rot           = varimax_rotate(L_unrot)
 
-    # Sign convention: flip factors so dominant loadings are positive
-     for j in range(L_rot.shape[1]):
-            if L_rot[:, j].sum() < 0:
-                        L_rot[:, j] *= -1        
+    # ── Sign convention: flip factors so dominant loadings are positive ──
+    for j in range(L_rot.shape[1]):
+        if L_rot[:, j].sum() < 0:
+            L_rot[:, j] *= -1      
 
     # Sort factors by SS loadings descending
     ss_order = np.argsort(-(L_rot**2).sum(axis=0))
