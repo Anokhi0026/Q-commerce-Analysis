@@ -210,6 +210,52 @@ with st.expander("📋 Full chi-square results table"):
     disp = chi_df.copy(); disp["Significant"] = disp["Sig"].map({True:"✅",False:"❌"})
     st.dataframe(disp.drop(columns="Sig"), use_container_width=True)
 
+# ── PAYMENT METHOD × OCCUPATION ───────────────────────────────────────────────
+section("Analysis 2 (Extended) · Payment Method × Occupation Cross-tabulation")
+
+pay_occ = pd.crosstab(users["preferred payment method?"], users["Occupation"])
+pay_occ_pct = pay_occ.div(pay_occ.sum(axis=0), axis=1) * 100
+
+fig_po = go.Figure()
+occ_cols = pay_occ_pct.columns.tolist()
+colors_po = [INDIGO, EMERALD, AMBER, ROSE, VIOLET, SKY]
+
+for i, pay in enumerate(PAY_ORDER):
+    if pay in pay_occ_pct.index:
+        fig_po.add_trace(go.Bar(
+            name=pay,
+            x=occ_cols,
+            y=pay_occ_pct.loc[pay],
+            marker_color=colors_po[i % len(colors_po)],
+            text=pay_occ_pct.loc[pay].round(1).astype(str) + "%",
+            textposition="inside",
+            textfont=dict(size=9),
+        ))
+
+fig_po.update_layout(
+    **{k: v for k, v in PLOTLY_LAYOUT.items() if k not in ["xaxis", "yaxis"]},
+    barmode="stack",
+    height=380,
+    title=dict(text="Payment Method × Occupation (% within Occupation)", font=dict(size=12)),
+    legend=dict(orientation="h", yanchor="bottom", y=-0.35, xanchor="center", x=0.5,
+                font=dict(size=10)),
+    xaxis=dict(tickangle=-15, gridcolor="#F1F5F9"),
+    yaxis=dict(title="% of Users", gridcolor="#F1F5F9", ticksuffix="%"),
+)
+st.plotly_chart(fig_po, use_container_width=True)
+
+# Chi-square detail for this specific pair
+chi_row = chi_df[(chi_df["Behavior"] == "Payment Method") & (chi_df["Demographic"] == "Occupation")]
+if not chi_row.empty:
+    r = chi_row.iloc[0]
+    sig_label = "✅ Significant" if r["Sig"] else "❌ Not Significant"
+    finding_card(
+        f"💳 Payment Method × Occupation — {sig_label} (V={r['V']}, {r['Association']})",
+        f"χ²={r['χ²']}, df={r['df']}, p={r['p']} | Cramér's V={r['V']} → {r['Association']} association. "
+        f"{'Different occupations show distinct payment preferences.' if r['Sig'] else 'No significant difference in payment preferences across occupations.'}",
+        INDIGO if r["Sig"] else AMBER
+    )
+
 # ── ANALYSIS 3: SATISFACTION ──────────────────────────────────────────────────
 section("Analysis 3 · Satisfaction Analysis — Kruskal-Wallis + Spearman Correlation")
 
