@@ -307,7 +307,7 @@ with tab_bar:
     fig_bar = go.Figure()
     for c_id, cname in enumerate(CLUSTER_NAMES):
         fig_bar.add_trace(go.Bar(
-            name=cname, x=SHORT_13, y=CLUSTER_MEANS[cname].values,
+            name=cname, x=SHORT_13, y=MEDOID_PROFILES[cname].values,
             marker_color=CLUSTER_COLORS[c_id], opacity=0.9,
             hovertemplate=f"{cname}: %{{y:.3f}}<extra></extra>"
         ))
@@ -318,7 +318,7 @@ with tab_bar:
         title=dict(text="Figure 5b — Side-by-Side Cluster Comparison — All 13 Variables", font=dict(size=12))
     )
     fig_bar.update_xaxes(tickangle=-30, gridcolor="#F1F5F9")
-    fig_bar.update_yaxes(title="Mean Score (1–5)", gridcolor="#F1F5F9", range=[1, 5.5])
+    fig_bar.update_yaxes(title="MEDOID Score (1–5)", gridcolor="#F1F5F9", range=[1, 5.5])
     st.plotly_chart(fig_bar, use_container_width=True)
 # ── STEP 5: BEHAVIORAL PROFILE ────────────────────────────────────────────────
 section("Step 5 · Behavioral Profile by Cluster")
