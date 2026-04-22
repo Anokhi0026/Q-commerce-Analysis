@@ -236,12 +236,11 @@ fig_po.update_layout(
     **{k: v for k, v in PLOTLY_LAYOUT.items() if k not in ["xaxis", "yaxis"]},
     barmode="stack",
     height=380,
-    title=dict(text="Payment Method × Occupation (% within Occupation)", font=dict(size=12)),
-    legend=dict(orientation="h", yanchor="bottom", y=-0.35, xanchor="center", x=0.5,
-                font=dict(size=10)),
-    xaxis=dict(tickangle=-15, gridcolor="#F1F5F9"),
-    yaxis=dict(title="% of Users", gridcolor="#F1F5F9", ticksuffix="%"),
-)
+    title=dict(text="Payment Method × Occupation (% within Occupation)", font=dict(size=12)))
+fig_po.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.35, xanchor="center", x=0.5,
+                font=dict(size=10)))
+fig_po.update_xaxes(tickangle=-15, gridcolor="#F1F5F9")
+fig_po.update_yaxes(title="% of Users", gridcolor="#F1F5F9", ticksuffix="%")
 st.plotly_chart(fig_po, use_container_width=True)
 
 # Chi-square detail for this specific pair
