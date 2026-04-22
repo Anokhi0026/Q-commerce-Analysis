@@ -76,7 +76,7 @@ def fit_logistic():
     df_te = df_model.loc[X_te.index].copy()
 
     # ── Fit on TRAINING SET ONLY ──────────────────────────────────────────────
-    # Reference categories: Age_Group=18-22, Education=No Formal Education, Gender=Female
+    # Reference categories: Age_Group=18-25, Education=No Formal Education, Gender=Female
     # Income and Occupation excluded — not independently significant after controlling for age/education
     model = smf.logit(
         "Adoption_Status ~ C(Age_Group) + C(Education) + C(Gender)",
@@ -173,7 +173,7 @@ st.markdown(f"""
   <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;'>
     <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
       <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Age 40+ → β ≈ −2.60 | OR ≈ 0.074 ***</div>
-      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>~13.5× LESS likely to adopt vs 18–22 reference group</div>
+      <div style='font-size:.72rem;color:#374151;margin-top:2px;'>~13.5× LESS likely to adopt vs 18–25 reference group</div>
     </div>
     <div style='background:#FFF1F2;border:1px solid #FECDD3;border-radius:8px;padding:9px 12px;'>
       <div style='font-weight:700;font-size:.78rem;color:{ROSE};'>Postgraduate → β ≈ +2.22 | OR ≈ 9× **</div>
