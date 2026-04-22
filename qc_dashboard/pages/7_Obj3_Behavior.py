@@ -211,7 +211,7 @@ with st.expander("📋 Full chi-square results table"):
     st.dataframe(disp.drop(columns="Sig"), use_container_width=True)
 
 # ── PAYMENT METHOD × OCCUPATION ───────────────────────────────────────────────
-section("Analysis 2 (Extended) · Payment Method × Occupation Cross-tabulation")
+section("Payment Method × Occupation Cross-tabulation")
 
 pay_occ = pd.crosstab(users["preferred payment method?"], users["Occupation"])
 pay_occ_pct = pay_occ.div(pay_occ.sum(axis=0), axis=1) * 100
