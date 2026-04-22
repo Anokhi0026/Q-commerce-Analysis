@@ -31,7 +31,7 @@ page_header("Objective 5", "Predictive Models for Q-Commerce Adoption",
             "the same held-out 30% test set for a fully fair, apples-to-apples comparison.")
 
 df = load_analysis()
-df_model = df.dropna(subset=["Gender"]).copy()
+df_model = df.copy()
 df_model = df_model.reset_index(drop=True)
 
 k1,k2,k3,k4 = st.columns(4)
