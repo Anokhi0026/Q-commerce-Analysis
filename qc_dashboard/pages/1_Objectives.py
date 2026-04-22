@@ -54,7 +54,7 @@ for tag, title, desc, methods, color in objs:
         {tag}
       </div>
       <div style='font-weight:600; font-size:0.95rem; color:#1E1E2E;'>
-       {text}
+       {tag}
       </div>
       <div style='flex:1;'>
         <div style='display:flex;align-items:center;gap:8px;margin-bottom:4px;'>
