@@ -46,7 +46,7 @@ sections = [
 ]
 
 for num, title, icon, color, items, note in sections:
-    with st.expander(f"Section {num} — {title}", expanded=(num in ["1","3","4","6"])):
+    with st.expander(f"Section {num} — {title}", expanded=(num in ["1","2","3","4","5","6,",7"])):
         col_l, col_r = st.columns([2, 1])
         with col_l:
             st.markdown(f"<div style='font-size:.83rem;color:#475569;margin-bottom:10px;'>{note}</div>", unsafe_allow_html=True)
