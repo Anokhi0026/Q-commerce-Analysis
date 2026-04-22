@@ -268,26 +268,7 @@ with c1:
     fig_pca.update_xaxes(title="PC1 (34.5% variance explained)", gridcolor="#F1F5F9")
     fig_pca.update_yaxes(title="PC2 (14.4% variance explained)", gridcolor="#F1F5F9")
     st.plotly_chart(fig_pca, use_container_width=True)
-'''
-with c2:
-    st.markdown(f"""
-    <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px;'>
-      <div style='font-size:.83rem;color:#334155;font-weight:700;margin-bottom:10px;'>PCA Interpretation</div>
-      <div style='font-size:.78rem;color:#374151;line-height:1.9;'>
-        <b>PC1 (34.54%)</b> is the dominant axis capturing overall engagement intensity.
-        It most cleanly separates <b style='color:{INDIGO}'>Neutral Adopters</b> (left, low
-        scores on all variables) from <b style='color:{EMERALD}'>Convenience Purists</b>
-        (right, high scores on convenience and satisfaction variables).<br><br>
-        <b>PC2 (14.35%)</b> captures a secondary contrast between promotional sensitivity
-        and pure convenience orientation, helping position
-        <b style='color:{AMBER}'>All-Round Enthusiasts</b> — who score moderately across
-        all axes — separately from the more polarised Purists.<br><br>
-        <b>Total: 48.89% variance explained</b> — typical for a 13-variable Likert dataset.
-        The ◆ diamond markers (actual medoid respondents R#77, R#195, R#36) sit centrally
-        within each cluster cloud, confirming good within-cluster cohesion.
-      </div>
-    </div>""", unsafe_allow_html=True)
-'''
+
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Profiles")
 
@@ -339,73 +320,6 @@ with tab_bar:
     fig_bar.update_xaxes(tickangle=-30, gridcolor="#F1F5F9")
     fig_bar.update_yaxes(title="Mean Score (1–5)", gridcolor="#F1F5F9", range=[1, 5.5])
     st.plotly_chart(fig_bar, use_container_width=True)
-'''
-# Segment profile cards
-cluster_card_data = [
-    (
-        "Neutral Adopters",
-        "n=67 · 29.4% · Medoid R#77",
-        "Top driver: Discounts (3.28) · Lowest: Recommend (2.99)",
-        ("Consistently tepid scores across all 13 variables — means tightly clustered between 2.99 and 3.28, "
-         "all hovering near 'Neutral' (3). Their medoid (R#77) answered exactly 3 on every single item, "
-         "making this segment the textbook fence-sitter. Lowest satisfaction (3.25), continuity (3.06), "
-         "and recommendation scores (2.99) across all clusters, indicating marginal platform commitment "
-         "and significant churn risk. The majority place orders below ₹200 (61.2%) and 41.8% still use "
-         "Cash-on-Delivery — reflecting limited platform trust. Usage tenure skews shorter (26.9% under 3 months). "
-         "Emergency Needs (25.4%) ranks highly as a motivation, consistent with reactive, non-habitual usage. "
-         "<b>Business action:</b> Re-engagement campaigns leveraging their top driver (Discounts), "
-         "small-basket promotions, and trust-building onboarding to convert fence-sitters into regulars.")
-    ),
-    (
-        "All-Round Enthusiast",
-        "n=114 · 50.0% · Medoid R#195",
-        "Top driver: Time Saving (4.01) · Lowest: Product Variety (3.83)",
-        ("The largest segment (50%) — broadly and uniformly engaged across all 13 dimensions. "
-         "Mean scores range from 3.81 to 4.01, firmly in 'Agree' territory. "
-         "Their medoid (R#195) answered 4 on all 13 variables — balanced across convenience and value, "
-         "engaged for multiple reasons simultaneously. Strong mid-range order values (44.7% at ₹200–₹400), "
-         "highest wallet payment share (9.6%), and majority UPI (50.9%) reflect digitally comfortable users. "
-         "Highest share of 1+ year tenure after Purists (41.2%). Primary motivations are spread across "
-         "Convenience (26.5%), Fast Delivery (21.2%), and Emergency Needs (18.6%) — "
-         "engaged on multiple fronts rather than a single driver. "
-         "<b>Business action:</b> Loyalty subscriptions (Blinkit Plus, Zepto Pass) and bundled promotions "
-         "are the optimal lever — this segment is broadly satisfied and needs reasons to deepen engagement.")
-    ),
-    (
-        "Convenience Purists",
-        "n=47 · 20.6% · Medoid R#36",
-        "Top driver: Time Saving (4.79) · Lowest: Promo Offers (3.04)",
-        ("The smallest but most distinctive segment, defined by a sharp internal contrast. "
-         "Extremely high on Time Saving (4.79), Lifestyle Fit (4.70), Continuity (4.77), Recommend (4.75) — "
-         "yet markedly low on Discounts (3.26) and Promo Offers (3.04). "
-         "Their medoid (R#36) answered 5 on all convenience and satisfaction items but only 3 on "
-         "Discounts and Promo Offers — a pure convenience-seeker completely indifferent to price incentives. "
-         "Highest UPI adoption (72.3%) and lowest COD (14.9%) across all segments. "
-         "Most loyal by tenure: 63.8% using for more than a year. Top motivations are Convenience (40.4%) "
-         "and Product Availability (14.9%), with near-zero Better Offers (2.1%). "
-         "Highest satisfaction (4.55), continuity (4.77), and referral score (4.74/5) of all clusters — "
-         "the highest long-term customer value segment. "
-         "<b>Business action:</b> Premium tiers, speed guarantees, and quality assurance — NOT discounts. "
-         "High referral propensity makes them ideal referral programme targets.")
-    ),
-]
-
-st.markdown(
-    "<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;'>" +
-    "".join([f"""
-  <div style='background:{CLUSTER_COLORS[i]}10;border:1px solid {CLUSTER_COLORS[i]}40;
-              border-radius:12px;padding:16px;'>
-    <div style='font-weight:700;color:{CLUSTER_COLORS[i]};font-size:.9rem;margin-bottom:2px;'>
-      Cluster {i}: {name}
-    </div>
-    <div style='font-size:.7rem;color:#64748B;margin-bottom:3px;'>{meta}</div>
-    <div style='font-size:.7rem;color:#94A3B8;font-style:italic;margin-bottom:8px;'>{driver}</div>
-    <div style='font-size:.75rem;color:#374151;line-height:1.75;'>{desc}</div>
-  </div>""" for i, (name, meta, driver, desc) in enumerate(cluster_card_data)])
-    + "</div>",
-    unsafe_allow_html=True
-)
-'''
 # ── STEP 5: BEHAVIORAL PROFILE ────────────────────────────────────────────────
 section("Step 5 · Behavioral Profile by Cluster")
 
