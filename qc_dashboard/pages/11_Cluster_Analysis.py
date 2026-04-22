@@ -37,33 +37,6 @@ kpi(k3, "3",         "Clusters (K=3)",      "Elbow + Silhouette validated",  EME
 kpi(k4, "K-Medoids", "Algorithm (PAM)",     "Cityblock distance · real medoids", VIOLET)
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── WHY K-MEDOIDS ─────────────────────────────────────────────────────────────
-st.markdown("""
-<div style='background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 18px;margin-bottom:16px;'>
-  <b style='font-size:.85rem;color:#1D4ED8;'>Why K-Medoids (PAM) instead of K-Means?</b><br>
-  <span style='font-size:.82rem;color:#374151;'>
-  K-Means computes abstract arithmetic centroids that may not correspond to any real survey respondent.
-  <b>K-Medoids (PAM — Partitioning Around Medoids)</b> selects <i>actual data points</i> as cluster
-  representatives, so each cluster is described by a real respondent — directly interpretable as a
-  consumer persona. PAM also uses <b>Cityblock (Manhattan) distance</b>, which is more appropriate
-  for discrete Likert-scale data and more robust to outliers than the squared Euclidean distance
-  used by K-Means.
-  </span>
-  <div style='display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;'>
-    <div style='background:#fff;border-radius:8px;padding:10px;font-size:.75rem;'>
-      <b style='color:#1D4ED8;'>Cluster centre</b><br>Actual data point (medoid), not an abstract mean
-    </div>
-    <div style='background:#fff;border-radius:8px;padding:10px;font-size:.75rem;'>
-      <b style='color:#1D4ED8;'>Distance metric</b><br>Cityblock — better fit for discrete Likert scales
-    </div>
-    <div style='background:#fff;border-radius:8px;padding:10px;font-size:.75rem;'>
-      <b style='color:#1D4ED8;'>Outlier robustness</b><br>More robust than K-Means (no squared distances)
-    </div>
-    <div style='background:#fff;border-radius:8px;padding:10px;font-size:.75rem;'>
-      <b style='color:#1D4ED8;'>Interpretability</b><br>Medoids are real respondents → concrete personas
-    </div>
-  </div>
-</div>""", unsafe_allow_html=True)
 
 # ── DATA PREP — X = cluster_df.copy() (no standardization, exact as notebook) ─
 @st.cache_data
@@ -161,7 +134,7 @@ with c1:
                         annotation_text="Recommended K=3",
                         annotation_font=dict(size=9, color=ROSE))
     fig_elbow.update_layout(
-        **PLOTLY_LAYOUT, height=300,
+        **PLOTLY_LAYOUT, height=400,
         title=dict(text="(a) Elbow Method — Total Within-Cluster Distance vs K", font=dict(size=12))
     )
     fig_elbow.update_xaxes(title="Number of Clusters (K)", tickvals=K_RANGE, gridcolor="#F1F5F9")
@@ -180,7 +153,7 @@ with c2:
     fig_sil.add_hline(y=0.10, line_dash="dot", line_color=SLATE, opacity=0.6,
                       annotation_text="Min acceptable (0.10)", annotation_font=dict(size=9))
     fig_sil.update_layout(
-        **PLOTLY_LAYOUT, height=300,
+        **PLOTLY_LAYOUT, height=400,
         title=dict(text="(b) Silhouette Score vs K", font=dict(size=12))
     )
     fig_sil.update_xaxes(title="K", tickvals=K_RANGE, gridcolor="#F1F5F9")
@@ -243,20 +216,7 @@ MEDOID_PROFILES = pd.DataFrame({
     "Cluster 2: Convenience Purists":    [5,4,3,4,3,4,5,4,5,5,5,5,5],
 }, index=SHORT_13)
 
-st.markdown(f"""
-<div style='background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:14px 18px;margin-bottom:12px;'>
-  <b style='font-size:.85rem;color:#B45309;'>🔍 Medoid Respondents — R#77, R#195, R#36</b><br>
-  <span style='font-size:.82rem;color:#374151;'>
-  The PAM algorithm identifies <b>real survey respondents</b> as cluster representatives.
-  <b>Respondent #77</b> (Neutral Adopters) answered "Neutral" (3) on every variable — a textbook fence-sitter.
-  <b>Respondent #195</b> (All-Round Enthusiast) answered "Agree" (4) uniformly across all 13 items —
-  broadly satisfied and engaged on all dimensions simultaneously.
-  <b>Respondent #36</b> (Convenience Purists) answered "Strongly Agree" (5) on Time Saving, Urgent Needs,
-  Schedule Barrier, Lifestyle Fit, and all three satisfaction items — but only "Neutral" (3) on
-  Discounts and Promo Offers — a pure convenience-seeker completely indifferent to promotional incentives.
-  These are not abstract centroids; they are real people who can serve directly as marketing personas.
-  </span>
-</div>""", unsafe_allow_html=True)
+
 
 with st.expander("📋 Medoid Respondent Profiles — Original 1–5 Scale (Actual Survey Respondents)"):
     st.dataframe(MEDOID_PROFILES, use_container_width=True)
@@ -308,7 +268,7 @@ with c1:
     fig_pca.update_xaxes(title="PC1 (34.5% variance explained)", gridcolor="#F1F5F9")
     fig_pca.update_yaxes(title="PC2 (14.4% variance explained)", gridcolor="#F1F5F9")
     st.plotly_chart(fig_pca, use_container_width=True)
-
+'''
 with c2:
     st.markdown(f"""
     <div style='background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px;'>
@@ -327,7 +287,7 @@ with c2:
         within each cluster cloud, confirming good within-cluster cohesion.
       </div>
     </div>""", unsafe_allow_html=True)
-
+'''
 # ── STEP 4: CLUSTER PROFILING ─────────────────────────────────────────────────
 section("Step 4 · Cluster Profiling — Attitude & Satisfaction Profiles")
 
@@ -345,7 +305,7 @@ tab_hm, tab_bar = st.tabs([
 
 with tab_hm:
     fig_hm = go.Figure(go.Heatmap(
-        z=CLUSTER_MEANS.values,
+        z=MEDOID_PROFILES.values,
         x=CLUSTER_NAMES,
         y=SHORT_13,
         colorscale=[[0,"#FEF2F2"],[0.3,"#FCA5A5"],[0.5,"#FCD34D"],[0.7,"#86EFAC"],[1,"#15803D"]],
@@ -366,7 +326,7 @@ with tab_bar:
     fig_bar = go.Figure()
     for c_id, cname in enumerate(CLUSTER_NAMES):
         fig_bar.add_trace(go.Bar(
-            name=cname, x=SHORT_13, y=CLUSTER_MEANS[cname].values,
+            name=cname, x=SHORT_13, y=MEDOID_PROFILES[cname].values,
             marker_color=CLUSTER_COLORS[c_id], opacity=0.9,
             hovertemplate=f"{cname}: %{{y:.3f}}<extra></extra>"
         ))
@@ -379,7 +339,7 @@ with tab_bar:
     fig_bar.update_xaxes(tickangle=-30, gridcolor="#F1F5F9")
     fig_bar.update_yaxes(title="Mean Score (1–5)", gridcolor="#F1F5F9", range=[1, 5.5])
     st.plotly_chart(fig_bar, use_container_width=True)
-
+'''
 # Segment profile cards
 cluster_card_data = [
     (
@@ -445,7 +405,7 @@ st.markdown(
     + "</div>",
     unsafe_allow_html=True
 )
-
+'''
 # ── STEP 5: BEHAVIORAL PROFILE ────────────────────────────────────────────────
 section("Step 5 · Behavioral Profile by Cluster")
 
