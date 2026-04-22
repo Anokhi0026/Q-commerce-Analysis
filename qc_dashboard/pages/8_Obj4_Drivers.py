@@ -221,8 +221,12 @@ def run_paf_efa(_ld):
             L    = vecs * np.sqrt(lam)
             h2   = np.clip((L**2).sum(axis=1), 0.005, 0.999)
             if np.max(np.abs(h2 - h2_prev)) < tol:
+                print(f'  PAF converged in {iteration+1} iterations.')
                 break
-        return L, h2
+            else:
+                        print(f'  PAF reached max iterations ({max_iter}) without full convergence.')
+
+        return L, h2, iteration + 1
 
     # ── Varimax rotation ──────────────────────────────────────────────────────
     def varimax_rotate(L, max_iter=1000, tol=1e-8):
@@ -250,15 +254,11 @@ def run_paf_efa(_ld):
     L_unrot, h2_paf = paf_extract(X_std, N_FACTORS)
     L_rot           = varimax_rotate(L_unrot)
 
-    # ── Sign convention: flip factors so dominant loadings are positive ──
-    for j in range(L_rot.shape[1]):
-        max_abs_idx = np.argmax(np.abs(L_rot[:, j]))
-        if L_rot[max_abs_idx, j] < 0:
-            L_rot[:, j] *= -1
+
      
 
     # Sort factors by SS loadings descending
-    ss_order = np.argsort(-(L_rot**2).sum(axis=0))
+    ss_order = np.argsort(-((L_rot**2).sum(axis=0)))
     L_rot    = L_rot[:, ss_order]
 
     ss_rot  = (L_rot**2).sum(axis=0)
