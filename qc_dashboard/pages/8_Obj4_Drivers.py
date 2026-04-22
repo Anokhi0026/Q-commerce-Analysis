@@ -252,8 +252,10 @@ def run_paf_efa(_ld):
 
     # ── Sign convention: flip factors so dominant loadings are positive ──
     for j in range(L_rot.shape[1]):
-        if L_rot[:, j].sum() < 0:
-            L_rot[:, j] *= -1      
+        max_abs_idx = np.argmax(np.abs(L_rot[:, j]))
+        if L_rot[max_abs_idx, j] < 0:
+            L_rot[:, j] *= -1
+     
 
     # Sort factors by SS loadings descending
     ss_order = np.argsort(-(L_rot**2).sum(axis=0))
